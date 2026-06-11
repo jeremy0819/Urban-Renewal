@@ -1,0 +1,10 @@
+# OS / 編輯器
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# 內部文件（真實案件資料禁止上傳）
+進度總覽*.md
+*內部*.md
+*.xlsx
+*.pdf
