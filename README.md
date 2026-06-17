@@ -21,10 +21,12 @@
 
 ## 🎯 互動式開發儀表板
 
-把上面的體系做成**單一自含 HTML**、零依賴、可離線開的互動儀表板：🛤️ 流程跑道 · ⚙️ 兩層引擎 · 🦸 Agents 戰隊 · 🔄 4D 循環 · 🩺 踩坑健檢 · 🎯 階段定位器。
+把上面的體系做成**單一自含 HTML**、零依賴、可離線開的互動儀表板：🛤️ 流程跑道 · ⚙️ 兩層引擎 · 🦸 Agents 戰隊 · 🔄 4D 循環 · 🩺 踩坑健檢 · 🎯 階段定位器。另附 **🎲 都更賽局模擬器**——用賽局理論與實務阻撓事件，互動講清楚「為什麼整合這麼難」。
 
-- **線上版**：啟用 GitHub Pages 後 → `https://jeremy0819.github.io/Urban-Renewal/`
-- **本機版**：直接用瀏覽器打開 [`index.html`](index.html)（雙擊即可，無需安裝）
+- **線上版**：啟用 GitHub Pages 後 → 儀表板 `https://jeremy0819.github.io/Urban-Renewal/`、模擬器 `…/simulator.html`
+- **本機版**：直接用瀏覽器打開 [`index.html`](index.html) 或 [`simulator.html`](simulator.html)（雙擊即可，無需安裝）
+
+> 🎲 **賽局模擬器**（[simulator.html](simulator.html)）5 模組：同意門檻賽局、釘子戶議價力曲線、阻撓賽局矩陣（囚徒困境／膽小鬼賽局）、實務阻撓事件庫（10 種招數×對策）、整合戰局沙盤（回合制小遊戲）。
 
 > 啟用方式：Repo **Settings → Pages → Source 選 `main` 分支 / 根目錄 (`/`)** → 數分鐘後即得上述網址。
 
@@ -114,6 +116,7 @@ flowchart LR
 | 文件 | 內容 |
 |---|---|
 | [🎯 index.html](index.html) | 互動式開發儀表板（單一自含 HTML，零依賴）：6 個互動模組 |
+| [🎲 simulator.html](simulator.html) | 都更賽局模擬器：同意門檻・釘子戶議價力・阻撓賽局・阻撓事件庫・整合沙盤 |
 | [docs/開發流程架構.md](docs/開發流程架構.md) | S1–S11 全生命週期：各階段產出物・檢核點・負責 agent |
 | [docs/投報分析架構-正確版.md](docs/投報分析架構-正確版.md) | 投報 Excel 正典：分頁五群・資料流・主表四區塊・正確公式骨架・踩坑檢核 |
 | [RE-DCF-Tool](https://github.com/jeremy0819/RE-DCF-Tool) | 計算工具（Streamlit）＋ Excel 對照範本 ＋ 黃金測試 |

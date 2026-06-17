@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>都更賽局模擬器 · Urban-Renewal Game Theory</title>
+<meta name="description" content="都市更新／危老整合的賽局理論與實務阻撓互動模擬器：同意門檻賽局、釘子戶議價力曲線、阻撓賽局矩陣、實務阻撓事件庫、整合戰局沙盤。通用教學模型，不含真實案件資料。">
+<style>
+  :root{
+    --blueprint:#2563eb; --blueprint-d:#1e3a8a; --blueprint-l:#dbeafe;
+    --amber:#f59e0b; --amber-l:#fef3c7;
+    --green:#16a34a; --green-l:#dcfce7;
+    --purple:#7c3aed; --purple-l:#ede9fe;
+    --red:#ef4444; --red-l:#fee2e2;
+    --ink:#0f172a; --slate:#475569; --mute:#94a3b8;
+    --paper:#f8fafc; --card:#ffffff; --line:#e2e8f0;
+    --shadow:0 6px 24px -8px rgba(15,23,42,.18);
+    --shadow-lg:0 18px 50px -12px rgba(15,23,42,.30);
+    --r:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:var(--blueprint);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  h2.section-title{font-size:clamp(22px,3.2vw,30px);margin:0 0 6px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .section-sub{color:var(--slate);margin:0 0 22px;font-size:15px}
+
+  nav.topnav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topnav .wrap{display:flex;align-items:center;gap:8px;height:60px;overflow-x:auto;scrollbar-width:none}
+  .topnav .wrap::-webkit-scrollbar{display:none}
+  .brand{font-weight:800;margin-right:auto;white-space:nowrap;display:flex;align-items:center;gap:8px;font-size:16px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--purple);box-shadow:0 0 0 4px var(--purple-l)}
+  .topnav a.navlink{padding:7px 12px;border-radius:999px;color:var(--slate);font-size:14px;font-weight:600;white-space:nowrap;transition:.15s}
+  .topnav a.navlink:hover{background:var(--purple-l);color:#5b21b6;text-decoration:none}
+
+  header.hero{background:
+      radial-gradient(1200px 400px at 12% -10%, rgba(124,58,237,.18), transparent 60%),
+      radial-gradient(900px 380px at 100% 0%, rgba(239,68,68,.12), transparent 55%),
+      linear-gradient(180deg,#fff, var(--paper));border-bottom:1px solid var(--line);overflow:hidden;position:relative}
+  header.hero::before{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(124,58,237,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.05) 1px,transparent 1px);
+    background-size:34px 34px;mask-image:radial-gradient(60% 60% at 50% 30%,#000,transparent)}
+  .hero .wrap{position:relative;padding:50px 20px 42px}
+  .pill{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--slate);box-shadow:var(--shadow)}
+  h1{font-size:clamp(26px,5vw,44px);line-height:1.18;margin:18px 0 10px;letter-spacing:-.5px}
+  h1 .grad{background:linear-gradient(90deg,var(--purple),var(--red));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:clamp(15px,2.2vw,18px);color:var(--slate);max-width:700px;margin:0 0 22px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:700;font-size:15px;border:1px solid transparent;cursor:pointer;transition:.18s;box-shadow:var(--shadow)}
+  .btn.primary{background:var(--purple);color:#fff}
+  .btn.primary:hover{background:#6d28d9;text-decoration:none;transform:translateY(-2px)}
+  .btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--purple);color:#5b21b6;text-decoration:none;transform:translateY(-2px)}
+
+  section{padding:50px 0;border-bottom:1px solid var(--line)}
+  section:nth-child(even){background:linear-gradient(180deg,#fff,var(--paper))}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  .controls .ctl{margin-bottom:16px}
+  .ctl label{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-bottom:6px;color:var(--slate)}
+  .ctl label b{color:var(--blueprint-d);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--purple);height:6px}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .preset{font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--paper);cursor:pointer;transition:.15s}
+  .preset:hover{border-color:var(--purple);color:#5b21b6}
+  .preset.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 16px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .stat .v{font-size:26px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+  .stat .k{font-size:12px;color:var(--slate);margin-top:4px}
+  .meter{height:14px;border-radius:999px;background:var(--line);overflow:hidden;margin:6px 0}
+  .meter > span{display:block;height:100%;border-radius:999px;transition:width .4s,background .3s}
+  .verdict{border-radius:12px;padding:14px 16px;font-size:14px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+  .verdict .ic{font-size:22px;flex:none}
+  .badge{display:inline-block;font-size:12px;font-weight:800;color:#fff;padding:3px 11px;border-radius:999px}
+
+  /* leverage gauge */
+  .lev{display:flex;align-items:center;gap:16px;margin:10px 0 6px}
+  .lev .big{font-size:46px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+  .lev .lbl{font-size:14px;font-weight:800}
+
+  /* curve */
+  .chartwrap{position:relative}
+  .chartwrap svg{width:100%;height:auto;display:block}
+  .axis{stroke:var(--line);stroke-width:1}
+  .gridln{stroke:#eef2f7;stroke-width:1}
+  .curve{fill:none;stroke:var(--purple);stroke-width:3}
+  .curvefill{fill:url(#cg);opacity:.18}
+  .thline{stroke:var(--red);stroke-width:2;stroke-dasharray:5 4}
+  .nowdot{fill:var(--blueprint);stroke:#fff;stroke-width:2}
+  .clab{font-size:11px;fill:var(--slate)}
+
+  /* payoff matrix */
+  .matrix{display:grid;grid-template-columns:96px 1fr 1fr;gap:8px;align-items:stretch}
+  .mh{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;text-align:center;color:var(--slate);padding:6px}
+  .cell{border-radius:12px;padding:14px;border:2px solid var(--line);background:var(--paper);text-align:center;position:relative;transition:.2s}
+  .cell .pp{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+  .cell .pp .me{color:var(--blueprint-d)}
+  .cell .pp .you{color:var(--slate)}
+  .cell .tagline{font-size:12px;color:var(--slate);margin-top:6px}
+  .cell.ne{border-color:var(--red);box-shadow:0 0 0 4px var(--red-l)}
+  .cell.pareto{outline:3px dashed var(--green);outline-offset:2px}
+  .cell .marks{position:absolute;top:6px;right:8px;font-size:11px;font-weight:800;display:flex;gap:5px}
+  .mk{padding:1px 7px;border-radius:999px}
+  .mk.ne{background:var(--red);color:#fff}
+  .mk.po{background:var(--green);color:#fff}
+  .rowh{display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;text-orientation:upright;font-weight:800;font-size:13px;color:var(--slate)}
+  .legend2{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--slate);margin-top:12px}
+  .legend2 .k{display:inline-flex;align-items:center;gap:6px}
+  .legend2 .sw{width:14px;height:14px;border-radius:4px}
+
+  /* obstruction deck */
+  .deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .ocard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:.18s}
+  .ocard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .ocard .top{padding:16px 16px 12px;display:flex;gap:12px;align-items:flex-start;border-left:6px solid var(--red)}
+  .ocard .em{font-size:30px;flex:none}
+  .ocard h3{margin:0;font-size:16px}
+  .ocard .sev{font-size:11px;font-weight:800;color:#fff;padding:2px 8px;border-radius:999px;background:var(--red);display:inline-block;margin-top:4px}
+  .ocard .body{max-height:0;overflow:hidden;transition:max-height .35s ease;background:var(--paper)}
+  .ocard.open .body{max-height:320px}
+  .ocard .body .inner{padding:14px 16px}
+  .ocard .body b{display:block;font-size:12px;color:var(--slate);margin-top:8px}
+  .ocard .body p{margin:2px 0 0;font-size:13.5px}
+  .ocard .impact{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .chip{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:8px}
+  .chip.t{background:var(--amber-l);color:#92400e}
+  .chip.c{background:var(--red-l);color:#b91c1c}
+  .chip.s{background:var(--blueprint-l);color:var(--blueprint-d)}
+  .chip.fix{background:var(--green-l);color:#166534}
+  .ocard .hint{font-size:11px;color:var(--mute);padding:0 16px 12px;border-left:6px solid var(--red)}
+
+  /* sandbox */
+  .sand{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start}
+  .hud{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .hud .h{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+  .hud .h .v{font-size:22px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+  .hud .h .k{font-size:11px;color:var(--slate);margin-top:3px}
+  .progbig{height:26px;border-radius:999px;background:var(--line);overflow:hidden;position:relative;margin:6px 0 4px}
+  .progbig > span{display:block;height:100%;background:linear-gradient(90deg,var(--blueprint),var(--green));transition:width .5s}
+  .progbig .th{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--red)}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .act{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;transition:.15s}
+  .act:hover:not(:disabled){border-color:var(--purple);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .act:disabled{opacity:.45;cursor:not-allowed}
+  .act b{font-size:14px;display:block}
+  .act span{font-size:12px;color:var(--slate)}
+  .log{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;height:300px;overflow-y:auto;font-size:13px}
+  .log .e{padding:6px 8px;border-radius:8px;margin-bottom:6px;border-left:4px solid var(--line)}
+  .log .e.good{border-color:var(--green);background:var(--green-l)}
+  .log .e.bad{border-color:var(--red);background:var(--red-l)}
+  .log .e.evt{border-color:var(--amber);background:var(--amber-l)}
+  .log .e.sys{border-color:var(--blueprint);background:var(--blueprint-l)}
+  .endbanner{border-radius:12px;padding:16px;text-align:center;font-weight:800;font-size:18px;margin-top:12px}
+  .endbanner.win{background:var(--green-l);color:#166534}
+  .endbanner.lose{background:var(--red-l);color:#b91c1c}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--slate);font-size:13.5px}
+  footer .flinks{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  footer .disc{max-width:680px;margin:14px auto 0;font-size:12px;color:var(--mute)}
+  .reveal{opacity:0;transform:translateY(24px);transition:.6s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:880px){
+    .two{grid-template-columns:1fr}
+    .sand{grid-template-columns:1fr}
+    .hud{grid-template-columns:repeat(2,1fr)}
+    .stat-row{grid-template-columns:repeat(3,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap">
+    <span class="brand"><span class="dot"></span>都更賽局模擬器</span>
+    <a class="navlink" href="#threshold">🎚️ 門檻賽局</a>
+    <a class="navlink" href="#curve">📈 議價力曲線</a>
+    <a class="navlink" href="#dilemma">⚖️ 阻撓賽局</a>
+    <a class="navlink" href="#deck">🧱 阻撓事件庫</a>
+    <a class="navlink" href="#sandbox">🕹️ 整合沙盤</a>
+    <a class="navlink" href="index.html">🎯 開發儀表板</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">🎲 通用教學模型 · 不含任何真實案件資料</span>
+    <h1>為什麼都更<span class="grad">整合這麼難</span>？<br>用賽局把<span class="grad">釘子戶</span>講清楚</h1>
+    <p class="lede">都更／危老的本質是一場多方賽局：同意門檻、沉沒成本、樞紐戶與實務阻撓交織，讓「全體最好」的方案常常卡死。撥動參數，親手體會 hold-up 問題與破局解方。</p>
+    <div class="cta">
+      <a class="btn primary" href="#sandbox">🕹️ 玩整合沙盤</a>
+      <a class="btn ghost" href="#threshold">🎚️ 從門檻賽局開始</a>
+      <a class="btn ghost" href="index.html">🎯 回開發儀表板</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== M1 門檻賽局 ===== -->
+<section id="threshold">
+  <div class="wrap reveal">
+    <h2 class="section-title">🎚️ 同意門檻賽局</h2>
+    <p class="section-sub">都更靠<b>多數決</b>、危老需<b>全體同意</b>。撥動參數，看門檻是否跨過、以及剩餘<b>釘子戶的議價力</b>怎麼隨階段與樞紐性飆升。</p>
+    <div class="two">
+      <div class="panel controls">
+        <div class="ctl">
+          <label>總所有權人數 <b><span id="v-n">20</span> 人</b></label>
+          <input type="range" id="s-n" min="4" max="80" value="20">
+        </div>
+        <div class="ctl">
+          <label>同意門檻（示意值） <b><span id="v-th">75</span>%</b></label>
+          <input type="range" id="s-th" min="50" max="100" value="75">
+          <div class="presets" id="th-presets">
+            <span class="preset" data-th="55">政府主動劃定 ~55%</span>
+            <span class="preset on" data-th="75">自行劃定 ~75%</span>
+            <span class="preset" data-th="100">危老 100%（全體同意）</span>
+          </div>
+        </div>
+        <div class="ctl">
+          <label>目前同意率 <b><span id="v-c">40</span>%</b></label>
+          <input type="range" id="s-c" min="0" max="100" value="40">
+        </div>
+        <div class="ctl">
+          <label>案件階段（沉沒成本） <b>S<span id="v-s">5</span></b></label>
+          <input type="range" id="s-s" min="1" max="11" value="5">
+          <div style="font-size:12px;color:var(--mute);margin-top:4px">階段越後（簽約→送審→施工），沉沒成本越高，釘子戶的 hold-up 越值錢。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="stat-row">
+          <div class="stat"><div class="v" id="o-need">15</div><div class="k">門檻所需同意</div></div>
+          <div class="stat"><div class="v" id="o-have">8</div><div class="k">目前同意</div></div>
+          <div class="stat"><div class="v" id="o-gap" style="color:var(--red)">7</div><div class="k">尚缺／餘戶</div></div>
+        </div>
+        <div style="margin:0 0 14px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--slate)"><span>同意進度</span><span id="o-pct">40%</span></div>
+          <div class="meter"><span id="o-bar" style="width:40%;background:var(--blueprint)"></span></div>
+        </div>
+        <div class="lev">
+          <div><div class="big" id="o-lev">—</div></div>
+          <div><div class="lbl" id="o-levlbl">釘子戶議價力</div><div style="font-size:12.5px;color:var(--slate)" id="o-levsub"></div></div>
+        </div>
+        <div class="meter"><span id="o-levbar" style="width:0%;background:var(--purple)"></span></div>
+        <div class="verdict" id="o-verdict" style="margin-top:14px;background:var(--paper)"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== M2 議價力曲線 ===== -->
+<section id="curve">
+  <div class="wrap reveal">
+    <h2 class="section-title">📈 釘子戶議價力曲線</h2>
+    <p class="section-sub">議價力 = 沉沒成本 × 樞紐性。它在<b>逼近門檻時飆高</b>，跨過門檻後因可<b>權利變換強制納入</b>而崩落。危老（100% 門檻）則一路維持滿格——這正是「一戶不同意全案卡死」的數學。</p>
+    <div class="panel chartwrap">
+      <svg id="chart" viewBox="0 0 720 320" role="img" aria-label="釘子戶議價力對同意率曲線"></svg>
+      <p style="font-size:12.5px;color:var(--mute);margin:10px 4px 0">🔵 目前同意率位置　🔴 虛線＝同意門檻。曲線隨上方「門檻賽局」的參數即時連動。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== M3 阻撓賽局矩陣 ===== -->
+<section id="dilemma">
+  <div class="wrap reveal">
+    <h2 class="section-title">⚖️ 阻撓賽局（兩戶版）</h2>
+    <p class="section-sub">兩位地主各選<b>同意</b>或<b>阻撓</b>。阻撓方可向實施者勒索<b>溢價</b>，但雙方都阻撓會讓案件<b>流產雙輸</b>。調溢價與拖延損失，看均衡點（🔴 Nash）如何背離全體最佳（🟢 Pareto）。</p>
+    <div class="two">
+      <div class="panel controls">
+        <div class="ctl">
+          <label>阻撓溢價（樞紐戶可多拿） <b>+<span id="v-prem">30</span></b></label>
+          <input type="range" id="s-prem" min="0" max="80" value="30">
+        </div>
+        <div class="ctl">
+          <label>拖延損失（每被卡一方） <b>−<span id="v-loss">20</span></b></label>
+          <input type="range" id="s-loss" min="0" max="80" value="20">
+        </div>
+        <div style="font-size:13px;color:var(--slate);background:var(--paper);border-radius:12px;padding:12px">
+          基準分回值＝100（雙方同意、公平成案）。<br>
+          <b style="color:var(--blueprint-d)">藍＝你的報酬</b>、<span style="color:var(--slate)">灰＝對方報酬</span>（對稱）。
+        </div>
+        <div class="verdict" id="game-read" style="margin-top:14px;background:var(--paper)"></div>
+      </div>
+      <div class="panel">
+        <div class="matrix">
+          <div class="mh"></div>
+          <div class="mh">對方：✅ 同意</div>
+          <div class="mh">對方：🧱 阻撓</div>
+          <div class="rowh">你：✅同意</div>
+          <div class="cell" id="cell-cc"></div>
+          <div class="cell" id="cell-cd"></div>
+          <div class="rowh">你：🧱阻撓</div>
+          <div class="cell" id="cell-dc"></div>
+          <div class="cell" id="cell-dd"></div>
+        </div>
+        <div class="legend2">
+          <span class="k"><span class="sw" style="background:var(--red)"></span>Nash 均衡（沒人想單方改變）</span>
+          <span class="k"><span class="sw" style="background:var(--green)"></span>Pareto 最佳（全體最好）</span>
+        </div>
+        <div style="margin-top:14px;font-size:13px;color:var(--slate)">
+          <b>破局解方</b>（讓 C,C 變穩定）：<b>多數決</b>稀釋單戶否決權、<b>權利變換</b>設估價上限壓低溢價、<b>時間壓力</b>放大拖延損失逼合作、<b>單一數源透明</b>消除假性反對。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== M4 阻撓事件庫 ===== -->
+<section id="deck">
+  <div class="wrap reveal">
+    <h2 class="section-title">🧱 實務阻撓事件庫</h2>
+    <p class="section-sub">整合現場真實會遇到的 10 種阻撓招數。點卡片展開<b>機制 · 衝擊 · 對策</b>。對策多半回到本體系的鐵律：估價師三家、權利變換、單一數源、共負透明。</p>
+    <div class="deck" id="deck"></div>
+  </div>
+</section>
+
+<!-- ===== M5 整合沙盤 ===== -->
+<section id="sandbox">
+  <div class="wrap reveal">
+    <h2 class="section-title">🕹️ 整合戰局沙盤</h2>
+    <p class="section-sub">你是實施者。用有限的<b>籌碼</b>與<b>時間</b>，在阻撓事件不斷襲來下把同意率推過門檻。每個對策都有取捨——這就是整合的日常。</p>
+    <div class="panel">
+      <div class="sand">
+        <div>
+          <div class="hud">
+            <div class="h"><div class="v" id="hud-consent">9/24</div><div class="k">同意戶數</div></div>
+            <div class="h"><div class="v" id="hud-budget">100</div><div class="k">籌碼</div></div>
+            <div class="h"><div class="v" id="hud-time">24</div><div class="k">剩餘月份</div></div>
+            <div class="h"><div class="v" id="hud-stage">S5</div><div class="k">階段／沉沒</div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--slate)">
+            <span>同意進度</span><span id="hud-pct">37% · 門檻 75%</span>
+          </div>
+          <div class="progbig"><span id="hud-prog" style="width:37%"></span><i class="th" id="hud-thmark" style="left:75%"></i></div>
+          <div class="actions" id="actions"></div>
+          <div id="endbox"></div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:var(--slate);margin-bottom:8px">📜 戰況紀錄</div>
+          <div class="log" id="log"></div>
+          <button class="btn ghost" id="restart" style="margin-top:12px;width:100%;justify-content:center">🔄 重新開局</button>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12.5px;color:var(--mute);margin-top:14px">⚠️ 籌碼／月份為抽象資源，非真實金額或時程；事件與機率為教學示意。法規門檻請依現行條文與劃定方式核對。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="flinks">
+      <a href="index.html">🎯 開發儀表板</a>
+      <a href="https://github.com/jeremy0819/Urban-Renewal" target="_blank" rel="noopener">📦 方法論主庫</a>
+      <a href="https://github.com/jeremy0819/RE-DCF-Tool" target="_blank" rel="noopener">🧮 RE-DCF-Tool</a>
+    </div>
+    <div>都更／危老 賽局理論與實務阻撓 · 互動教學模擬器</div>
+    <p class="disc">本模擬器為賽局理論之教學示意，參數與機率皆可調，非真實案件預測，亦不含任何真實案名、金額或基地數字。法規同意門檻依現行《都市更新條例》《都市危險及老舊建築物加速重建條例》與更新單元劃定方式而定，請以 law-assistant 對照現行條文。非正式財務／法律意見。版本 1.0｜2026-06。</p>
+  </div>
+</footer>
+
+<script>
+/* ================= 共享模型 ================= */
+// 沉沒成本係數：階段越後越高（簽約 S6、送審 S7 後陡升）
+function sunkFactor(S){
+  const stage=(S-1)/10;                 // 0..1
+  return 0.22 + 0.78*Math.pow(stage,1.35); // 0.22..1.0，後期陡升
+}
+// 釘子戶議價力（0..1）：沉沒成本 × 樞紐性
+function leverage(N, thPct, cPct, S){
+  const needed=Math.ceil(N*thPct/100);
+  const have=Math.round(N*cPct/100);
+  const gap=needed-have;
+  const avail=N-have;
+  const commit=Math.min(1, sunkFactor(S)*0.75 + (cPct/100)*0.25); // 投入感隨同意率與階段
+  if(gap<=0) return {lev:commit*0.12, needed, have, gap, met:true};   // 已達門檻→可權變強制→殘值
+  const pivot = avail>0 ? gap/avail : 1;   // 樞紐性：餘戶全需同意時=1（如100%門檻）
+  return {lev:Math.min(1, commit*pivot), needed, have, gap:gap, avail, met:false};
+}
+function levLabel(x){
+  if(x<0.20) return ['低','#16a34a'];
+  if(x<0.45) return ['中','#f59e0b'];
+  if(x<0.70) return ['高','#ea580c'];
+  return ['極高','#ef4444'];
+}
+
+/* ================= M1 門檻賽局 ================= */
+const S={n:20,th:75,c:40,s:5,prem:30,loss:20};
+const $=id=>document.getElementById(id);
+function renderThreshold(){
+  $('v-n').textContent=S.n; $('v-th').textContent=S.th; $('v-c').textContent=S.c; $('v-s').textContent=S.s;
+  const r=leverage(S.n,S.th,S.c,S.s);
+  $('o-need').textContent=r.needed;
+  $('o-have').textContent=r.have;
+  $('o-gap').textContent=r.met?('餘 '+(-r.gap)):r.gap;
+  $('o-gap').style.color=r.met?'var(--green)':'var(--red)';
+  $('o-pct').textContent=S.c+'%';
+  $('o-bar').style.width=S.c+'%';
+  $('o-bar').style.background=r.met?'var(--green)':'var(--blueprint)';
+  const pct=Math.round(r.lev*100);
+  const [lab,col]=levLabel(r.lev);
+  $('o-lev').textContent=pct; $('o-lev').style.color=col;
+  $('o-levlbl').textContent='釘子戶議價力 · '+lab;
+  $('o-levbar').style.width=pct+'%'; $('o-levbar').style.background=col;
+  let sub, vc, vtxt, vic;
+  if(r.met){
+    $('o-levsub').textContent='已過門檻，餘戶可循權利變換強制納入，個別否決權消失。';
+    vic='✅'; vc='var(--green-l)';
+    vtxt='<b>門檻已跨過。</b>進入法定程序後，未同意戶依權利變換強制納入並提存安置；議價力大幅下降。重點轉為估價爭議與程序合法。';
+  }else if(S.th>=100){
+    $('o-levsub').textContent='危老需全體同意：每一戶都是樞紐戶，握有完整否決權。';
+    vic='🧱'; vc='var(--red-l)';
+    vtxt='<b>100% 門檻＝人人是釘子戶。</b>只要一戶不簽，全案卡死，且階段越後 hold-up 越值錢。多戶基地走危老風險極高，常需改循都更多數決路徑。';
+  }else if(r.gap/r.avail>0.8){
+    $('o-levsub').textContent='幾乎每位餘戶都不可或缺，樞紐性接近滿格。';
+    vic='⚠️'; vc='var(--amber-l)';
+    vtxt='<b>逼近門檻、餘戶稀少。</b>剩下的人幾乎個個關鍵，議價力高。宜灌注超額同意當緩衝，避免被末位戶綁架。';
+  }else{
+    $('o-levsub').textContent='餘戶尚多、可替代性高，單戶難綁架，但案件投入也還淺。';
+    vic='🌱'; vc='var(--blueprint-l)';
+    vtxt='<b>整合前段。</b>同意者尚少、沉沒成本低，單一釘子戶可被其他同意戶替代，議價力有限。把握此時鎖定同意、壓縮投機套利空間。';
+  }
+  const v=$('o-verdict'); v.style.background=vc;
+  v.innerHTML='<span class="ic">'+vic+'</span><div>'+vtxt+'</div>';
+  renderCurve();
+}
+
+/* ================= M2 議價力曲線 ================= */
+function renderCurve(){
+  const W=720,H=320,padL=48,padR=20,padT=20,padB=42;
+  const x0=padL, x1=W-padR, y0=H-padB, y1=padT;
+  const xOf=c=>x0+(c/100)*(x1-x0);
+  const yOf=v=>y0-(v)*(y0-y1);   // v in 0..1
+  let pts=[];
+  for(let c=0;c<=100;c++){ pts.push([c, leverage(S.n,S.th,c,S.s).lev]); }
+  let d='M '+pts.map(p=>xOf(p[0]).toFixed(1)+' '+yOf(p[1]).toFixed(1)).join(' L ');
+  let fill=d+' L '+xOf(100).toFixed(1)+' '+y0+' L '+x0+' '+y0+' Z';
+  let grid='';
+  for(let g=0;g<=4;g++){ const yy=y1+(y0-y1)*g/4; grid+=`<line class="gridln" x1="${x0}" y1="${yy}" x2="${x1}" y2="${yy}"/>`;
+    grid+=`<text class="clab" x="${x0-8}" y="${yy+4}" text-anchor="end">${100-g*25}</text>`; }
+  let xlab='';
+  for(let g=0;g<=4;g++){ const xx=x0+(x1-x0)*g/4; xlab+=`<text class="clab" x="${xx}" y="${y0+18}" text-anchor="middle">${g*25}%</text>`; }
+  const thX=xOf(S.th);
+  const now=leverage(S.n,S.th,S.c,S.s);
+  const nx=xOf(S.c), ny=yOf(now.lev);
+  $('chart').innerHTML=`
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <line class="axis" x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}"/>
+    <line class="axis" x1="${x0}" y1="${y1}" x2="${x0}" y2="${y0}"/>
+    <path class="curvefill" d="${fill}"/>
+    <path class="curve" d="${d}"/>
+    <line class="thline" x1="${thX}" y1="${y1}" x2="${thX}" y2="${y0}"/>
+    <text class="clab" x="${thX}" y="${y1-4}" text-anchor="middle" fill="#ef4444" font-weight="700">門檻 ${S.th}%</text>
+    <circle class="nowdot" cx="${nx}" cy="${ny}" r="6"/>
+    <text class="clab" x="${nx}" y="${ny-12}" text-anchor="middle" fill="#2563eb" font-weight="700">現在 ${Math.round(now.lev*100)}</text>
+    <text class="clab" x="${(x0+x1)/2}" y="${H-6}" text-anchor="middle">同意率 →</text>
+    <text class="clab" x="14" y="${(y0+y1)/2}" text-anchor="middle" transform="rotate(-90 14 ${(y0+y1)/2})">釘子戶議價力 →</text>`;
+}
+
+/* ================= M3 阻撓賽局矩陣 ================= */
+function renderGame(){
+  $('v-prem').textContent=S.prem; $('v-loss').textContent=S.loss;
+  const R=100, P=S.prem, D=S.loss;
+  // payoff [me,you]
+  const cells={
+    cc:[R,R,'案成・公平分回'],
+    cd:[R-D,R+P,'你讓步、對方勒索溢價'],
+    dc:[R+P,R-D,'你勒索溢價、對方讓步'],
+    dd:[R-2*D,R-2*D,'僵持→案件流產雙輸']
+  };
+  // best responses → Nash
+  // if opponent C (col): compare my C (cc.me=R) vs my D (dc.me=R+P) → D better if P>0
+  // if opponent D (col): compare my C (cd.me=R-D) vs my D (dd.me=R-2D) → C better if D>0 (R-D>R-2D)
+  const meCdoC = cells.cc[0] >= cells.dc[0];   // opp C: is C my best?
+  const meDdoC = cells.cd[0] >= cells.dd[0];   // opp D: is C my best?
+  function isNE(key){
+    if(key==='cc') return meCdoC && meCdoC;            // both pick C as BR to C
+    if(key==='dd') return !meDdoC && !meDdoC;          // both pick D as BR to D
+    if(key==='dc') return (!meCdoC) && (meDdoC);       // me D best vs oppC, opp(col=C) C best vs my D
+    if(key==='cd') return (!meCdoC) && (meDdoC);       // symmetric asymmetric eq
+    return false;
+  }
+  // Pareto optimal: not dominated by another cell on both coords
+  const keys=['cc','cd','dc','dd'];
+  function pareto(k){
+    return !keys.some(j=>j!==k && cells[j][0]>=cells[k][0] && cells[j][1]>=cells[k][1] && (cells[j][0]>cells[k][0]||cells[j][1]>cells[k][1]));
+  }
+  keys.forEach(k=>{
+    const [me,you,tag]=cells[k];
+    const el=$('cell-'+k);
+    const ne=isNE(k), po=pareto(k);
+    el.className='cell'+(ne?' ne':'')+(po?' pareto':'');
+    el.innerHTML=`<div class="marks">${ne?'<span class="mk ne">Nash</span>':''}${po?'<span class="mk po">Pareto</span>':''}</div>
+      <div class="pp"><span class="me">你 ${me}</span> ・ <span class="you">對方 ${you}</span></div>
+      <div class="tagline">${tag}</div>`;
+  });
+  // narrative
+  let g, msg, ic;
+  const neCC=isNE('cc'), neDD=isNE('dd'), neAsym=isNE('dc');
+  if(P===0 && D>0){ ic='🕊️'; g='合作賽局';
+    msg='沒有阻撓溢價，雙方同意（C,C）就是均衡也是最佳——這是整合最順的理想狀態。'; }
+  else if(neAsym && !neDD){ ic='🐔'; g='膽小鬼賽局（消耗戰）';
+    msg='均衡落在「一方阻撓勒索、另一方讓步」。兩人都想當阻撓方→互不相讓就<b>流產雙輸</b>。誰先眨眼誰吃虧，這正是釘子戶僵局的縮影。'; }
+  else if(neDD){ ic='🧨'; g='囚徒困境';
+    msg='阻撓是雙方的優勢策略，均衡是（阻撓,阻撓）→<b>全體最差</b>，卻背離全體最佳（同意,同意）。需外力（多數決／權變強制）才能拉回合作。'; }
+  else { ic='🤝'; g='可合作';
+    msg='目前參數下合作仍是穩定解。一旦溢價拉高或拖延損失改變，均衡會偏離全體最佳。'; }
+  $('game-read').style.background='var(--paper)';
+  $('game-read').innerHTML=`<span class="ic">${ic}</span><div><b>${g}</b><br>${msg}</div>`;
+}
+
+/* ================= M4 阻撓事件庫 ================= */
+const DECK=[
+  {em:'💸',t:'釘子戶天價求償',sev:'衝擊 ★★★',mech:'末位樞紐戶利用高沉沒成本，獅子大開口喊補償。',
+   imp:[['t','時程↑'],['c','成本↑']],fix:'多數決＋權利變換強制納入；估價師三家定價；切勿輕諾「一坪換一坪」。'},
+  {em:'↩️',t:'同意書撤回',sev:'衝擊 ★★★',mech:'法定撤回期內反悔，或被競爭實施者策反。',
+   imp:[['s','同意率↓']],fix:'灌注超額同意當緩衝、簽約綁定、保持即時溝通與信任。'},
+  {em:'⚖️',t:'司法救濟拖延',sev:'衝擊 ★★★',mech:'行政訴訟、釋憲等程序把時程拖上數年（文林苑陰影）。',
+   imp:[['t','時程↑↑'],['c','利息↑']],fix:'程序合法完備、聽證紀錄齊全、補償提存與安置先到位。'},
+  {em:'📐',t:'估價爭議',sev:'衝擊 ★★',mech:'權利變換估價與地主認知落差，審議卡關。',
+   imp:[['t','時程↑'],['s','信任↓']],fix:'估價師三家、公開估價基準、揭露敏感度。'},
+  {em:'🪳',t:'都更蟑螂進場',sev:'衝擊 ★★★',mech:'投機客低價收購釘子戶部位，集中後再勒索。',
+   imp:[['c','成本↑'],['s','議價力被放大']],fix:'早期鎖定同意、資訊透明壓縮套利空間。'},
+  {em:'🎭',t:'假性反對哄抬',sev:'衝擊 ★★',mech:'以反對為籌碼換更高分回，引發骨牌效應。',
+   imp:[['c','期待↑'],['s','串連風險']],fix:'單一數源公開分配、逐戶回算＝總分回、一致對待防破窗。'},
+  {em:'🔁',t:'一坪換一坪迷思',sev:'衝擊 ★★',mech:'不符共負現實的期待錨定，談判難收斂。',
+   imp:[['s','錨點偏離']],fix:'用投報共負比說明、揭露共負六科目、回到 S4 投報事實。'},
+  {em:'📋',t:'公聽會／程序瑕疵',sev:'衝擊 ★★',mech:'送達、公告、聽證瑕疵被行政救濟撤銷。',
+   imp:[['t','程序重來']],fix:'法定程序逐項留痕、由 law-assistant 對表現行條文。'},
+  {em:'🏦',t:'資金／信託不到位',sev:'衝擊 ★★★',mech:'建融撥付延宕或實施者財務不穩。',
+   imp:[['t','停工'],['s','信心崩']],fix:'信託專戶、撥付階梯綁里程碑、財務查核。'},
+  {em:'⚖️',t:'分回不均反彈',sev:'衝擊 ★★',mech:'逐戶分配不透明，引發集體串連反對。',
+   imp:[['s','集體反對'],['s','撤同意']],fix:'清冊分配公開、權值合計＝100%、逐戶回算一致。'},
+];
+(function(){
+  const wrap=$('deck');
+  DECK.forEach(c=>{
+    const el=document.createElement('div'); el.className='ocard';
+    el.innerHTML=`
+      <div class="top"><div class="em">${c.em}</div><div><h3>${c.t}</h3><span class="sev">${c.sev}</span></div></div>
+      <div class="body"><div class="inner">
+        <b>🔧 機制</b><p>${c.mech}</p>
+        <b>💥 衝擊</b><div class="impact">${c.imp.map(i=>`<span class="chip ${i[0]}">${i[1]}</span>`).join('')}</div>
+        <b>🛡️ 對策</b><p><span class="chip fix">${c.fix}</span></p>
+      </div></div>
+      <div class="hint">點卡片展開／收合</div>`;
+    el.onclick=()=>el.classList.toggle('open');
+    wrap.appendChild(el);
+  });
+})();
+
+/* ================= M5 整合沙盤 ================= */
+const SB={};
+function sbInit(){
+  Object.assign(SB,{N:24, need:Math.ceil(24*0.75), consent:9, budget:100, time:24, stage:5, over:false, calm:0});
+  $('log').innerHTML='';
+  $('endbox').innerHTML='';
+  sbLog('sys','🏁 開局：24 戶基地，門檻 75%（需 18 戶）。目前 9 戶同意。用籌碼與時間推過門檻！');
+  sbRender();
+}
+function sbLog(cls,html){
+  const e=document.createElement('div'); e.className='e '+cls; e.innerHTML=html;
+  const log=$('log'); log.insertBefore(e,log.firstChild);
+}
+function sbRender(){
+  $('hud-consent').textContent=SB.consent+'/'+SB.N;
+  $('hud-budget').textContent=SB.budget;
+  $('hud-time').textContent=SB.time;
+  $('hud-stage').textContent='S'+SB.stage;
+  const pct=Math.round(SB.consent/SB.N*100);
+  const thpct=Math.round(SB.need/SB.N*100);
+  $('hud-pct').textContent=pct+'% · 門檻 '+thpct+'%';
+  $('hud-prog').style.width=pct+'%';
+  $('hud-thmark').style.left=thpct+'%';
+  document.querySelectorAll('.act').forEach(b=>b.disabled=SB.over);
+}
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+function sbObstruct(extra){
+  // 阻撓事件機率隨時間流逝、加碼動作上升；calm 可降低
+  let p=0.30 + (24-SB.time)*0.012 + (extra||0) - SB.calm*0.12;
+  if(SB.calm>0) SB.calm--;
+  if(Math.random()<p){
+    const ev=DECK[rnd(0,DECK.length-1)];
+    const roll=Math.random();
+    if(roll<0.45){ const d=rnd(1,3); SB.consent=Math.max(0,SB.consent-d); sbLog('evt',`🧱 阻撓：<b>${ev.t}</b> → 同意 −${d} 戶`); }
+    else if(roll<0.8){ const d=rnd(10,22); SB.budget-=d; sbLog('evt',`🧱 阻撓：<b>${ev.t}</b> → 籌碼 −${d}`); }
+    else { const d=rnd(1,2); SB.time-=d; sbLog('evt',`🧱 阻撓：<b>${ev.t}</b> → 時程 −${d} 月`); }
+  }
+}
+function sbCheck(){
+  if(SB.consent>=SB.need){ SB.over=true; sbEnd(true,'同意跨過門檻！啟動權利變換，餘戶強制納入——整合成功 🎉'); return true; }
+  if(SB.budget<0 || SB.time<=0){ SB.over=true; sbEnd(false, SB.time<=0?'時程耗盡，案件停擺、地主信心瓦解——整合破局。':'籌碼見底，無力再推——整合破局。'); return true; }
+  return false;
+}
+function sbEnd(win,msg){
+  $('endbox').innerHTML=`<div class="endbanner ${win?'win':'lose'}">${win?'🏆 整合成功':'💔 整合破局'}<br><span style="font-weight:600;font-size:14px">${msg}</span></div>`;
+  sbLog(win?'good':'bad',(win?'🏆 ':'💔 ')+msg);
+  sbRender();
+}
+const ACTS=[
+  {em:'💰',t:'加碼分回',d:'籌碼−25 ·月−1 ·同意+2~4，但易引阻撓',cost:{b:25,t:1},run(){
+     const g=rnd(2,4); SB.consent=Math.min(SB.N,SB.consent+g); sbLog('good',`💰 加碼分回 → 同意 +${g} 戶`); sbObstruct(0.12); }},
+  {em:'🤝',t:'個別協商',d:'月−3 ·同意+1~3，穩健',cost:{t:3},run(){
+     const g=rnd(1,3); SB.consent=Math.min(SB.N,SB.consent+g); sbLog('good',`🤝 個別協商 → 同意 +${g} 戶`); sbObstruct(0); }},
+  {em:'📊',t:'資訊透明',d:'籌碼−10 ·月−1 ·同意+0~2，壓制假性反對',cost:{b:10,t:1},run(){
+     const g=rnd(0,2); SB.consent=Math.min(SB.N,SB.consent+g); SB.calm+=2; sbLog('good',`📊 資訊透明 → 同意 +${g} 戶，未來阻撓機率下降`); sbObstruct(-0.1); }},
+  {em:'⚖️',t:'啟動權利變換',d:'達門檻→強制收尾；未達→施壓+1~2但有反彈',cost:{t:2},run(){
+     if(SB.consent>=SB.need){ sbLog('good','⚖️ 已達門檻，啟動權利變換強制納入餘戶。'); return; }
+     if(Math.random()<0.5){ const g=rnd(1,2); SB.consent=Math.min(SB.N,SB.consent+g); sbLog('good',`⚖️ 法律施壓 → 同意 +${g} 戶`); }
+     else { sbLog('bad','⚖️ 未達門檻硬上，引發反彈與訴訟風險。'); sbObstruct(0.3); } }},
+  {em:'⏳',t:'等待觀望',d:'月−2 ·近乎免費，但沉沒成本與阻撓風險升',cost:{t:2},run(){
+     if(Math.random()<0.5){ SB.consent=Math.min(SB.N,SB.consent+1); sbLog('good','⏳ 時間發酵 → 同意 +1 戶'); }
+     else sbLog('sys','⏳ 觀望一陣，按兵不動。'); sbObstruct(0.18); }},
+];
+function sbAct(a){
+  if(SB.over) return;
+  if(a.cost.b) SB.budget-=a.cost.b;
+  if(a.cost.t) SB.time-=a.cost.t;
+  a.run();
+  // 階段隨時間推進、沉沒成本升（每約 4 月 +1，封頂 S9）
+  SB.stage=Math.min(9, 5 + Math.floor((24-SB.time)/4));
+  sbRender();
+  sbCheck();
+  sbRender();
+}
+(function(){
+  const wrap=$('actions');
+  ACTS.forEach(a=>{
+    const b=document.createElement('button'); b.className='act';
+    b.innerHTML=`<b>${a.em} ${a.t}</b><span>${a.d}</span>`;
+    b.onclick=()=>sbAct(a); wrap.appendChild(b);
+  });
+  $('restart').onclick=sbInit;
+  sbInit();
+})();
+
+/* ================= 綁定控制項 ================= */
+function bind(id,key,after){ $(id).addEventListener('input',e=>{ S[key]=+e.target.value; (after||renderThreshold)(); }); }
+bind('s-n','n'); bind('s-c','c'); bind('s-s','s');
+$('s-th').addEventListener('input',e=>{ S.th=+e.target.value;
+  document.querySelectorAll('#th-presets .preset').forEach(p=>p.classList.toggle('on',+p.dataset.th===S.th));
+  renderThreshold(); });
+document.querySelectorAll('#th-presets .preset').forEach(p=>p.onclick=()=>{
+  S.th=+p.dataset.th; $('s-th').value=S.th;
+  document.querySelectorAll('#th-presets .preset').forEach(x=>x.classList.toggle('on',x===p));
+  renderThreshold();
+});
+bind('s-prem','prem',renderGame); bind('s-loss','loss',renderGame);
+renderThreshold(); renderGame();
+
+/* reveal */
+(function(){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+</script>
+</body>
+</html>
