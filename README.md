@@ -4,31 +4,66 @@
 > 本庫為方法論主庫（知識層）；計算工具見姊妹庫 **[RE-DCF-Tool](https://github.com/jeremy0819/RE-DCF-Tool)**（容積查核 · 坪效 · 都更全案投報，Streamlit）。
 > ⚠️ 全庫為通用方法論，不含任何真實案件金額與案名。非正式財務／法律意見。
 
+**導覽**：[🎯 互動儀表板](#-互動式開發儀表板) · [架構總圖](#架構總圖) · [兩層流程](#標準化流程兩層) · [Agents 分工](#各-agents-各司其職) · [4D 方法論](#ai-協作方法論4d) · [文件地圖](#文件地圖)
+
+---
+
+## 30 秒看懂
+
+| | 一句話 |
+|---|---|
+| 🛤️ **先定位** | 任何案件——不論大小、走到哪——先在 **S1–S11** 座標上找出「最高已達階段」＝目前進度，再用該階段檢核點逐項核對。 |
+| ⚙️ **兩層引擎** | **坪效層**（容積查核）是唯一量體真相；**投報層**只**讀**其輸出、**不回頭重算容積**。兩層不打架。 |
+| 🦸 **各司其職** | 5 個 agents：法規歸法規、計算歸計算、合約歸合約，輸出互為輸入、不越權重算。 |
+| 🩺 **避免踩坑** | 投報 Excel 十大陷阱（顯示值≠真值、基數混用、版本不一…）逐項健檢。 |
+
+---
+
+## 🎯 互動式開發儀表板
+
+把上面的體系做成**單一自含 HTML**、零依賴、可離線開的互動儀表板：🛤️ 流程跑道 · ⚙️ 兩層引擎 · 🦸 Agents 戰隊 · 🔄 4D 循環 · 🩺 踩坑健檢 · 🎯 階段定位器。
+
+- **線上版**：啟用 GitHub Pages 後 → `https://jeremy0819.github.io/Urban-Renewal/`
+- **本機版**：直接用瀏覽器打開 [`index.html`](index.html)（雙擊即可，無需安裝）
+
+> 啟用方式：Repo **Settings → Pages → Source 選 `main` 分支 / 根目錄 (`/`)** → 數分鐘後即得上述網址。
+
 ---
 
 ## 架構總圖
 
 ```mermaid
 flowchart LR
-    subgraph 前期評估["前期評估（S1–S4）"]
+    subgraph 前期評估["🛤️ 前期評估（S1–S4）"]
         S1[S1 基地與權屬調查] --> S2[S2 法規與容積試算]
         S2 --> S3[S3 坪效與量體規劃]
         S3 --> S4[S4 投報財務評估]
     end
-    subgraph 整合["整合（S5–S6）"]
+    subgraph 整合["🤝 整合（S5–S6）"]
         S5[S5 說明會與意願整合] --> S6[S6 簽約]
     end
-    subgraph 法定程序["法定程序（S7–S8）"]
+    subgraph 法定程序["⚖️ 法定程序（S7–S8）"]
         S7[S7 事業計畫／權利變換送審] --> S8[S8 審議・公展・核定]
     end
-    subgraph 執行["執行（S9–S11）"]
+    subgraph 執行["🏗️ 執行（S9–S11）"]
         S9[S9 規劃設計與發包] --> S10[S10 施工] --> S11[S11 銷售・交屋・管委會]
     end
     S4 --> S5
     S6 --> S7
     S8 --> S9
     S4 -. 投報分析檢核 .-> S7
+
+    classDef pre fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a8a;
+    classDef int fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e;
+    classDef law fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#5b21b6;
+    classDef exe fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#166534;
+    class S1,S2,S3,S4 pre;
+    class S5,S6 int;
+    class S7,S8 law;
+    class S9,S10,S11 exe;
 ```
+
+> 🎨 四色＝四階段：🟦 前期評估 · 🟨 整合 · 🟪 法定程序 · 🟩 執行。互動版見 [🎯 開發儀表板](#-互動式開發儀表板)。
 
 **核心設計**：任何案件——不論大小、不論走到哪個進度——都能在 S1–S11 的座標上**定位**，並套用該階段的**產出物清單與檢核點**逐項核對。詳見 [docs/開發流程架構.md](docs/開發流程架構.md)。
 
@@ -78,6 +113,7 @@ flowchart LR
 
 | 文件 | 內容 |
 |---|---|
+| [🎯 index.html](index.html) | 互動式開發儀表板（單一自含 HTML，零依賴）：6 個互動模組 |
 | [docs/開發流程架構.md](docs/開發流程架構.md) | S1–S11 全生命週期：各階段產出物・檢核點・負責 agent |
 | [docs/投報分析架構-正確版.md](docs/投報分析架構-正確版.md) | 投報 Excel 正典：分頁五群・資料流・主表四區塊・正確公式骨架・踩坑檢核 |
 | [RE-DCF-Tool](https://github.com/jeremy0819/RE-DCF-Tool) | 計算工具（Streamlit）＋ Excel 對照範本 ＋ 黃金測試 |
