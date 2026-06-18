@@ -133,6 +133,9 @@
   .chip.s{background:var(--blueprint-l);color:var(--blueprint-d)}
   .chip.fix{background:var(--green-l);color:#166534}
   .ocard .hint{font-size:11px;color:var(--mute);padding:0 16px 12px;border-left:6px solid var(--red)}
+  .ocard.concept .top,.ocard.concept .hint{border-left-color:var(--purple)}
+  .ocard.concept .sev{background:var(--purple)}
+  .optline{stroke:var(--green);stroke-width:2;stroke-dasharray:4 4}
 
   /* sandbox */
   .sand{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start}
@@ -181,6 +184,7 @@
     <a class="navlink" href="#threshold">🎚️ 門檻賽局</a>
     <a class="navlink" href="#curve">📈 議價力曲線</a>
     <a class="navlink" href="#dilemma">⚖️ 阻撓賽局</a>
+    <a class="navlink" href="#coopetition">🤝🆚 競合</a>
     <a class="navlink" href="#deck">🧱 阻撓事件庫</a>
     <a class="navlink" href="#sandbox">🕹️ 整合沙盤</a>
     <a class="navlink" href="index.html">🎯 開發儀表板</a>
@@ -308,7 +312,55 @@
   </div>
 </section>
 
-<!-- ===== M4 阻撓事件庫 ===== -->
+<!-- ===== M4 競合賽局 ===== -->
+<section id="coopetition">
+  <div class="wrap reveal">
+    <h2 class="section-title">🤝🆚 競合賽局：把餅做大 × 分餅</h2>
+    <p class="section-sub">都更不是零和——整合成功才有餅（正和），破局則餅歸零（雙輸）。建方與地主<b>合作把餅做大</b>、又<b>競爭分餅</b>。看「分太多反而毀餅」，以及<b>可信承諾</b>如何擴大成交區間（用制度信用取代公司信用）。</p>
+    <div class="two">
+      <div class="panel controls">
+        <div class="ctl">
+          <label>建方分配比（共負比 proxy） <b><span id="v-s2">45</span>%</b></label>
+          <input type="range" id="ct-s" min="20" max="70" value="45">
+        </div>
+        <div class="ctl">
+          <label>地主外部選項／保留價 <b><span id="v-r">42</span>%</b></label>
+          <input type="range" id="ct-r" min="25" max="60" value="42">
+          <div style="font-size:12px;color:var(--mute);margin-top:4px">競爭實施者策反、現狀（status quo）越誘人，地主越敢說不。</div>
+        </div>
+        <div class="ctl">
+          <label style="display:block;margin-bottom:8px">🔒 可信承諾（用制度信用取代公司信用）</label>
+          <div class="presets" id="ct-commit">
+            <span class="preset" data-c="0.30">續建機制（信託接管）</span>
+            <span class="preset" data-c="0.25">增資到位（corporate substance）</span>
+            <span class="preset" data-c="0.20">關係企業連帶保證</span>
+            <span class="preset" data-c="0.15">履約保證</span>
+          </div>
+        </div>
+        <div class="ctl">
+          <label style="display:block;margin-bottom:8px">⚖️ 陣營結構</label>
+          <div class="presets"><span class="preset on" id="ct-ref">球員兼裁判(關係企業群)</span></div>
+          <div style="font-size:12px;color:var(--mute);margin-top:4px">點掉＝導入獨立遴選／第三方監督，信任折損消失。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="stat-row">
+          <div class="stat"><div class="v" id="ct-p" style="color:var(--purple)">—</div><div class="k">地主接受機率</div></div>
+          <div class="stat"><div class="v" id="ct-pie" style="color:var(--green)">—</div><div class="k">總實現價值</div></div>
+          <div class="stat"><div class="v" id="ct-bpay" style="color:var(--blueprint-d)">—</div><div class="k">建方期望值</div></div>
+        </div>
+        <div class="chartwrap"><svg id="ct-chart" viewBox="0 0 720 280" role="img" aria-label="建方期望值對分配比曲線"></svg>
+          <p style="font-size:12.5px;color:var(--mute);margin:8px 4px 0">紫線＝建方期望值；🔵 目前分配比、🟢 虛線＝競合最佳分配點。分太多→接受率崩→期望反降。</p></div>
+        <div class="verdict" id="ct-verdict" style="margin-top:12px;background:var(--paper)"></div>
+      </div>
+    </div>
+    <h3 style="margin:26px 0 10px;font-size:17px">🧠 競合概念卡</h3>
+    <p class="section-sub" style="margin-bottom:14px">把整合戰場常見的賽局機制做成速查卡。點開看一句話心法。</p>
+    <div class="deck" id="concept-deck"></div>
+  </div>
+</section>
+
+<!-- ===== M5 阻撓事件庫 ===== -->
 <section id="deck">
   <div class="wrap reveal">
     <h2 class="section-title">🧱 實務阻撓事件庫</h2>
@@ -317,7 +369,7 @@
   </div>
 </section>
 
-<!-- ===== M5 整合沙盤 ===== -->
+<!-- ===== M6 整合沙盤 ===== -->
 <section id="sandbox">
   <div class="wrap reveal">
     <h2 class="section-title">🕹️ 整合戰局沙盤</h2>
@@ -513,7 +565,84 @@ function renderGame(){
   $('game-read').innerHTML=`<span class="ic">${ic}</span><div><b>${g}</b><br>${msg}</div>`;
 }
 
-/* ================= M4 阻撓事件庫 ================= */
+/* ================= M4 競合賽局 ================= */
+const CT={s:45,r:42,commit:0,ref:true};
+function ctModel(sPct){
+  const s=sPct/100, r=CT.r/100, c=Math.min(1,CT.commit), refb=CT.ref?0.08:0;
+  const eff=(1-s)*(0.55+0.45*c);          // 風險折算後的地主分配吸引力
+  const P=1/(1+Math.exp(-9*(eff-(r+refb))));
+  const V=100, cost=10*c;                  // 可信承諾有成本（保證/增資綁資金）
+  return {P, bpay:P*s*V-cost, opay:P*(1-s)*V, pie:P*V};
+}
+function renderCT(){
+  $('v-s2').textContent=CT.s; $('v-r').textContent=CT.r;
+  const cur=ctModel(CT.s);
+  $('ct-p').textContent=Math.round(cur.P*100)+'%';
+  $('ct-pie').textContent=Math.round(cur.pie);
+  $('ct-bpay').textContent=Math.round(cur.bpay);
+  // 掃描分配比，找競合最佳點
+  let pts=[], best={s:20,v:-1e9};
+  for(let s=20;s<=70;s++){ const m=ctModel(s); pts.push([s,m.bpay]); if(m.bpay>best.v) best={s,v:m.bpay}; }
+  // 繪圖
+  const W=720,H=280,padL=46,padR=20,padT=18,padB=38;
+  const x0=padL,x1=W-padR,y0=H-padB,y1=padT;
+  const ymax=Math.max(10, ...pts.map(p=>p[1]))*1.12;
+  const xOf=s=>x0+((s-20)/50)*(x1-x0);
+  const yOf=v=>y0-Math.max(0,v)/ymax*(y0-y1);
+  let d='M '+pts.map(p=>xOf(p[0]).toFixed(1)+' '+yOf(p[1]).toFixed(1)).join(' L ');
+  let grid='';
+  for(let g=0;g<=4;g++){ const yy=y1+(y0-y1)*g/4; grid+=`<line class="gridln" x1="${x0}" y1="${yy}" x2="${x1}" y2="${yy}"/>`; }
+  let xlab='';
+  for(let g=0;g<=5;g++){ const sv=20+g*10; const xx=xOf(sv); xlab+=`<text class="clab" x="${xx}" y="${y0+16}" text-anchor="middle">${sv}%</text>`; }
+  const bx=xOf(best.s), nx=xOf(CT.s), ny=yOf(cur.bpay);
+  $('ct-chart').innerHTML=`
+    <defs><linearGradient id="ctg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    <line class="axis" x1="${x0}" y1="${y0}" x2="${x1}" y2="${y0}"/>
+    <line class="axis" x1="${x0}" y1="${y1}" x2="${x0}" y2="${y0}"/>
+    <path d="${d} L ${xOf(70)} ${y0} L ${x0} ${y0} Z" fill="url(#ctg)" opacity=".16"/>
+    <path class="curve" d="${d}"/>
+    <line class="optline" x1="${bx}" y1="${y1}" x2="${bx}" y2="${y0}"/>
+    <text class="clab" x="${bx}" y="${y1-4}" text-anchor="middle" fill="#16a34a" font-weight="700">最佳 ${best.s}%</text>
+    <circle class="nowdot" cx="${nx}" cy="${ny}" r="6"/>
+    ${xlab}
+    <text class="clab" x="${(x0+x1)/2}" y="${H-4}" text-anchor="middle">建方分配比 →</text>
+    <text class="clab" x="13" y="${(y0+y1)/2}" text-anchor="middle" transform="rotate(-90 13 ${(y0+y1)/2})">建方期望值 →</text>`;
+  // 診斷
+  let ic,txt;
+  if(CT.s>best.s+6){ ic='🤑'; txt=`<b>貪婪毀餅。</b>分配比超過競合最佳點，接受率被壓垮、期望值反而下降。把建方分配降到約 <b>${best.s}%</b>，餅做大、大家分得多。`; }
+  else if(cur.P<0.5){
+    if(CT.commit<0.30){ ic='🔒'; txt='<b>承諾不足、信任赤字。</b>接受率偏低又沒打出可信承諾。先勾「續建機制／增資到位」——用<b>制度信用</b>換接受率，這是第一順位行動（現成的制度武器要拿出來用）。'; }
+    else if(CT.ref){ ic='⚖️'; txt='<b>球員兼裁判折損信任。</b>承諾已部分到位，但關係企業結構仍壓低接受率。試著<b>點掉「球員兼裁判」</b>＝導入獨立遴選／第三方監督。'; }
+    else { ic='📉'; txt='<b>對地主誘因不足。</b>外部選項太誘人或分配太偏建方——降分配比或加碼可信承諾。'; }
+  }
+  else if(Math.abs(CT.s-best.s)<=6 && cur.P>0.6){ ic='🎯'; txt='<b>競合最佳區。</b>分配接近最佳點、接受率高——餅做大又穩定成交。這正是「修到風險看得懂、有制度保障」反而更好簽的狀態。'; }
+  else { ic='🙂'; txt=`<b>可成交，仍有優化空間。</b>微調分配比靠近 <b>${best.s}%</b>，或補可信承諾進一步拉高接受率。`; }
+  $('ct-verdict').innerHTML=`<span class="ic">${ic}</span><div>${txt}</div>`;
+}
+const CONCEPTS=[
+  {em:'🤝🆚',t:'競合（Coopetition）',tag:'核心',body:'合作把餅做大、競爭分餅；整合破局則餅歸零、雙輸。先確保正和成案，再談分配。'},
+  {em:'➕',t:'附加價值＝議價力',tag:'Nalebuff',body:'你的議價力 ≈「有你 vs 沒你」的總價值差。缺乏實質（corporate substance）會削弱你「可信的附加價值」。'},
+  {em:'🔒',t:'可信承諾',tag:'關鍵',body:'信託續建機制、連帶保證、增資到位、履約保證＝用制度信用取代公司信用，擴大可成交區間。現成的制度武器要拿出來用。'},
+  {em:'🎭',t:'偏好偽裝 → 偏好雪崩',tag:'Kuran',body:'高同意率可能是紙牌屋；先帶頭者一爆，長期壓抑的疑慮連鎖引爆。表面越穩、底下偽裝越多越脆弱。'},
+  {em:'🌊',t:'雙向資訊瀑布',tag:'Cascade',body:'瀑布脆弱且可逆；只要兩人亮出不同硬資訊就能打斷。反制＝讓沉默支持者現身＋投放硬證據。'},
+  {em:'🧱',t:'Holdout 三型',tag:'辨型',body:'恐懼型／理性質疑型／拿翹型。辨型才能對症；專業質疑是養分不是刁難。火力放中間派，別為一戶拖住全局。'},
+  {em:'⚖️',t:'球員兼裁判',tag:'獨立性',body:'同集團同時遴選、報價、監督，缺乏 arm’s-length 會折損信任與可信附加價值。獨立遴選／第三方監督可回補。'},
+];
+(function(){
+  const wrap=$('concept-deck');
+  CONCEPTS.forEach(c=>{
+    const el=document.createElement('div'); el.className='ocard concept';
+    el.innerHTML=`
+      <div class="top"><div class="em">${c.em}</div><div><h3>${c.t}</h3><span class="sev">${c.tag}</span></div></div>
+      <div class="body"><div class="inner"><p>${c.body}</p></div></div>
+      <div class="hint">點卡片展開／收合</div>`;
+    el.onclick=()=>el.classList.toggle('open');
+    wrap.appendChild(el);
+  });
+})();
+
+/* ================= M5 阻撓事件庫 ================= */
 const DECK=[
   {em:'💸',t:'釘子戶天價求償',sev:'衝擊 ★★★',mech:'末位樞紐戶利用高沉沒成本，獅子大開口喊補償。',
    imp:[['t','時程↑'],['c','成本↑']],fix:'多數決＋權利變換強制納入；估價師三家定價；切勿輕諾「一坪換一坪」。'},
@@ -553,7 +682,7 @@ const DECK=[
   });
 })();
 
-/* ================= M5 整合沙盤 ================= */
+/* ================= M6 整合沙盤 ================= */
 const SB={};
 function sbInit(){
   Object.assign(SB,{N:24, need:Math.ceil(24*0.75), consent:9, budget:100, time:24, stage:5, over:false, calm:0});
@@ -650,7 +779,16 @@ document.querySelectorAll('#th-presets .preset').forEach(p=>p.onclick=()=>{
   renderThreshold();
 });
 bind('s-prem','prem',renderGame); bind('s-loss','loss',renderGame);
-renderThreshold(); renderGame();
+// 競合控制項
+$('ct-s').addEventListener('input',e=>{CT.s=+e.target.value;renderCT();});
+$('ct-r').addEventListener('input',e=>{CT.r=+e.target.value;renderCT();});
+document.querySelectorAll('#ct-commit .preset').forEach(p=>p.addEventListener('click',()=>{
+  p.classList.toggle('on');
+  let sum=0; document.querySelectorAll('#ct-commit .preset.on').forEach(x=>sum+=+x.dataset.c);
+  CT.commit=sum; renderCT();
+}));
+$('ct-ref').addEventListener('click',()=>{ $('ct-ref').classList.toggle('on'); CT.ref=$('ct-ref').classList.contains('on'); renderCT(); });
+renderThreshold(); renderGame(); renderCT();
 
 /* reveal */
 (function(){

@@ -26,7 +26,7 @@
 - **線上版**：啟用 GitHub Pages 後 → 儀表板 `https://jeremy0819.github.io/Urban-Renewal/`、模擬器 `…/simulator.html`
 - **本機版**：直接用瀏覽器打開 [`index.html`](index.html) 或 [`simulator.html`](simulator.html)（雙擊即可，無需安裝）
 
-> 🎲 **賽局模擬器**（[simulator.html](simulator.html)）5 模組：同意門檻賽局、釘子戶議價力曲線、阻撓賽局矩陣（囚徒困境／膽小鬼賽局）、實務阻撓事件庫（10 種招數×對策）、整合戰局沙盤（回合制小遊戲）。
+> 🎲 **賽局模擬器**（[simulator.html](simulator.html)）6 模組：同意門檻賽局、釘子戶議價力曲線、阻撓賽局矩陣（囚徒困境／膽小鬼賽局）、**競合賽局（把餅做大×分餅＋可信承諾）**、實務阻撓事件庫（10 種招數×對策）、整合戰局沙盤（回合制小遊戲）。其中競合模組以賽局理論納入 coopetition：合作創造正和、競爭分配，並演示「制度信用（續建機制／擔保／增資）取代公司信用」如何擴大成交區間。
 
 > 啟用方式：Repo **Settings → Pages → Source 選 `main` 分支 / 根目錄 (`/`)** → 數分鐘後即得上述網址。
 
