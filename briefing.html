@@ -5,20 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>都市更新／危老重建 說明會簡報範本 · Urban-Renewal</title>
 <meta name="description" content="都市更新與危老重建住戶說明會的專業簡報範本：制式架構、設計感版面、可投影／可列印。通用範本，不含真實案件資料。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#10243d; --navy-2:#173558; --navy-3:#21456e;
-    --gold:#c2a05a; --gold-d:#a07f3c; --gold-l:#e7d6a8;
-    --cream:#f6f3ec; --paper:#fbfaf6; --card:#ffffff;
-    --ink:#15233a; --slate:#5a6b80; --mute:#93a1b3;
-    --line:#e3ddd0; --line-2:#d3cbb8;
-    --green:#2f7d54; --red:#b5523f; --blue:#2f6db0;
-    --serif:"Noto Serif TC","Songti TC",Georgia,"Times New Roman",serif;
-    --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+    /* jieceng 品牌：暖白 × 炭黑 × 翡翠綠 */
+    --navy:#064e3b; --navy-2:#053d2e; --navy-3:#0a5d46;
+    --gold:#10b981; --gold-d:#059669; --gold-l:#a7f3d0;
+    --cream:#efece3; --paper:#f5f3ee; --card:#ffffff;
+    --ink:#1c1a17; --slate:#57534e; --mute:#a8a29e;
+    --line:#e7e5e4; --line-2:#d6d3cd;
+    --green:#064e3b; --red:#b5523f; --blue:#0a5d46;
+    --serif:"Playfair Display","Noto Serif TC","Songti TC",Georgia,serif;
+    --sans:"Inter","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
-  body{font-family:var(--sans);color:var(--ink);background:#0a1626;overflow:hidden;-webkit-font-smoothing:antialiased}
+  body{font-family:var(--sans);color:var(--ink);background:#053d2e;overflow:hidden;-webkit-font-smoothing:antialiased}
 
   /* ===== stage ===== */
   .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
@@ -45,24 +49,24 @@
 
   /* cover */
   .slide.cover{background:
-    radial-gradient(1200px 600px at 18% 12%, rgba(194,160,90,.16), transparent 55%),
-    linear-gradient(160deg,var(--navy),var(--navy-2) 60%,#0c1d33);color:#fff;justify-content:center}
-  .slide.cover::after{border-color:rgba(231,214,168,.28)}
+    radial-gradient(1200px 600px at 18% 12%, rgba(16,185,129,.16), transparent 55%),
+    linear-gradient(160deg,var(--navy),var(--navy-2) 60%,#042f24);color:#fff;justify-content:center}
+  .slide.cover::after{border-color:rgba(167,243,208,.28)}
   .slide.cover .kicker{color:var(--gold-l)}
   .slide.cover h1{color:#fff}
-  .slide.cover .sub{font-size:clamp(15px,1.8vw,22px);color:#cdd8e6;margin-top:2.4vh;max-width:60ch}
-  .cover-meta{display:flex;gap:30px;flex-wrap:wrap;margin-top:5vh;font-size:clamp(12px,1.3vw,16px);color:#aebccd}
+  .slide.cover .sub{font-size:clamp(15px,1.8vw,22px);color:#d8e6df;margin-top:2.4vh;max-width:60ch}
+  .cover-meta{display:flex;gap:30px;flex-wrap:wrap;margin-top:5vh;font-size:clamp(12px,1.3vw,16px);color:#bcc6bd}
   .cover-meta b{color:#fff;font-weight:700;display:block;font-size:1.15em;margin-top:3px}
-  .cover-badge{position:absolute;top:6vh;right:8vw;border:1px solid rgba(231,214,168,.4);color:var(--gold-l);
+  .cover-badge{position:absolute;top:6vh;right:8vw;border:1px solid rgba(167,243,208,.4);color:var(--gold-l);
     padding:8px 16px;border-radius:999px;font-size:clamp(11px,1.1vw,13px);letter-spacing:.1em;font-weight:700}
 
   /* section divider */
   .slide.divider{background:linear-gradient(160deg,var(--navy),var(--navy-2));color:#fff}
-  .slide.divider::after{border-color:rgba(231,214,168,.28)}
+  .slide.divider::after{border-color:rgba(167,243,208,.28)}
   .slide.divider .kicker{color:var(--gold-l)}
   .slide.divider h2{color:#fff;font-size:clamp(28px,5vw,60px);margin:0}
-  .slide.divider .dsub{color:#c3cedd;margin-top:2vh;max-width:64ch}
-  .slide.divider .num-tag{color:rgba(231,214,168,.5)}
+  .slide.divider .dsub{color:#cdd8cf;margin-top:2vh;max-width:64ch}
+  .slide.divider .num-tag{color:rgba(167,243,208,.5)}
 
   /* layouts */
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center}
@@ -120,14 +124,14 @@
 
   /* contact / closing */
   .slide.closing{background:linear-gradient(160deg,var(--navy),var(--navy-2));color:#fff;text-align:center;align-items:center}
-  .slide.closing::after{border-color:rgba(231,214,168,.28)}
+  .slide.closing::after{border-color:rgba(167,243,208,.28)}
   .slide.closing h1{color:#fff}
   .slide.closing .kicker{color:var(--gold-l)}
-  .slide.closing .contact{margin-top:4vh;display:flex;gap:40px;flex-wrap:wrap;justify-content:center;color:#cdd8e6;font-size:clamp(13px,1.4vw,17px)}
+  .slide.closing .contact{margin-top:4vh;display:flex;gap:40px;flex-wrap:wrap;justify-content:center;color:#d8e6df;font-size:clamp(13px,1.4vw,17px)}
   .slide.closing .contact b{color:#fff;display:block}
 
   /* ===== chrome (controls) ===== */
-  .progress{position:fixed;top:0;left:0;height:4px;background:var(--gold);z-index:30;transition:width .4s;box-shadow:0 0 8px rgba(194,160,90,.6)}
+  .progress{position:fixed;top:0;left:0;height:4px;background:var(--gold);z-index:30;transition:width .4s;box-shadow:0 0 8px rgba(16,185,129,.5)}
   .chrome{position:fixed;bottom:18px;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:center;gap:18px;pointer-events:none}
   .chrome > *{pointer-events:auto}
   .navbtn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(16,36,61,.72);
@@ -312,13 +316,13 @@
     <div class="donutwrap">
       <svg viewBox="0 0 120 120" aria-label="共同負擔與住戶分回比示意">
         <circle cx="60" cy="60" r="48" fill="none" stroke="#e3ddd0" stroke-width="20"/>
-        <circle cx="60" cy="60" r="48" fill="none" stroke="#c2a05a" stroke-width="20"
+        <circle cx="60" cy="60" r="48" fill="none" stroke="#064e3b" stroke-width="20"
           stroke-dasharray="301.6" stroke-dashoffset="120.6" transform="rotate(-90 60 60)" stroke-linecap="butt"/>
-        <text x="60" y="56" text-anchor="middle" font-family="Noto Serif TC,serif" font-size="15" font-weight="800" fill="#173558">示意</text>
+        <text x="60" y="56" text-anchor="middle" font-family="Noto Serif TC,serif" font-size="15" font-weight="800" fill="#064e3b">示意</text>
         <text x="60" y="72" text-anchor="middle" font-size="7.5" fill="#5a6b80">非個案數字</text>
       </svg>
       <ul class="legendD">
-        <li><span class="sw" style="background:#c2a05a"></span><b>共同負擔</b>　工程・管維・權變・利息・稅捐・管理</li>
+        <li><span class="sw" style="background:#064e3b"></span><b>共同負擔</b>　工程・管維・權變・利息・稅捐・管理</li>
         <li><span class="sw" style="background:#e3ddd0"></span><b>住戶分回</b>　＝ 1 − 共同負擔比</li>
         <li style="color:var(--slate);font-size:clamp(12px,1.3vw,15px)">共同負擔六大科目經<b>估價師</b>查核、主管機關核定。</li>
       </ul>
@@ -332,13 +336,13 @@
     <div class="kicker">時程藍圖 · Roadmap</div>
     <h2>從評估到交屋，分四大階段</h2>
     <div class="timeline">
-      <div class="ph-band"><div class="lbl" style="background:#2f6db0">前期評估 S1–S4</div>
+      <div class="ph-band"><div class="lbl" style="background:#064e3b">前期評估 S1–S4</div>
         <div class="steps"><div><b>S1</b> 基地權屬調查</div><div><b>S2</b> 法規容積試算</div><div><b>S3</b> 坪效量體規劃</div><div><b>S4</b> 投報財務評估</div></div></div>
-      <div class="ph-band"><div class="lbl" style="background:#c2a05a">整合 S5–S6</div>
+      <div class="ph-band"><div class="lbl" style="background:#064e3b">整合 S5–S6</div>
         <div class="steps"><div><b>S5</b> 說明會與意願整合</div><div><b>S6</b> 簽約</div></div></div>
-      <div class="ph-band"><div class="lbl" style="background:#6d54a0">法定程序 S7–S8</div>
+      <div class="ph-band"><div class="lbl" style="background:#0f766e">法定程序 S7–S8</div>
         <div class="steps"><div><b>S7</b> 事業／權變送審</div><div><b>S8</b> 審議・公展・核定</div></div></div>
-      <div class="ph-band"><div class="lbl" style="background:#2f7d54">執行 S9–S11</div>
+      <div class="ph-band"><div class="lbl" style="background:#047857">執行 S9–S11</div>
         <div class="steps"><div><b>S9</b> 設計與發包</div><div><b>S10</b> 施工</div><div><b>S11</b> 銷售・交屋・管委會</div></div></div>
     </div>
     <div class="note"><p>📍 <b>我們現在在這裡：<span class="ph">〔目前階段 SN〕</span></b>。每個階段都有明確產出物與檢核點，進度公開可查。</p></div>
@@ -407,7 +411,7 @@
     <div class="kicker">Thank You</div>
     <h1>謝謝您的參與</h1>
     <div class="rule" style="margin:2.4vh auto"></div>
-    <p style="color:#cdd8e6;max-width:60ch">您的每一個問題，都讓這個案子更穩健。歡迎於會後一對一諮詢。</p>
+    <p style="color:#d8e6df;max-width:60ch">您的每一個問題，都讓這個案子更穩健。歡迎於會後一對一諮詢。</p>
     <div class="contact">
       <div>窗口<b><span class="ph" style="color:#e7d6a8">〔整合專員／電話〕</span></b></div>
       <div>實施者<b><span class="ph" style="color:#e7d6a8">〔更新會／實施者〕</span></b></div>

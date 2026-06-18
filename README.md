@@ -26,7 +26,7 @@
 - **線上版**：啟用 GitHub Pages 後 → 儀表板 `…/Urban-Renewal/`、模擬器 `…/simulator.html`、說明會簡報 `…/briefing.html`
 - **本機版**：直接用瀏覽器打開 [`index.html`](index.html)、[`simulator.html`](simulator.html) 或 [`briefing.html`](briefing.html)（雙擊即可，無需安裝）
 
-> 📊 **說明會簡報範本**（[briefing.html](briefing.html)）：依住戶說明會制式架構（為何更新→現況→法規→規劃→權變分回→時程→保障→Q&A→下一步）做成的<b>設計感投影簡報</b>，深藍×金的專業版面、鍵盤／滑動翻頁、可列印成 PDF。全為〔範本〕佔位，填入個案資料即可使用。
+> 📊 **說明會簡報範本**（[briefing.html](briefing.html)）：依住戶說明會制式架構（為何更新→現況→法規→規劃→權變分回→時程→保障→Q&A→下一步）做成的<b>設計感投影簡報</b>，採 **jieceng-web 品牌**（暖白 × 炭黑 × 翡翠綠、Playfair／Inter／Noto），鍵盤／滑動翻頁、可列印成 PDF。另提供同內容 **PowerPoint 檔**（[都更說明會簡報範本.pptx](都更說明會簡報範本.pptx)，16:9 可編輯）。全為〔範本〕佔位，填入個案資料即可使用。
 
 > 🎲 **賽局模擬器**（[simulator.html](simulator.html)）6 模組：同意門檻賽局、釘子戶議價力曲線、阻撓賽局矩陣（囚徒困境／膽小鬼賽局）、**競合賽局（把餅做大×分餅＋可信承諾）**、實務阻撓事件庫（10 種招數×對策）、整合戰局沙盤（回合制小遊戲）。其中競合模組以賽局理論納入 coopetition：合作創造正和、競爭分配，並演示「制度信用（續建機制／擔保／增資）取代公司信用」如何擴大成交區間。
 
@@ -119,7 +119,8 @@ flowchart LR
 |---|---|
 | [🎯 index.html](index.html) | 互動式開發儀表板（單一自含 HTML，零依賴）：6 個互動模組 |
 | [🎲 simulator.html](simulator.html) | 都更賽局模擬器：同意門檻・釘子戶議價力・阻撓賽局・競合賽局・阻撓事件庫・整合沙盤 |
-| [📊 briefing.html](briefing.html) | 住戶說明會簡報範本：制式架構＋設計感版面，可投影／可列印（含 17 頁，全為〔範本〕佔位） |
+| [📊 briefing.html](briefing.html) | 住戶說明會簡報範本（jieceng 暖白×翡翠綠品牌）：制式 17 頁、可投影／可列印，全為〔範本〕佔位 |
+| [🖥️ 都更說明會簡報範本.pptx](都更說明會簡報範本.pptx) | 同內容的 PowerPoint 檔（16:9，可直接編輯）；產生器 [`make_briefing_pptx.py`](make_briefing_pptx.py) |
 | [docs/開發流程架構.md](docs/開發流程架構.md) | S1–S11 全生命週期：各階段產出物・檢核點・負責 agent |
 | [docs/投報分析架構-正確版.md](docs/投報分析架構-正確版.md) | 投報 Excel 正典：分頁五群・資料流・主表四區塊・正確公式骨架・踩坑檢核 |
 | [RE-DCF-Tool](https://github.com/jeremy0819/RE-DCF-Tool) | 計算工具（Streamlit）＋ Excel 對照範本 ＋ 黃金測試 |

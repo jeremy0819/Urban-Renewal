@@ -22,3 +22,11 @@
 - 直接雙擊可開、可投影、可列印；JS 語法檢查通過、標籤平衡（17 slide）、洩漏掃描通過。
 - 與 `index.html`／`simulator.html` 互鏈（nav／footer），README 文件地圖收錄。
 - 合併至 `main`，Pages 啟用後 `…/briefing.html` 可線上開啟。
+
+## 增補（2026-06-18）：jieceng 品牌重塑 + PowerPoint 輸出
+- **品牌重塑**：依 `jieceng-web`（Nuxt + Tailwind）的設計 token 將 briefing.html 改為 **暖白 `#f5f3ee` × 炭黑 `#1c1a17` × 翡翠綠 `#064e3b`/`#10b981`**，標題 Playfair Display／Noto Serif TC、內文 Inter／Noto Sans TC，四色時程帶改為翡翠綠色階。
+- **PowerPoint 輸出**：新增 `make_briefing_pptx.py`（python-pptx）產生 `都更說明會簡報範本.pptx`，風格對齊 `jieceng-web/deck_lib.py`（16:9、暖白底、炭黑字、翡翠綠強調、Inter＋微軟正黑），17 頁與 HTML 同構；分回以原生比例帶呈現（不用 chart，避免相依）。
+- **資料邊界不變**：全為〔範本〕佔位，無真實案件資料；`*.pptx` 未被 `.gitignore` 排除（僅排除 `*.xlsx`／`*.pdf` 等真實案件格式）。
+
+## 待辦（跨庫，需在 jieceng-web session 進行）
+- 將簡報嵌入 jieceng-web 官網（Nuxt）：把 `briefing.html` 內容轉為一個 `pages/briefing.vue` 或放入 `public/`，並在導覽加入入口。本 session 僅授權 `urban-renewal`，無法直接寫入 jieceng-web。
