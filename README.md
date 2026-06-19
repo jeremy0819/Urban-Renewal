@@ -120,6 +120,7 @@ flowchart LR
 | [📈 整合開發評估總論-2026](docs/整合開發評估總論-2026.md) ｜ [白皮書 whitepaper.html](whitepaper.html) ｜ [Word 版](整合開發評估總論-2026.docx) | **最上位思維框架**：整合都更法規・都市計畫・建築估價・稅制・2026 趨勢，以不動產研析為脊椎、數據×人文，提出「整合人」三層透鏡評估框架（產生器 [`make_whitepaper_docx.py`](make_whitepaper_docx.py)） |
 | [🎯 index.html](index.html) | 互動式開發儀表板（單一自含 HTML，零依賴）：6 個互動模組 |
 | [🎲 simulator.html](simulator.html) | 都更賽局模擬器：同意門檻・釘子戶議價力・阻撓賽局・競合賽局・阻撓事件庫・整合沙盤 |
+| [🧮 evaluator.html](evaluator.html) | 開發評估試算模擬器：坪效層（容積帳→銷售坪）×投報層（總銷→共負六科目→分回比）＋健檢＋敏感度（**[FRAME] 帳務模型示意，非估價或預測**） |
 | [📊 briefing.html](briefing.html) | 住戶說明會簡報範本（jieceng 暖白×翡翠綠品牌）：制式 17 頁、可投影／可列印，全為〔範本〕佔位 |
 | [🖥️ 都更說明會簡報範本.pptx](都更說明會簡報範本.pptx) | 同內容的 PowerPoint 檔（16:9，可直接編輯）；產生器 [`make_briefing_pptx.py`](make_briefing_pptx.py) |
 | [docs/開發流程架構.md](docs/開發流程架構.md) | S1–S11 全生命週期：各階段產出物・檢核點・負責 agent |
