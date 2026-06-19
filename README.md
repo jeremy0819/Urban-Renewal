@@ -23,8 +23,10 @@
 
 把上面的體系做成**單一自含 HTML**、零依賴、可離線開的互動儀表板：🛤️ 流程跑道 · ⚙️ 兩層引擎 · 🦸 Agents 戰隊 · 🔄 4D 循環 · 🩺 踩坑健檢 · 🎯 階段定位器。另附 **🎲 都更賽局模擬器**——用賽局理論與實務阻撓事件，互動講清楚「為什麼整合這麼難」。
 
-- **線上版**：啟用 GitHub Pages 後 → 儀表板 `…/Urban-Renewal/`、模擬器 `…/simulator.html`、說明會簡報 `…/briefing.html`
-- **本機版**：直接用瀏覽器打開 [`index.html`](index.html)、[`simulator.html`](simulator.html) 或 [`briefing.html`](briefing.html)（雙擊即可，無需安裝）
+- **線上版（已 Pages-ready）**：啟用 GitHub Pages 後即為網站 → 首頁 `https://jeremy0819.github.io/Urban-Renewal/`
+  - 🎯 儀表板 `/`｜🎲 賽局模擬器 `/simulator.html`｜🧮 開發試算 `/evaluator.html`｜📈 整合總論 `/whitepaper.html`｜📊 說明會簡報 `/briefing.html`
+  - **一鍵上線**：Repo **Settings → Pages → Build and deployment → Source 選「Deploy from a branch」→ Branch 選 `main` /（root）→ Save**，數分鐘後即生效（已附 `.nojekyll`，所有頁面與檔案原樣提供）。
+- **本機版**：直接用瀏覽器打開任一 `.html`（雙擊即可，無需安裝）
 
 > 📊 **說明會簡報範本**（[briefing.html](briefing.html)）：依住戶說明會制式架構（為何更新→現況→法規→規劃→權變分回→時程→保障→Q&A→下一步）做成的<b>設計感投影簡報</b>，採 **jieceng-web 品牌**（暖白 × 炭黑 × 翡翠綠、Playfair／Inter／Noto），鍵盤／滑動翻頁、可列印成 PDF。另提供同內容 **PowerPoint 檔**（[都更說明會簡報範本.pptx](都更說明會簡報範本.pptx)，16:9 可編輯）。全為〔範本〕佔位，填入個案資料即可使用。
 
