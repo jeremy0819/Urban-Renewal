@@ -21,16 +21,16 @@
 
 ## 🎯 互動式開發儀表板
 
-把上面的體系做成**單一自含 HTML**、零依賴、可離線開的互動儀表板：🛤️ 流程跑道 · ⚙️ 兩層引擎 · 🦸 Agents 戰隊 · 🔄 4D 循環 · 🩺 踩坑健檢 · 🎯 階段定位器。另附 **🎲 都更賽局模擬器**——用賽局理論與實務阻撓事件，互動講清楚「為什麼整合這麼難」。
+把上面的體系做成**單一自含 HTML**、零依賴、可離線開的互動儀表板：🛤️ 流程跑道 · ⚙️ 兩層引擎 · 🦸 Agents 戰隊 · 🔄 4D 循環 · 🩺 踩坑健檢 · 🎯 階段定位器。另附 **🎮 都更整合闖關**——把整合做成一場賽局闖關遊戲，互動講清楚「為什麼整合這麼難」。
 
 - **線上版（已 Pages-ready）**：啟用 GitHub Pages 後即為網站 → 首頁 `https://jeremy0819.github.io/Urban-Renewal/`
-  - 🎯 儀表板 `/`｜🎲 賽局模擬器 `/simulator.html`｜🧮 開發試算 `/evaluator.html`｜📈 整合總論 `/whitepaper.html`｜📊 說明會簡報 `/briefing.html`
+  - 🎯 儀表板 `/`｜🎮 整合闖關 `/simulator.html`｜🧮 開發試算 `/evaluator.html`｜📈 整合總論 `/whitepaper.html`｜📊 說明會簡報 `/briefing.html`
   - **一鍵上線**：Repo **Settings → Pages → Build and deployment → Source 選「Deploy from a branch」→ Branch 選 `main` /（root）→ Save**，數分鐘後即生效（已附 `.nojekyll`，所有頁面與檔案原樣提供）。
 - **本機版**：直接用瀏覽器打開任一 `.html`（雙擊即可，無需安裝）
 
 > 📊 **說明會簡報範本**（[briefing.html](briefing.html)）：依住戶說明會制式架構（為何更新→現況→法規→規劃→權變分回→時程→保障→Q&A→下一步）做成的<b>設計感投影簡報</b>，採 **jieceng-web 品牌**（暖白 × 炭黑 × 翡翠綠、Playfair／Inter／Noto），鍵盤／滑動翻頁、可列印成 PDF。另提供同內容 **PowerPoint 檔**（[都更說明會簡報範本.pptx](都更說明會簡報範本.pptx)，16:9 可編輯）。全為〔範本〕佔位，填入個案資料即可使用。
 
-> 🎲 **賽局模擬器**（[simulator.html](simulator.html)）6 模組：同意門檻賽局、釘子戶議價力曲線、阻撓賽局矩陣（囚徒困境／膽小鬼賽局）、**競合賽局（把餅做大×分餅＋可信承諾）**、實務阻撓事件庫（10 種招數×對策）、整合戰局沙盤（回合制小遊戲）。其中競合模組以賽局理論納入 coopetition：合作創造正和、競爭分配，並演示「制度信用（續建機制／擔保／增資）取代公司信用」如何擴大成交區間。
+> 🎮 **都更整合闖關**（[simulator.html](simulator.html)）：把六個賽局模組收斂成<b>單一闖關遊戲</b>——你是實施者，用籌碼×時間在阻撓事件下把同意率推過門檻。<b>同意門檻、釘子戶議價力、競合分餅、接受機率</b>變成遊戲中的即時回饋，理論收進「📖 概念圖鑑」抽屜；含 4 個開局劇本（基準／薄資本×釘子戶家族／都更蟑螂／危老全體同意）。核心教學：制度信用 ＞ 公司信用、競合把餅做大。
 
 > 啟用方式：Repo **Settings → Pages → Source 選 `main` 分支 / 根目錄 (`/`)** → 數分鐘後即得上述網址。
 
@@ -121,8 +121,8 @@ flowchart LR
 |---|---|
 | [📈 整合開發評估總論-2026](docs/整合開發評估總論-2026.md) ｜ [白皮書 whitepaper.html](whitepaper.html) ｜ [Word 版](整合開發評估總論-2026.docx) | **最上位思維框架**：整合都更法規・都市計畫・建築估價・稅制・2026 趨勢，以不動產研析為脊椎、數據×人文，提出「整合人」三層透鏡評估框架（產生器 [`make_whitepaper_docx.py`](make_whitepaper_docx.py)） |
 | [🎯 index.html](index.html) | 互動式開發儀表板（單一自含 HTML，零依賴）：6 個互動模組 |
-| [🎲 simulator.html](simulator.html) | 都更賽局模擬器：同意門檻・釘子戶議價力・阻撓賽局・競合賽局・阻撓事件庫・整合沙盤 |
-| [🧮 evaluator.html](evaluator.html) | 開發評估試算模擬器：坪效層（容積帳→銷售坪）×投報層（總銷→共負六科目→分回比）＋健檢＋敏感度（**[FRAME] 帳務模型示意，非估價或預測**） |
+| [🎮 simulator.html](simulator.html) | 都更整合闖關（單一遊戲）：盤面×籌碼×時間×制度信用×阻撓事件；門檻／議價力／競合即時回饋＋概念圖鑑＋4 劇本 |
+| [🧮 evaluator.html](evaluator.html) | 坪效・開發評估試算：坪效層（容積帳→§162→銷售坪）×投報層（總銷→共負六科目→分回比）＋健檢＋敏感度。輕量教學版（**[FRAME] 非估價**）；正式計算用 [RE-DCF-Tool](https://github.com/jeremy0819/RE-DCF-Tool) |
 | [📊 briefing.html](briefing.html) | 住戶說明會簡報範本（jieceng 暖白×翡翠綠品牌）：制式 17 頁、可投影／可列印，全為〔範本〕佔位 |
 | [🖥️ 都更說明會簡報範本.pptx](都更說明會簡報範本.pptx) | 同內容的 PowerPoint 檔（16:9，可直接編輯）；產生器 [`make_briefing_pptx.py`](make_briefing_pptx.py) |
 | [docs/開發流程架構.md](docs/開發流程架構.md) | S1–S11 全生命週期：各階段產出物・檢核點・負責 agent |
