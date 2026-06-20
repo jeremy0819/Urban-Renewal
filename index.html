@@ -87,6 +87,30 @@
   .gloss .g p{margin:0;font-size:14px;color:var(--slate)}
   @media(max-width:760px){.gloss{grid-template-columns:1fr}}
 
+  /* ===== 雙模式：新手 / 專業 ===== */
+  .modeswitch{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
+    border-radius:999px;padding:3px;margin-left:4px;white-space:nowrap}
+  .modeswitch button{border:0;background:transparent;cursor:pointer;font-size:12.5px;font-weight:700;
+    padding:5px 11px;border-radius:999px;color:var(--slate)}
+  .modeswitch button.on{background:var(--blueprint);color:#fff}
+  body.pro .modeswitch button.proBtn{background:var(--purple);color:#fff}
+  .pro-only{display:none!important}
+  body.pro .pro-only{display:revert!important}
+  .pro-hint{display:none}
+  body.pro .pro-hint{display:inline}
+  .lawbox{margin-top:14px;background:var(--purple-l);border:1px solid #ddd6fe;border-radius:12px;padding:12px 14px}
+  .lawbox h4{margin:0 0 6px;font-size:12.5px;font-weight:800;color:var(--purple);display:flex;align-items:center;gap:6px}
+  .lawbox .law{font-size:13px;color:#4c1d95;margin:0 0 4px}
+  .lawbox .law b{color:#5b21b6}
+  .lawbox .tip{font-size:13px;color:var(--slate);margin:0}
+  .lawtag{display:inline-block;font-size:11px;font-weight:700;color:var(--purple);background:#fff;border:1px solid #ddd6fe;
+    border-radius:6px;padding:1px 7px;margin:2px 4px 2px 0}
+  .learn{background:var(--green-l);border-left:4px solid var(--green);border-radius:0 10px 10px 0;padding:10px 14px;margin:14px 0 0;font-size:13.5px}
+  .learn b{color:#166534}
+  .prostrip{background:linear-gradient(90deg,var(--purple-l),transparent);border:1px solid #ddd6fe;border-radius:12px;
+    padding:12px 16px;margin:0 0 6px;font-size:14px;color:#4c1d95}
+  .prostrip b{color:var(--purple)}
+
   section{padding:54px 0;border-bottom:1px solid var(--line)}
   section:nth-child(even){background:linear-gradient(180deg,#fff,var(--paper))}
 
@@ -272,6 +296,7 @@
     <a class="navlink" href="#fourd">🔄 分析四步</a>
     <a class="navlink" href="#health">🩺 健檢</a>
     <a class="navlink" href="#locator">🎯 定位器</a>
+    <span class="modeswitch" id="modeswitch"><button class="noviceBtn on" data-mode="novice">👤 新手</button><button class="proBtn" data-mode="pro">🎓 專業</button></span>
     <a class="navlink" href="simulator.html">🎮 整合闖關</a>
     <a class="navlink" href="evaluator.html">🧮 開發試算</a>
     <a class="navlink" href="whitepaper.html">📈 整合總論</a>
@@ -289,6 +314,7 @@
       <a class="btn ghost" href="#glossary">📖 都更名詞小幫手</a>
       <a class="btn ghost" href="#track">🛤️ 看 11 關長怎樣</a>
     </div>
+    <p style="margin:16px 0 0;font-size:13.5px;color:var(--slate)">🎓 <b>都更從業者？</b>右上切到 <b>專業模式</b>，每個模組會展開<b>法規條號、公式、實務眉角與情境對照</b>（新手模式維持白話、乾淨）。</p>
 
     <!-- 30 秒看懂 -->
     <div class="glance">
@@ -335,8 +361,16 @@
 <!-- ===== Module 2: 兩層引擎 ===== -->
 <section id="engine">
   <div class="wrap reveal">
-    <h2 class="section-title">⚙️ 兩層引擎</h2>
+    <h2 class="section-title">⚙️ 兩層引擎 <span class="pro-hint" style="font-size:13px;font-weight:700;color:var(--purple)">· 專業模式</span></h2>
     <p class="section-sub"><b>白話：先算「能蓋多大」，再算「划不划算」——而且算錢的時候不能偷改前面的大小。</b><br>坪效層（容積查核）是唯一量體真相；投報層只<b>讀</b>它的輸出，<b>不回頭重算容積</b>。看箭頭怎麼單向流。</p>
+    <div class="lawbox pro-only">
+      <h4>⚖️ 法規依據・公式（查證 2026-06-19）</h4>
+      <p class="law">法定容積 <b>FA ＝ 基地面積(使照) × 容積率</b>；允建 ＝ FA ×(1＋獎勵＋容移)。獎勵上限：<b>都更 §65＋獎勵辦法 1.5 倍</b>法定 / <b>危老 §6 1.3 倍</b>法定或 1.15 倍原建築。</p>
+      <p class="law"><b>§162 免計（逐層、超過計入）</b>：機電 ≤15% 基地容積、陽台 ≤10%/層、梯廳 ≤10%/層、<b>陽台＋梯廳合計 ≤15%/層</b>；雨遮 2018 起不計容積不計坪。</p>
+      <p class="law">總銷面積 ＝ 專有 ÷(1−公設比)；銷售坪 ＝ ×0.3025；查核 <b>銷坪比 1.58–1.68</b>。</p>
+      <div style="margin-top:6px"><span class="lawtag">建築技術規則§162</span><span class="lawtag">都更條例§65</span><span class="lawtag">危老條例§6</span><span class="lawtag">都市更新建築容積獎勵辦法</span></div>
+      <p class="tip" style="margin-top:8px">🛠️ 實務眉角：FA 一律用<b>使照面積</b>（非謄本）；§162 用<b>逐層</b>（總量法放大近 10 倍）；可操作試算見 <a href="evaluator.html">🧮 開發試算</a>、正式計算用 <a href="https://github.com/jeremy0819/RE-DCF-Tool" target="_blank" rel="noopener">RE-DCF-Tool</a>。</p>
+    </div>
     <div class="engine">
       <div class="layer oracle">
         <h3>🔧 坪效層 <span class="tag">容積查核 · oracle</span> <span class="gear">⚙️</span><span class="gear g2">⚙️</span></h3>
@@ -455,47 +489,69 @@ const STAGES = [
   {id:"S1",phase:"pre",name:"基地與權屬調查",q:"地能不能做",
    out:["基地基本資料表","權屬清冊（含所有權人人數）","都更／危老／防災路徑初判"],
    chk:["是否位於已劃定更新地區","屋齡・使照有無","違建／海砂／輻射","臨路寬深"],
-   agents:["urban-renewal-analysis","law-assistant"]},
+   agents:["urban-renewal-analysis","law-assistant"],
+   law:["都更條例（更新地區／單元劃定）","危老條例（適用範圍・耐震評估）"],
+   tip:"先確認是否位於已劃定更新地區——否則須自行劃定單元，同意門檻較高。"},
   {id:"S2",phase:"pre",name:"法規與容積試算",q:"地能蓋多少",
    out:["容積帳明細（法定＋獎勵拆項＝允建容積）","同意比例門檻與現況差距"],
    chk:["獎勵率拆項與法源對齊（上限查現行條文）","§162 三項免計逐層核算","FA 用使照面積非謄本","同意門檻依劃定方式判"],
-   agents:["law-assistant","RE-DCF-Tool"]},
+   agents:["law-assistant","RE-DCF-Tool"],
+   law:["都更條例§65＋容積獎勵辦法（上限 1.5 倍）","危老條例§6（1.3／1.15 倍）","建築技術規則§162（機電≤15%、陽台≤10%、梯廳≤10%、合計≤15%）"],
+   tip:"FA 用使照面積；獎勵拆項逐項對法源上限；§162 逐層核算（非總量法）。"},
   {id:"S3",phase:"pre",name:"坪效與量體規劃",q:"能賣多少坪",
    out:["銷售坪","公設比","戶數車位配置","銷坪比"],
    chk:["銷坪比落 1.58–1.68 區間","公設比用「專有/(1−n)」回推驗證","車位數＞50 觸發雙車道"],
-   agents:["RE-DCF-Tool"]},
+   agents:["RE-DCF-Tool"],
+   law:["建築技術規則（停車空間、無障礙、開放空間）"],
+   tip:"銷坪比 1.58–1.68；公設比以「專有÷(1−n)」回推真值；車位>50 觸雙車道、壓地下效率。"},
   {id:"S4",phase:"pre",name:"投報財務評估",q:"划不划算",
    out:["投報總表（總銷／共負六科目／分回／報酬率）","敏感度"],
    chk:["投報只讀坪效輸出不重算容積","共負比＞65%（分回＜35%）檢視接受度","三來源銷售坪 ±2% 收斂"],
-   agents:["RE-DCF-Tool","四角色快覽"]},
+   agents:["RE-DCF-Tool","四角色快覽"],
+   law:["不動產估價技術規則","都市更新權利變換實施辦法（共同負擔六類）"],
+   tip:"共負比>65%（分回<35%）警戒；營建用總樓地板坪非銷售坪；可操作試算見 evaluator。"},
   {id:"S5",phase:"int",name:"說明會與意願整合",q:"地主買不買單",
    out:["說明會紀錄與簽到","意願統計（同意比例 vs 門檻差距）","逐戶分配試算"],
    chk:["對外簡報數字與內部投報同源同版","逐戶分配回算＝總分回","意願分母用人數＋面積雙軌"],
-   agents:["urban-renewal-analysis","RE-DCF-Tool"]},
+   agents:["urban-renewal-analysis","RE-DCF-Tool"],
+   law:["都更條例（公聽會・公開展覽程序）"],
+   tip:"對外簡報＝內部投報同源同版；逐戶分配回算＝總分回；意願分母人數＋面積雙軌。"},
   {id:"S6",phase:"int",name:"簽約",q:"白紙黑字定下來",
    out:["用印合約（合建／雙軌／委託／整合委任／全案管理）","簽約率統計"],
    chk:["合約類型與投報模式一致","管理費率・撥付階梯・自動解約門檻逐條核","簽約率達門檻才往 S7"],
-   agents:["contract-reviewer"]},
+   agents:["contract-reviewer"],
+   law:["民法（契約・共有物）","消費者保護法（定型化契約）","信託法（價金／開發信託）"],
+   tip:"合約類型對齊投報模式；撥付階梯與自動解約門檻逐條；用信託＋續建機制換制度信用。"},
   {id:"S7",phase:"law",name:"事業計畫／權變送審",q:"送件給政府審",
    out:["事業計畫書","權變計畫（估價師三家）","共同負擔表（送審版）","拆補與安置計畫"],
    chk:["共負科目對齊法定六類","前期投報參數升級為送審值（營業稅足額）","拆補・租金補償有估價依據"],
-   agents:["law-assistant","RE-DCF-Tool"]},
+   agents:["law-assistant","RE-DCF-Tool"],
+   law:["都更條例§37（同意門檻：自劃 3/4、政府劃定 1/2、面積>9/10 免計人數）","權變實施辦法§6／§7（估價三家、20% 收斂、素地價值）","都更條例§67（稅捐減免）"],
+   tip:"共負對齊法定六類；前期參數升級送審值（營業稅足額 5%、估價師單價取代行情）。"},
   {id:"S8",phase:"law",name:"審議・公展・核定",q:"過審拿核定函",
    out:["審查意見回覆","公展紀錄","核定函"],
    chk:["審議修正後回寫投報（一改全案連動）","異議戶處理紀錄完備"],
-   agents:["urban-renewal-analysis"]},
+   agents:["urban-renewal-analysis"],
+   law:["都更條例（公開展覽・審議・核定程序）"],
+   tip:"審議修正後回寫投報（容積／共負一改全案連動）；異議戶處理留痕（程序正義）。"},
   {id:"S9",phase:"exe",name:"規劃設計與發包",q:"畫圖找營造",
    out:["建照","施工圖","發包比價表","營造合約"],
    chk:["建照核准容積 vs 核定計畫一致","發包價 vs 投報營建單價差異回寫敏感度"],
-   agents:["contract-reviewer"]},
+   agents:["contract-reviewer"],
+   law:["建築法（建照）","政府採購法（公辦都更招商）"],
+   tip:"建照核准容積 vs 核定計畫一致；發包價 vs 投報營建單價差異回寫敏感度。"},
   {id:"S10",phase:"exe",name:"施工",q:"動工蓋起來",
    out:["開工備查","營運管控（進度・請款・變更設計）","融資動撥紀錄"],
    chk:["變更設計影響容積者回 S2 重核","請款進度 vs 現金流量表"],
-   agents:["—"]},
+   agents:["—"],
+   law:["建築法・營造業法","不動產開發信託（撥付階梯・續建機制）"],
+   tip:"變更設計影響容積者回 S2 重核；融資撥付綁里程碑，續建機制為地主最後防線。"},
   {id:"S11",phase:"exe",name:"銷售・交屋・管委會",q:"賣屋交屋收尾",
    out:["銷售去化報表","使照","交屋清冊","管委會成立"],
    chk:["實際售價回測投報敏感度","找補結算 vs 權變核定值"],
-   agents:["—"]},
+   agents:["—"],
+   law:["公寓大廈管理條例","平均地權條例（預售換約管制）","房地合一稅 2.0"],
+   tip:"實際售價回測敏感度；找補結算 vs 權變核定；2026 去化看餘屋賣壓與限貸。"},
 ];
 const AGENTS = [
   {av:"🔎",name:"urban-renewal-analysis",role:"案夾盤點・個案分析",stage:"S1 · 任何階段定位",
@@ -520,16 +576,16 @@ const FOURD = [
    land:"標準化輸出：八段報告、投報總表、敏感度、可行性結論。"},
 ];
 const PITFALLS = [
-  {t:"§162 用逐層、非 FA×% 總量法",d:"各層 max(0, 實設 − 樓板×%) 再加總；總量法放大近 10 倍。"},
-  {t:"公設比以回推驗證真值",d:"專有 ÷ (1−n) ＝ 總銷面積，破解儲存格格式遮蔽（顯示30%實用34%）。"},
-  {t:"費率用「小計÷基數」回推",d:"破解四捨五入隱藏（設計 0.35 顯示 0.3；代銷 5%×折現顯示 10%）。"},
-  {t:"營業稅標明版本別",d:"1%（前期簡化）與 5%（送審足額）不混用；送審前升級重跑分回。"},
-  {t:"清掉 #REF! 與外部連結",d:"重建為自含公式；開舊檔先掃斷鍵再信數字。"},
-  {t:"建融利息基數設輸入格加註",d:"避免手填常數規避循環參照後，改總成本忘了回填。"},
-  {t:"營建成本用總樓地板坪",d:"誤用銷售坪會高估約 60%。"},
-  {t:"FA 用使照基地面積",d:"用謄本面積會墊高免計上限、掩蓋超容。"},
-  {t:"獎勵率拆項對法源",d:"拆回 都更/防災/規模/容移，逐項對上限；非單一數字。"},
-  {t:"單一數源＋日期戳記",d:"對外簡報＝內部投報同版；逐戶分配回算＝總分回、權值合計＝100%。"},
+  {t:"§162 用逐層、非 FA×% 總量法",d:"各層 max(0, 實設 − 樓板×%) 再加總；總量法放大近 10 倍。",law:"建築技術規則§162（逐層上限）"},
+  {t:"公設比以回推驗證真值",d:"專有 ÷ (1−n) ＝ 總銷面積，破解儲存格格式遮蔽（顯示30%實用34%）。",law:"不動產估價技術規則（真值回推）"},
+  {t:"費率用「小計÷基數」回推",d:"破解四捨五入隱藏（設計 0.35 顯示 0.3；代銷 5%×折現顯示 10%）。",law:"實務（參數全精度）"},
+  {t:"營業稅標明版本別",d:"1%（前期簡化）與 5%（送審足額）不混用；送審前升級重跑分回。",law:"加值型營業稅法（送審足額 5%）"},
+  {t:"清掉 #REF! 與外部連結",d:"重建為自含公式；開舊檔先掃斷鍵再信數字。",law:"實務（Excel 斷鍵）"},
+  {t:"建融利息基數設輸入格加註",d:"避免手填常數規避循環參照後，改總成本忘了回填。",law:"實務（循環參照）"},
+  {t:"營建成本用總樓地板坪",d:"誤用銷售坪會高估約 60%。",law:"實務（營建基數）"},
+  {t:"FA 用使照基地面積",d:"用謄本面積會墊高免計上限、掩蓋超容。",law:"建築法（使用執照面積）"},
+  {t:"獎勵率拆項對法源",d:"拆回 都更/防災/規模/容移，逐項對上限；非單一數字。",law:"都更條例§65・危老§6（獎勵上限）"},
+  {t:"單一數源＋日期戳記",d:"對外簡報＝內部投報同版；逐戶分配回算＝總分回、權值合計＝100%。",law:"權變實施辦法（分配一致）"},
 ];
 const SIGNALS = [
   {label:"有謄本／權狀",stage:0},
@@ -581,6 +637,11 @@ const NEXT_HINT = {
         <div class="dbox"><h4>✅ 檢核點</h4><ul>${s.chk.map(x=>`<li>${x}</li>`).join('')}</ul>
           <h4 style="margin-top:12px">🦸 負責 agent</h4><div class="agents-tags">${s.agents.map(a=>`<span class="atag">${a}</span>`).join('')}</div>
         </div>
+      </div>
+      <div class="lawbox pro-only">
+        <h4>⚖️ 法規依據・實務眉角（${s.id}）</h4>
+        <div>${(s.law||[]).map(l=>`<span class="lawtag">${l}</span>`).join('')}</div>
+        <p class="tip" style="margin-top:8px">🛠️ ${s.tip||''}</p>
       </div>`;
   }
   document.querySelector('.station').classList.add('active');showStage('S1');
@@ -624,7 +685,7 @@ const NEXT_HINT = {
   let state=new Array(PITFALLS.length).fill(false);
   PITFALLS.forEach((p,i)=>{
     const el=document.createElement('div');el.className='check';
-    el.innerHTML=`<div class="cbox">✓</div><div class="ctxt"><b>${p.t}</b><span>${p.d}</span></div>`;
+    el.innerHTML=`<div class="cbox">✓</div><div class="ctxt"><b>${p.t}</b><span>${p.d}</span><span class="lawtag pro-only" style="margin-top:5px">⚖️ ${p.law}</span></div>`;
     el.onclick=()=>{state[i]=!state[i];el.classList.toggle('on',state[i]);update();};
     box.appendChild(el);
   });
@@ -667,6 +728,19 @@ const NEXT_HINT = {
       <div class="rnext"><div class="lbl">🧭 下一步該查什麼</div>
         <ul>${hints.map(h=>`<li>${h}</li>`).join('')}</ul></div>`;
   }
+})();
+
+/* ===================== 雙模式切換（新手／專業） ===================== */
+(function(){
+  const sw=document.getElementById('modeswitch');if(!sw)return;
+  function setMode(m){
+    document.body.classList.toggle('pro',m==='pro');
+    sw.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+    try{localStorage.setItem('urMode',m);}catch(e){}
+  }
+  sw.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+  let saved='novice';try{saved=localStorage.getItem('urMode')||'novice';}catch(e){}
+  setMode(saved);
 })();
 
 /* ===================== reveal on scroll ===================== */
