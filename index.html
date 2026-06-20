@@ -80,6 +80,13 @@
   .gcard p{margin:0;font-size:13px;color:var(--slate)}
   .gcard .bar{position:absolute;left:0;top:0;bottom:0;width:5px}
 
+  /* 名詞小幫手 */
+  .gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .gloss .g{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+  .gloss .g h4{margin:0 0 5px;font-size:16px;display:flex;align-items:center;gap:8px}
+  .gloss .g p{margin:0;font-size:14px;color:var(--slate)}
+  @media(max-width:760px){.gloss{grid-template-columns:1fr}}
+
   section{padding:54px 0;border-bottom:1px solid var(--line)}
   section:nth-child(even){background:linear-gradient(180deg,#fff,var(--paper))}
 
@@ -258,10 +265,11 @@
 <nav class="topnav">
   <div class="wrap">
     <span class="brand"><span class="dot"></span>都更／危老 開發儀表板</span>
+    <a class="navlink" href="#glossary">📖 名詞小幫手</a>
     <a class="navlink" href="#track">🛤️ 流程跑道</a>
     <a class="navlink" href="#engine">⚙️ 兩層引擎</a>
-    <a class="navlink" href="#squad">🦸 Agents</a>
-    <a class="navlink" href="#fourd">🔄 4D</a>
+    <a class="navlink" href="#squad">🦸 團隊分工</a>
+    <a class="navlink" href="#fourd">🔄 分析四步</a>
     <a class="navlink" href="#health">🩺 健檢</a>
     <a class="navlink" href="#locator">🎯 定位器</a>
     <a class="navlink" href="simulator.html">🎮 整合闖關</a>
@@ -273,25 +281,40 @@
 
 <header class="hero">
   <div class="wrap">
-    <span class="pill">⚠️ 通用方法論 · 不含任何真實案件資料</span>
-    <h1>從<span class="grad">一塊地</span>到<span class="grad">交屋</span>，<br>11 站走完都更／危老開發</h1>
-    <p class="lede">把都市更新與危老重建拆成可定位、可核對的 11 個階段。任何案件不論大小、不論走到哪，都能在座標上定位，套用該階段的產出物清單與檢核點逐項核對。</p>
+    <span class="pill">👋 第一次看？花 30 秒，看懂「都更」是什麼</span>
+    <h1>老屋重建（都更）：從<span class="grad">一塊地</span>到<span class="grad">交新房</span>，要過 11 關</h1>
+    <p class="lede"><b>都市更新，就是一整排又老又危險的舊房子，住戶一起打掉、重蓋成新大樓。</b>聽起來簡單，實際上要過 11 個關卡、喬很多住戶，常常卡關。這個網站把它變成<b>點得動、看得到</b>的互動，讓你幾分鐘看懂它怎麼跑、為什麼難——<b>不懂專有名詞也沒關係</b>，旁邊有「名詞小幫手」。</p>
     <div class="cta">
-      <a class="btn primary" href="#locator">🎯 定位我的案件</a>
-      <a class="btn ghost" href="simulator.html">🎮 都更整合闖關</a>
-      <a class="btn ghost" href="#track">🛤️ 看完整流程</a>
-      <a class="btn ghost" href="https://github.com/jeremy0819/Urban-Renewal" target="_blank" rel="noopener">📦 方法論主庫</a>
+      <a class="btn primary" href="simulator.html">🎮 玩一場就懂（5 分鐘）</a>
+      <a class="btn ghost" href="#glossary">📖 都更名詞小幫手</a>
+      <a class="btn ghost" href="#track">🛤️ 看 11 關長怎樣</a>
     </div>
 
     <!-- 30 秒看懂 -->
     <div class="glance">
-      <div class="gcard"><span class="bar" style="background:var(--blueprint)"></span><div class="gemoji">🛤️</div><div class="gnum">第 1 件事</div><h3>先定位階段</h3><p>S1–S11 座標系，先找出案件「最高已達階段」＝目前進度。</p></div>
-      <div class="gcard"><span class="bar" style="background:var(--amber)"></span><div class="gemoji">⚙️</div><div class="gnum">兩層引擎</div><h3>坪效 → 投報</h3><p>坪效層是唯一量體真相；投報層只讀不重算容積。兩層不打架。</p></div>
-      <div class="gcard"><span class="bar" style="background:var(--purple)"></span><div class="gemoji">🦸</div><div class="gnum">各司其職</div><h3>5 個 Agents</h3><p>法規歸法規、計算歸計算、合約歸合約，輸出互為輸入不越權。</p></div>
-      <div class="gcard"><span class="bar" style="background:var(--green)"></span><div class="gemoji">🩺</div><div class="gnum">避免踩坑</div><h3>10 大投報陷阱</h3><p>顯示值≠真值、基數混用、版本不一…逐項健檢拿分數。</p></div>
+      <div class="gcard"><span class="bar" style="background:var(--blueprint)"></span><div class="gemoji">🛤️</div><div class="gnum">這件事分幾步</div><h3>總共 11 關</h3><p>從查土地、算能蓋多大、開說明會說服住戶、政府審查，到蓋好交屋。先看你的案子走到第幾關。</p></div>
+      <div class="gcard"><span class="bar" style="background:var(--amber)"></span><div class="gemoji">⚙️</div><div class="gnum">怎麼算錢</div><h3>先算大小，再算划算</h3><p>第一步算「能蓋多大、能換多少坪」；第二步才算「划不划算、住戶能分回多少」。兩步不能搞混。</p></div>
+      <div class="gcard"><span class="bar" style="background:var(--purple)"></span><div class="gemoji">🦸</div><div class="gnum">誰來做</div><h3>一個團隊各做各的</h3><p>查法規的、算數字的、看合約的、蓋房子的，像接力賽把資料一棒棒傳下去，不互相亂改。</p></div>
+      <div class="gcard"><span class="bar" style="background:var(--green)"></span><div class="gemoji">🩺</div><div class="gnum">別踩雷</div><h3>最常見的 10 個坑</h3><p>算錯數字、報告灌水、新舊版本對不上…這些最容易讓住戶吃虧，逐項檢查避開。</p></div>
     </div>
   </div>
 </header>
+
+<!-- ===== 名詞小幫手（給第一次看的人） ===== -->
+<section id="glossary">
+  <div class="wrap reveal">
+    <h2 class="section-title">📖 都更名詞小幫手</h2>
+    <p class="section-sub">看到不懂的詞，回來這裡查。全部用白話，不懂都更也能讀。</p>
+    <div class="gloss">
+      <div class="g"><h4>🏚️ 都更／危老</h4><p>把老舊、危險的房子，整排住戶一起打掉、重蓋成新大樓。「危老」是基地更小、流程更快的版本。</p></div>
+      <div class="g"><h4>📐 容積／坪效</h4><p>法律規定一塊地「能蓋多大」叫容積；把它換算成實際「能賣幾坪」叫坪效。</p></div>
+      <div class="g"><h4>✊ 釘子戶</h4><p>少數不肯同意的住戶。越接近「大家都同意」，他手上的籌碼越大、整件事越容易卡住。</p></div>
+      <div class="g"><h4>🔑 同意門檻</h4><p>要多少比例的住戶同意才能啟動：都更通常要 3/4，危老要 100%（全部同意）。</p></div>
+      <div class="g"><h4>🔄 權利變換／分回</h4><p>舊房子換新房子的分配規則；「分回」＝你最後能拿回幾坪新房。</p></div>
+      <div class="g"><h4>💰 共同負擔</h4><p>蓋新大樓的總成本（工程、稅、利息…）由大家一起分攤；扣掉它，剩下的才是住戶分回。</p></div>
+    </div>
+  </div>
+</section>
 
 <!-- ===== Module 1: 流程跑道 ===== -->
 <section id="track">
@@ -313,7 +336,7 @@
 <section id="engine">
   <div class="wrap reveal">
     <h2 class="section-title">⚙️ 兩層引擎</h2>
-    <p class="section-sub">坪效層（容積查核）是唯一量體真相；投報層只<b>讀</b>它的輸出，<b>不回頭重算容積</b>。看箭頭怎麼單向流。</p>
+    <p class="section-sub"><b>白話：先算「能蓋多大」，再算「划不划算」——而且算錢的時候不能偷改前面的大小。</b><br>坪效層（容積查核）是唯一量體真相；投報層只<b>讀</b>它的輸出，<b>不回頭重算容積</b>。看箭頭怎麼單向流。</p>
     <div class="engine">
       <div class="layer oracle">
         <h3>🔧 坪效層 <span class="tag">容積查核 · oracle</span> <span class="gear">⚙️</span><span class="gear g2">⚙️</span></h3>
@@ -345,7 +368,7 @@
 <!-- ===== Module 3: Agents 戰隊 ===== -->
 <section id="squad">
   <div class="wrap reveal">
-    <h2 class="section-title">🦸 Agents 戰隊</h2>
+    <h2 class="section-title">🦸 團隊分工（Agents 戰隊）</h2>
     <p class="section-sub">點卡片<b>翻面</b>看職掌細節。分工原則：法規歸法規、計算歸計算、合約歸合約，輸出互為輸入不越權重算。</p>
     <div class="squad" id="squad-grid"></div>
   </div>
@@ -354,7 +377,7 @@
 <!-- ===== Module 4: 4D 循環環 ===== -->
 <section id="fourd">
   <div class="wrap reveal">
-    <h2 class="section-title">🔄 4D 協作循環</h2>
+    <h2 class="section-title">🔄 分析四步（4D 協作循環）</h2>
     <p class="section-sub">每個分析任務依 4D 流程執行。點任一象限，看它在<b>都更評估的落點</b>。</p>
     <div class="fourd">
       <div class="ring">
