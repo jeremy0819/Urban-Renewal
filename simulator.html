@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>都市更新整合策略沙盤 v3 · Urban-Renewal</title>
+<title>都市更新整合策略沙盤 v4 · Urban-Renewal</title>
 <meta name="description" content="都市更新整合策略沙盤推演：24 位有人格、情緒、家族的地主，依情境反應難度。練習談判、整合、決策。通用教學模型，不含真實案件資料。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +32,8 @@
   .brand{font-weight:800;margin-right:auto;display:flex;align-items:center;gap:9px;font-size:15px;white-space:nowrap}
   .brand .mk{font-family:var(--serif);font-weight:800;letter-spacing:.02em}
   .brand .v{font-size:11px;color:var(--gold);font-weight:700}
+  .brand .gd2{color:var(--emer-l);font-weight:800;margin-right:2px}
+  .brand:hover .mk{color:var(--emer-d)}
   .nbtn{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid var(--line-2);background:var(--card);color:var(--ink);cursor:pointer;white-space:nowrap}
   .nbtn:hover{border-color:var(--emer);color:var(--emer-d);text-decoration:none}
   .nbtn.solid{background:var(--emer);color:#fff;border-color:var(--emer)}.nbtn.solid:hover{background:var(--emer-d);color:#fff}
@@ -153,6 +155,20 @@
   .cx.lock summary .tag{color:var(--mute);background:var(--warm)}
   .cx .body{padding:10px 13px;font-size:12.5px;color:var(--body);border-top:1px solid var(--line)}
 
+  /* V4：財務面板 / 競爭建商 / 排序 */
+  .lab2{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--emer-l);margin:14px 0 7px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+  .lab2 .si{color:var(--gold);background:var(--warm);border-radius:5px;padding:0 6px;font-size:9.5px}
+  .finbox .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .finbox .fc{background:var(--warm);border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}
+  .finbox .fc b{display:block;font-family:var(--serif);font-size:17px}.finbox .fc span{font-size:10.5px;color:var(--slate)}
+  .compbox{margin-top:8px}
+  .vsbar{height:9px;border-radius:99px;background:var(--line);overflow:hidden}.vsbar>span{display:block;height:100%;background:var(--emer);transition:width .5s}
+  .vsbar.comp{margin-top:3px}.vsbar.comp>span{background:var(--hos)}
+  .vslbl{display:flex;justify-content:space-between;font-size:11px;color:var(--slate);margin:3px 0}
+  .sortbar{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--slate);margin-bottom:8px;flex-wrap:wrap}
+  .sortb{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:6px;border:1px solid var(--line-2);background:var(--card);cursor:pointer}
+  .sortb.on{background:var(--emer);color:#fff;border-color:var(--emer)}
+  .sorthint{color:var(--mute);font-size:10.5px}
   #fx{position:fixed;inset:0;pointer-events:none;z-index:58}
   footer{margin-top:22px;padding:20px 0 40px;border-top:1px solid var(--line);color:var(--slate);font-size:12.5px;text-align:center}
   footer a{margin:0 5px}.footdisc{max-width:74ch;margin:9px auto 0;font-size:11.5px;color:var(--mute)}
@@ -165,7 +181,8 @@
 <div id="toasts"></div>
 
 <nav class="top"><div class="wrap">
-  <span class="brand"><span class="mk">都市更新整合策略沙盤</span><span class="v">v3</span></span>
+  <a class="brand" href="index.html" title="回開發儀表板" style="text-decoration:none;color:inherit"><span class="gd2">⌂</span><span class="mk">都市更新整合策略沙盤</span><span class="v">v4</span></a>
+  <a class="nbtn" href="index.html">⌂ 首頁</a>
   <button class="nbtn" id="btnHow">如何玩</button>
   <button class="nbtn" id="btnCodex">概念圖鑑</button>
   <button class="nbtn" id="btnSound">🔇</button>
@@ -201,6 +218,7 @@
   <div class="board">
     <div class="panel">
       <p class="ph">案件盤面 <span class="sub" id="ph-n"></span></p>
+      <div class="sortbar">排序檢視：<button class="sortb on" data-s="emo">情緒</button><button class="sortb" data-s="pers">人格</button><button class="sortb" data-s="fam">家族</button><span class="sorthint">（盤面覺得亂時可分組）</span></div>
       <div class="owners" id="owners"></div>
       <div class="legend">
         <span><i class="sw" style="background:var(--sup-l);border:1.5px solid var(--sup)"></i>支持</span>
@@ -223,7 +241,13 @@
       <div class="ro"><div class="lab"><span>🤝🆚 競合分餅</span><b id="pie-v"></b></div>
         <div class="meter"><span id="pie-bar" style="width:45%;background:var(--emer)"></span></div>
         <div class="romsg" id="pie-msg"></div></div>
-      <a class="nbtn" href="evaluator.html" style="display:block;text-align:center;margin-top:6px">🧮 想算真實數字？開試算</a>
+      <div class="finbox" id="finbox"></div>
+      <div class="compbox"><div class="lab2">🏗️ 競爭建商整合進度</div>
+        <div class="vsbar"><span id="vsyou" style="width:0%"></span></div>
+        <div class="vslbl"><span>你 <b id="vsyouv">0%</b></span><span>對手 <b id="vscompv">0%</b></span></div>
+        <div class="vsbar comp"><span id="vscomp" style="width:0%"></span></div>
+        <div class="romsg" id="compmsg"></div></div>
+      <a class="nbtn" href="evaluator.html" style="display:block;text-align:center;margin-top:8px">🧮 想算真實數字？開試算</a>
     </div>
   </div>
   <div id="endbox"></div>
@@ -265,7 +289,7 @@
 
 <footer><div class="wrap">
   <a href="index.html">儀表板</a>｜<a href="evaluator.html">開發試算</a>｜<a href="whitepaper.html">整合總論</a>｜<a href="https://github.com/jeremy0819/Urban-Renewal" target="_blank" rel="noopener">主庫</a>
-  <p class="footdisc">⚠️ 策略沙盤教學示意，地主／家族／參數皆為去識別化模型、非真實案件預測，不含任何真實案名、金額或人名。同意門檻依現行《都市更新條例》§37、《危老條例》（查證 2026-06-19）。版本 3.0｜2026-06。</p>
+  <p class="footdisc">⚠️ 策略沙盤教學示意，地主／家族／參數皆為去識別化模型、非真實案件預測，不含任何真實案名、金額或人名。同意門檻依現行《都市更新條例》§37、《危老條例》（查證 2026-06-19）。版本 4.0｜2026-06。</p>
 </div></footer>
 
 <script>
@@ -300,6 +324,11 @@ const EVENTS=[
   {em:'📋',t:'公聽會程序瑕疵',m:'送達瑕疵須重辦',f:g=>{g.time-=1;}},
   {em:'🏦',t:'資金信託不到位',m:'撥付延宕、信心崩',f:g=>{g.inst=cl(g.inst-10);hitAll(g,-4);}},
   {em:'📰',t:'媒體負面報導',m:'建商被點名',f:g=>{g.dev=cl(g.dev-10,-30,30);hitPers(g,['cons'],-6);}},
+  {em:'📉',t:'容積獎勵調整',m:'政策縮減獎勵',f:g=>{g.fin.saleHit=Math.min(.4,g.fin.saleHit+.08);}},
+  {em:'🏛️',t:'議員介入',m:'隨機效果',f:g=>{if(Math.random()<.5){hitAll(g,4);g.time+=1;}else{hitAll(g,-5);}}},
+  {em:'📝',t:'地主陳情',m:'陳情影響審議',f:g=>{hitRandom(g,2,-9);}},
+  {em:'🏗️',t:'對手搶辦說明會',m:'競爭建商挖牆腳',comp:8,f:g=>{g.comp.prog=Math.min(100,g.comp.prog+8);hitPers(g,['obs'],-6);}},
+  {em:'🎣',t:'地主被挖角',m:'對手開更好條件',comp:6,f:g=>{g.comp.prog=Math.min(100,g.comp.prog+6);const t=g.owners.filter(o=>o.sat<80)[0];if(t)t.sat=cl(t.sat-12);}},
 ];
 const CONCEPTS=[
   {id:'people',em:'🧑‍🤝‍🧑',t:'地主人格',tag:'核心',b:'保守/投資/情感/強勢/觀望，對策略反應不同。整合的第一步是「辨人」——同一張牌對保守派加分、對投資派沒用。'},
@@ -358,6 +387,23 @@ function genOwners(sc,N,dev){
   return arr;
 }
 function agreeCount(g){return g.owners.filter(o=>o.sat>=AGREE).length;}
+function makeFin(sc,N){const site=Math.round(N*14),far=300,price=68;const av=site*far/100*1.3,sell=av*1.6,sale0=sell*price/10000;return {site,price,sale0:+sale0.toFixed(2),base:+(sale0*0.58).toFixed(2),intM:+(sale0*0.004).toFixed(3),saleHit:0,costHit:0};}
+function computeFin(g){if(!g.fin)g.fin=makeFin(SCEN[g.sc],g.N);const months=g.baseTime-g.time;const sale=g.fin.sale0*(1-g.fin.saleHit);const cost=g.fin.base+g.fin.intM*months+g.fin.costHit;const dist=sale-cost,builder=dist*g.share,owner=dist*(1-g.share);return {sale,cost,builder,owner,roi:cost>0?builder/cost*100:0};}
+function fcell(k,v,bad){return '<div class="fc"><b style="'+(bad?'color:var(--hos)':'')+'">'+v+'</b><span>'+k+'</span></div>';}
+function renderFin(){if(!G.fin)G.fin=makeFin(SCEN[G.sc],G.N);if(!G.comp)G.comp={prog:8};const f=computeFin(G);
+  $('finbox').innerHTML='<div class="lab2">💹 財務面板 <span class="si">示意・非估價</span></div><div class="fgrid">'
+    +fcell('預估總銷',f.sale.toFixed(1)+'億')+fcell('開發成本',f.cost.toFixed(1)+'億')
+    +fcell('建方毛利',(f.builder<0?'−':'')+Math.abs(f.builder).toFixed(1)+'億',f.builder<0)
+    +fcell('ROI',Math.round(f.roi)+'%',f.roi<0)+'</div>';
+  const you=Math.round(agreeCount(G)/G.N*100),comp=Math.round(G.comp.prog);
+  $('vsyou').style.width=you+'%';$('vscomp').style.width=comp+'%';$('vsyouv').textContent=you+'%';$('vscompv').textContent=comp+'%';
+  $('compmsg').innerHTML=comp>=you?'⚠️ 對手領先！太慢會被搶先（對手達 100% 你就出局）。':'你目前領先對手，保持節奏。';}
+function advanceComp(g){if(g.over)return;if(!g.comp)g.comp={prog:8};g.comp.prog=Math.min(100,g.comp.prog+rnd(1,3)+g.dif*0.5-(g.inst>50?1:0));if(g.comp.prog>=100)end(false,'競爭建商搶先達門檻、先送件——你被搶先整合，破局。');}
+function sortOrder(){const idx=G.owners.map((_,i)=>i),s=G.sort||'emo';
+  if(s==='emo')idx.sort((a,b)=>G.owners[b].sat-G.owners[a].sat);
+  else if(s==='pers'){const od={cons:0,inv:1,emo:2,dom:3,obs:4};idx.sort((a,b)=>od[G.owners[a].pers]-od[G.owners[b].pers]);}
+  else if(s==='fam')idx.sort((a,b)=>((G.owners[a].fam==null?99:G.owners[a].fam)-(G.owners[b].fam==null?99:G.owners[b].fam))||(G.owners[b].leader?1:0)-(G.owners[a].leader?1:0));
+  return idx;}
 function init(){
   const sc=SCEN[selScen],N=selN,dev=selDev;
   G={sc:selScen,th:sc.th,N,needed:Math.ceil(N*sc.th),budget:sc.budget,time:sc.time,baseTime:sc.time,
@@ -365,6 +411,7 @@ function init(){
      owners:genOwners(sc,N,dev),lastEvent:false,dif:difficulty(sc,N,dev),
      stats:{commit:0,trans:0,raise:0,fam:0}};
   unlocked=new Set(['people','threshold','coop']);
+  G.fin=makeFin(sc,N);G.comp={prog:8};G.sort='emo';
   sel=-1;prevAgree=agreeCount(G);
   $('endbox').innerHTML='';$('endOv').classList.remove('show');$('log').innerHTML='';
   $('ph-n').textContent='· '+N+' 戶 ·「'+sc.k+'」· 難度 '+'★'.repeat(G.dif);
@@ -444,7 +491,7 @@ function buildActions(){$('actions').innerHTML='';ACTS.forEach(a=>{const b=docum
 function doAct(a){
   if(G.over)return;$('hint1').classList.remove('show');
   prevAgree=agreeCount(G);const pB=G.budget,pT=G.time,pI=G.inst;
-  a.run(G);bandwagon();G.round++;G.stage=Math.min(9,5+Math.floor((G.baseTime-G.time)/4));
+  a.run(G);bandwagon();advanceComp(G);G.round++;G.stage=Math.min(9,5+Math.floor((G.baseTime-G.time)/4));
   if(leverage()>.6)unlock('holdup');
   if(!G.over){if(G.time<=0)end(false,'時程耗盡，案件停擺、信心瓦解——整合破局。');else if(G.budget<0)end(false,'籌碼見底，無力再推——整合破局。');}
   render();
@@ -458,15 +505,16 @@ function end(win,msg){
   const used=Object.entries(G.commits).filter(([k,v])=>v).map(([k])=>k);if(G.indep)used.push('獨立第三方');
   const months=G.baseTime-G.time,shareback=100-Math.round(G.share*100);
   const hostile=G.owners.filter(o=>o.sat<20).length;
-  const quality= !win?'—':hostile===0?'完美整合（無敵對戶）':hostile<=2?'整合成功（少數敵對）':'勉強過關（仍有敵對戶）';
+  const quality= !win?'—':hostile===0?'無敵對戶':hostile<=2?'少數敵對':'仍有敵對戶';
+  const F=computeFin(G);const fgrade= !win?'':F.roi>=15?'🏆 完美整合（高報酬）':F.roi>=5?'✅ 整合成功':F.roi>=0?'⚠️ 整合成功・微利':'⚠️ 整合成功卻財務虧損';
   const key=win?('關鍵：'+(used.length?'<b>'+used.join('、')+'</b>＋':'')+'針對人格／家族出對牌，分配維持 '+Math.round(G.share*100)+'%。印證「都更最難的是人，不是法規」。')
     :'卡關常因沒辨人格、信任不足或分配過貪。下次先用<b>可信承諾／第三方</b>顧保守派、<b>家族溝通</b>滾動多數，別硬上權變養大議價力。';
   $('endModal').innerHTML='<div class="endbig '+(win?'win':'lose')+'">'+(win?'🏆 整合成功':'💔 整合破局')+'</div>'
-    +'<p style="color:var(--slate);margin:0">'+msg+(win?'　·　<b>'+quality+'</b>':'')+'</p>'
+    +'<p style="color:var(--slate);margin:0">'+msg+(win?'　·　<b>'+fgrade+'</b>（'+quality+'）':'')+'</p>'
     +'<div class="stats">'
     +'<div class="s"><b>'+months+'</b><span>用了幾個月</span></div><div class="s"><b>'+G.round+'</b><span>決策回合</span></div>'
     +'<div class="s"><b>'+shareback+'%</b><span>地主分回比</span></div><div class="s"><b>'+agreeCount(G)+'/'+G.needed+'</b><span>同意/門檻</span></div>'
-    +'<div class="s"><b>'+G.inst+'</b><span>制度信用</span></div><div class="s"><b>'+unlocked.size+'/'+CONCEPTS.length+'</b><span>解鎖名詞</span></div></div>'
+    +'<div class="s"><b>'+G.inst+'</b><span>制度信用</span></div><div class="s"><b>'+Math.round(F.roi)+'%</b><span>建方 ROI(示意)</span></div><div class="s"><b>'+unlocked.size+'/'+CONCEPTS.length+'</b><span>解鎖名詞</span></div></div>'
     +'<div class="recap">🎓 <b>復盤：</b>'+key+'</div>'
     +'<div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap"><button class="nbtn solid" id="eAgain">🔄 再玩一次</button><button class="nbtn" id="eNew">🗂️ 換劇本</button><button class="nbtn" id="eCx">📖 名詞('+unlocked.size+')</button></div>';
   $('endOv').classList.add('show');
@@ -494,7 +542,7 @@ function render(silent){
   const cnt={sup:0,watch:0,opp:0,hos:0};G.owners.forEach(o=>cnt[band(o.sat)]++);
   $('emo').innerHTML=['sup','watch','opp','hos'].map(b=>{const w=cnt[b]/G.N*100;const c={sup:'var(--sup)',watch:'var(--watch)',opp:'var(--opp)',hos:'var(--hos)'}[b];return '<span style="width:'+w+'%;background:'+c+'"></span>';}).join('');
   // 盤面
-  $('owners').innerHTML=G.owners.map((o,i)=>{const b=band(o.sat),isNew=!silent&&o.sat>=AGREE&&i>=0&&!o._wasAgree;
+  $('owners').innerHTML=sortOrder().map(i=>{const o=G.owners[i],b=band(o.sat),isNew=!silent&&o.sat>=AGREE&&!o._wasAgree;
     return '<div class="ow '+b+(i===sel?' sel':'')+(isNew?' bump':'')+'" data-i="'+i+'"><span class="pi">'+PERS[o.pers].pi+'</span>'+(o.leader?'<span class="fa">⌂</span>':'')+'</div>';}).join('');
   G.owners.forEach(o=>o._wasAgree=o.sat>=AGREE);
   document.querySelectorAll('.ow').forEach(el=>el.onclick=()=>{sel=+el.dataset.i;showProf();render(true);});
@@ -511,6 +559,7 @@ function render(silent){
   const sh=Math.round(G.share*100);$('pie-v').textContent='建方 '+sh+'% / 地主 '+(100-sh)+'%';$('pie-bar').style.width=sh+'%';
   $('pie-bar').style.background=G.share>.55?'var(--hos)':'var(--emer)';
   $('pie-msg').innerHTML=G.share>.55?'⚠️ 分太多：貪婪毀餅，投資派以外都不買單。':'分配尚屬合理，餅能做大。';
+  renderFin();
   document.querySelectorAll('.act').forEach((b,i)=>{const a=ACTS[i];b.disabled=G.over||!a.can(G);if(a.win)b.classList.toggle('win',ac>=G.needed&&!G.over);});
 }
 function showProf(){const o=G.owners[sel];if(!o)return;const p=PERS[o.pers];
@@ -537,6 +586,7 @@ $('nrange').oninput=e=>{selN=+e.target.value;$('nval').textContent=selN+' 戶';r
 $('devsel').onchange=e=>{selDev=+e.target.value;refreshDif();};
 $('startBtn').onclick=()=>{$('startOv').classList.remove('show');init();};
 $('btnNew').onclick=openStart;
+document.querySelectorAll('.sortb').forEach(b=>b.onclick=()=>{if(!G)return;G.sort=b.dataset.s;document.querySelectorAll('.sortb').forEach(x=>x.classList.toggle('on',x===b));render(true);});
 $('btnHow').onclick=()=>{howGo(0);$('howOv').classList.add('show');};$('howX').onclick=()=>$('howOv').classList.remove('show');
 let howI=0;const STEPS=4;
 function howGo(n){howI=cl(n,0,STEPS-1);document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('on',i===howI));
