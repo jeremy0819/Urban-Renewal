@@ -121,7 +121,7 @@ flowchart LR
 |---|---|
 | [📈 整合開發評估總論-2026](docs/整合開發評估總論-2026.md) ｜ [白皮書 whitepaper.html](whitepaper.html) ｜ [Word 版](整合開發評估總論-2026.docx) | **最上位思維框架**：整合都更法規・都市計畫・建築估價・稅制・2026 趨勢，以不動產研析為脊椎、數據×人文，提出「整合人」三層透鏡評估框架（產生器 [`make_whitepaper_docx.py`](make_whitepaper_docx.py)） |
 | [🎯 index.html](index.html) | 互動式開發儀表板（單一自含 HTML，零依賴）：6 個互動模組＋**雙模式**（👤 新手白話 ⇄ 🎓 專業：展開法規條號／公式／實務眉角，並連結試算與 RE-DCF-Tool） |
-| [🎮 simulator.html](simulator.html) | 都更整合闖關 **v2**：劇本選擇＋難度（新手/一般/硬核）、教學引導、強化視覺回饋（±N浮動/漲綠跌紅/事件閃震/勝利彩帶/可選音效）、7 張策略卡（每張標法規/實務）、概念成就解鎖、結束總結報告、進度暫存、RWD |
+| [🎮 simulator.html](simulator.html) | **都市更新整合策略沙盤 v3**（傑丞風格）：24 戶＝24 個有**人格／情緒／家族**的真人；難度由**情境×戶數×建商信用**決定（可手動調戶數）；策略卡對人格反應不同、tag 對應實際審議；族長帶動家族、情緒分布 HUD、概念解鎖、總結報告 |
 | [🧮 evaluator.html](evaluator.html) | 坪效・開發評估試算：坪效層（容積帳→§162→銷售坪）×投報層（總銷→共負六科目→分回比）＋健檢＋敏感度。輕量教學版（**[FRAME] 非估價**）；正式計算用 [RE-DCF-Tool](https://github.com/jeremy0819/RE-DCF-Tool) |
 | [📊 briefing.html](briefing.html) | 住戶說明會簡報範本（jieceng 暖白×翡翠綠品牌）：制式 17 頁、可投影／可列印，全為〔範本〕佔位 |
 | [🖥️ 都更說明會簡報範本.pptx](都更說明會簡報範本.pptx) | 同內容的 PowerPoint 檔（16:9，可直接編輯）；產生器 [`make_briefing_pptx.py`](make_briefing_pptx.py) |

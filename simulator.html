@@ -3,163 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>都更整合闖關 v2 · 賽局模擬器 · Urban-Renewal</title>
-<meta name="description" content="把都市更新整合做成一場賽局闖關：選劇本與難度，用籌碼與時間在阻撓事件下把同意率推過門檻。即時數據回饋、決策分支、概念解鎖。通用教學模型，不含真實案件資料。">
+<title>都市更新整合策略沙盤 v3 · Urban-Renewal</title>
+<meta name="description" content="都市更新整合策略沙盤推演：24 位有人格、情緒、家族的地主，依情境反應難度。練習談判、整合、決策。通用教學模型，不含真實案件資料。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Noto+Serif+TC:wght@700;900&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --emer:#064e3b;--emer-d:#053d2e;--emer-l:#10b981;--mint:#ecfdf5;--mint-2:#d1fae5;
     --warm:#f5f3ee;--paper:#fbfaf7;--card:#fff;
     --ink:#1c1a17;--body:#44403c;--slate:#57534e;--mute:#a8a29e;--line:#e7e5e4;--line-2:#d6d3cd;
-    --amber:#d97706;--amber-l:#fef3c7;--red:#b5523f;--red-l:#fbecea;--blue:#2563eb;--gold:#b08a3e;
+    /* 情緒色 */
+    --sup:#16a34a;--sup-l:#dcfce7;--watch:#ca8a04;--watch-l:#fef9c3;--opp:#dc6a3a;--opp-l:#fde4d3;--hos:#9a3412;--hos-l:#f3d9cd;
+    --gold:#b08a3e;--blue:#2563eb;
+    --serif:"Playfair Display","Noto Serif TC",Georgia,serif;
     --sans:"Inter","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-    --serif:"Noto Serif TC",Georgia,serif;
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.5;-webkit-font-smoothing:antialiased}
   body.shake{animation:shake .4s}
-  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
   a{color:var(--emer);text-decoration:none}a:hover{text-decoration:underline}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
 
   nav.top{position:sticky;top:0;z-index:30;background:rgba(251,250,247,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  nav.top .wrap{display:flex;align-items:center;gap:8px;height:52px}
-  .brand{font-weight:800;margin-right:auto;display:flex;align-items:center;gap:8px;font-size:15px}
-  .brand .gd{width:10px;height:10px;border-radius:50%;background:var(--emer-l);box-shadow:0 0 0 4px var(--mint-2)}
-  .nbtn{padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid var(--line-2);background:var(--card);color:var(--ink);cursor:pointer;white-space:nowrap}
+  nav.top .wrap{display:flex;align-items:center;gap:8px;height:54px;overflow-x:auto;scrollbar-width:none}
+  nav.top .wrap::-webkit-scrollbar{display:none}
+  .brand{font-weight:800;margin-right:auto;display:flex;align-items:center;gap:9px;font-size:15px;white-space:nowrap}
+  .brand .mk{font-family:var(--serif);font-weight:800;letter-spacing:.02em}
+  .brand .v{font-size:11px;color:var(--gold);font-weight:700}
+  .nbtn{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid var(--line-2);background:var(--card);color:var(--ink);cursor:pointer;white-space:nowrap}
   .nbtn:hover{border-color:var(--emer);color:var(--emer-d);text-decoration:none}
-  .nbtn.solid{background:var(--emer);color:#fff;border-color:var(--emer)}
+  .nbtn.solid{background:var(--emer);color:#fff;border-color:var(--emer)}.nbtn.solid:hover{background:var(--emer-d);color:#fff}
   .nbtn.on{background:var(--gold);color:#fff;border-color:var(--gold)}
 
-  header.intro{padding:18px 0 6px}
-  header .kick{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--emer-l);font-weight:800}
-  header h1{font-family:var(--serif);font-size:clamp(22px,3.6vw,32px);margin:5px 0 4px;font-weight:800}
-  header p{color:var(--slate);font-size:14px;margin:0;max-width:72ch}
+  header.intro{padding:20px 0 4px}
+  header .kick{font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--emer-l);font-weight:800}
+  header h1{font-family:var(--serif);font-size:clamp(23px,3.6vw,34px);margin:6px 0 4px;font-weight:800;letter-spacing:.01em}
+  header p{color:var(--slate);font-size:14px;margin:0;max-width:74ch}
 
   /* HUD */
-  .hud{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0 6px}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 8px;text-align:center;position:relative;overflow:visible;transition:.2s}
-  .stat .v{font-size:22px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;transition:color .25s}
+  .hud{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:14px 0 8px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 8px;text-align:center;position:relative}
+  .stat .v{font-size:21px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;font-family:var(--serif)}
   .stat .k{font-size:10.5px;color:var(--slate);margin-top:3px;font-weight:600}
-  .stat.up{box-shadow:0 0 0 2px var(--emer-l)} .stat.down{box-shadow:0 0 0 2px var(--red)}
-  .stat.up .v{color:var(--emer)} .stat.down .v{color:var(--red)}
-  .stat.alarm .v{color:var(--red)}
-  .delta{position:absolute;top:-6px;right:6px;font-size:13px;font-weight:900;pointer-events:none;opacity:0}
-  .delta.go{animation:float 1s ease-out forwards}
-  .delta.pos{color:var(--emer)} .delta.neg{color:var(--red)}
-  @keyframes float{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-22px)}}
-  .progwrap{margin:6px 0 2px}
-  .pbar{height:26px;border-radius:999px;background:var(--line);overflow:hidden;position:relative}
+  .stat.alarm .v{color:var(--hos)}
+  .stat.up .v{color:var(--sup)}.stat.down .v{color:var(--hos)}
+  .delta{position:absolute;top:-5px;right:6px;font-size:12.5px;font-weight:800;pointer-events:none;opacity:0}
+  .delta.go{animation:flo 1s ease-out forwards}.delta.pos{color:var(--sup)}.delta.neg{color:var(--hos)}
+  @keyframes flo{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-20px)}}
+
+  .progwrap{margin:4px 0}
+  .pbar{height:24px;border-radius:7px;background:var(--line);overflow:hidden;position:relative}
   .pbar>span{display:block;height:100%;background:linear-gradient(90deg,var(--emer-l),var(--emer));transition:width .55s cubic-bezier(.2,.7,.2,1)}
-  .pbar.gain>span{animation:gainpulse .6s}
-  @keyframes gainpulse{50%{filter:brightness(1.3)}}
-  .pbar .thmark{position:absolute;top:-5px;bottom:-5px;width:3px;background:var(--red);z-index:2}
-  .pbar .thmark::after{content:"門檻";position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--red);font-weight:800;white-space:nowrap}
-  .plbl{display:flex;justify-content:space-between;font-size:12px;color:var(--slate);font-weight:700;margin-top:5px}
+  .pbar.gain>span{animation:gp .6s}@keyframes gp{50%{filter:brightness(1.3)}}
+  .pbar .thm{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--hos);z-index:2}
+  .pbar .thm::after{content:"門檻";position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--hos);font-weight:800;white-space:nowrap}
+  .plbl{display:flex;justify-content:space-between;font-size:12px;color:var(--slate);font-weight:700;margin-top:4px}
   .plbl .goal{color:var(--emer-d)}
+  /* 情緒分布 */
+  .emo{display:flex;height:14px;border-radius:6px;overflow:hidden;margin:8px 0 2px;border:1px solid var(--line)}
+  .emo span{transition:width .5s}
+  .emolbl{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--slate);font-weight:600}
+  .emolbl i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:-1px}
 
-  .board{display:grid;grid-template-columns:1.35fr .85fr;gap:16px;margin-top:12px;align-items:start}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:0 8px 26px -22px rgba(16,36,61,.4)}
-  .ph{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--emer-l);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  .board{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:12px;align-items:start}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px;box-shadow:0 8px 26px -22px rgba(16,36,61,.4)}
+  .ph{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--emer-l);margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .ph .sub{color:var(--slate);font-weight:600;text-transform:none;letter-spacing:0;font-size:11.5px}
+  /* 地主格 */
   .owners{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
-  .ow{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;border:1.5px solid transparent;transition:.3s}
-  .ow.yes{background:var(--mint);border-color:var(--emer-l)}
-  .ow.no{background:var(--amber-l);border-color:var(--amber)}
-  .ow.und{background:var(--warm);border-color:var(--line-2);color:var(--mute)}
-  .ow.piv{box-shadow:0 0 0 3px rgba(217,119,6,.25)}
-  .ow.flip{animation:flip .5s}
-  @keyframes flip{0%{transform:rotateY(0) scale(1)}50%{transform:rotateY(90deg) scale(1.2)}100%{transform:rotateY(0) scale(1)}}
-  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--slate);margin-top:10px}
+  .ow{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    cursor:pointer;border:1.5px solid transparent;transition:.25s;font-size:14px;position:relative;line-height:1}
+  .ow .pi{font-size:13px}.ow .fa{position:absolute;top:1px;right:3px;font-size:8px;color:var(--gold);font-weight:800}
+  .ow.sup{background:var(--sup-l);border-color:var(--sup)}
+  .ow.watch{background:var(--watch-l);border-color:var(--watch)}
+  .ow.opp{background:var(--opp-l);border-color:var(--opp)}
+  .ow.hos{background:var(--hos-l);border-color:var(--hos)}
+  .ow.sel{box-shadow:0 0 0 3px rgba(6,78,59,.3)}
+  .ow.bump{animation:bump .5s}@keyframes bump{50%{transform:scale(1.18)}}
+  .legend{display:flex;gap:11px;flex-wrap:wrap;font-size:11px;color:var(--slate);margin-top:9px}
   .legend span{display:inline-flex;align-items:center;gap:5px;font-weight:600}
-  .sw{width:11px;height:11px;border-radius:4px}
+  .sw{width:11px;height:11px;border-radius:3px}
+  /* 地主檔案 */
+  .prof{margin-top:11px;background:var(--warm);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;min-height:64px}
+  .prof .pn{font-weight:800;font-size:14px;display:flex;align-items:center;gap:7px}
+  .prof .band{font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;color:#fff}
+  .prof p{margin:5px 0 0;color:var(--slate)}
+  .prof .mini{height:7px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 2px}.prof .mini span{display:block;height:100%}
 
-  .ro{margin-bottom:12px}.ro:last-child{margin-bottom:0}
-  .ro .lab{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--slate);margin-bottom:4px}
-  .ro .lab b{font-variant-numeric:tabular-nums;transition:color .25s}
-  .meter{height:11px;border-radius:999px;background:var(--line);overflow:hidden}
-  .meter>span{display:block;height:100%;transition:width .45s,background .3s}
-  .romsg{font-size:11.5px;color:var(--mute);margin-top:4px;min-height:28px}
-  .pie{display:flex;align-items:center;gap:12px}.pie svg{width:66px;height:66px;flex:none}
-  .pie .pl{font-size:12px;color:var(--slate)}.pie .pl b{color:var(--ink)}
-
-  .hint1{display:none;background:var(--mint);border:1px dashed var(--emer-l);border-radius:10px;padding:8px 12px;font-size:12.5px;color:var(--emer-d);margin-top:12px}
+  .hint1{display:none;background:var(--mint);border:1px dashed var(--emer-l);border-radius:9px;padding:8px 12px;font-size:12.5px;color:var(--emer-d);margin-top:11px}
   .hint1.show{display:block}
-  .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
-  .act{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px;cursor:pointer;transition:.15s;position:relative}
+  .actions{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:11px}
+  .act{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px;cursor:pointer;transition:.15s;position:relative}
   .act:hover:not(:disabled){border-color:var(--emer);transform:translateY(-2px);box-shadow:0 8px 20px -14px rgba(6,78,59,.5)}
   .act:disabled{opacity:.4;cursor:not-allowed}
-  .act .em{font-size:18px}.act b{display:block;font-size:13.5px;margin:2px 0 1px}
-  .act span.d{font-size:11px;color:var(--slate);line-height:1.35;display:block}
-  .act .cost{position:absolute;top:9px;right:10px;font-size:10px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
+  .act .em{font-size:17px}.act b{display:block;font-size:13.5px;margin:2px 0 1px}
+  .act .d{font-size:11px;color:var(--slate);display:block;line-height:1.35}
+  .act .cost{position:absolute;top:9px;right:10px;font-size:10px;font-weight:800;color:var(--watch);font-variant-numeric:tabular-nums}
   .act .tagx{display:inline-block;font-size:9.5px;font-weight:700;color:var(--emer);background:var(--mint);border-radius:5px;padding:1px 6px;margin-top:5px}
+  .act .target{display:inline-block;font-size:9.5px;font-weight:700;color:var(--slate);margin-top:5px;margin-left:4px}
   .act.win{border-color:var(--emer-l);background:var(--mint)}.act.win b{color:var(--emer-d)}
 
-  .log{margin-top:12px;background:var(--warm);border:1px solid var(--line);border-radius:12px;padding:9px 12px;max-height:120px;overflow-y:auto;font-size:12.5px}
+  .log{margin-top:11px;background:var(--warm);border:1px solid var(--line);border-radius:10px;padding:9px 12px;max-height:118px;overflow-y:auto;font-size:12.5px}
   .log .e{padding:3px 0;border-bottom:1px dashed var(--line-2)}.log .e:last-child{border-bottom:0}
-  .log .e.good{color:var(--emer-d)}.log .e.bad{color:var(--red)}.log .e.evt{color:var(--amber)}.log .e.sys{color:var(--slate)}
+  .log .e.good{color:var(--emer-d)}.log .e.bad{color:var(--hos)}.log .e.evt{color:var(--opp)}.log .e.sys{color:var(--slate)}
 
-  /* toast */
-  #toasts{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:55;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:92%;max-width:440px}
-  .toast{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--emer-l);border-radius:12px;padding:11px 16px;font-size:13.5px;font-weight:600;box-shadow:0 14px 36px -16px rgba(0,0,0,.4);animation:tin .35s,tout .35s 2.4s forwards;max-width:100%}
-  .toast.bad{border-left-color:var(--red)}.toast.evt{border-left-color:var(--amber)}.toast.unlock{border-left-color:var(--gold)}
-  @keyframes tin{from{opacity:0;transform:translateY(-12px)}}@keyframes tout{to{opacity:0;transform:translateY(-12px)}}
+  .ro{margin-bottom:11px}.ro:last-child{margin-bottom:0}
+  .ro .lab{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--slate);margin-bottom:4px}
+  .ro .lab b{font-variant-numeric:tabular-nums}
+  .meter{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.meter>span{display:block;height:100%;transition:width .45s,background .3s}
+  .romsg{font-size:11.5px;color:var(--mute);margin-top:4px;min-height:26px}
 
-  /* overlay/modal */
+  #toasts{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:55;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none;width:92%;max-width:440px}
+  .toast{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--emer-l);border-radius:10px;padding:10px 15px;font-size:13px;font-weight:600;box-shadow:0 14px 36px -16px rgba(0,0,0,.4);animation:tin .3s,tout .3s 2.5s forwards}
+  .toast.bad{border-left-color:var(--hos)}.toast.evt{border-left-color:var(--opp)}.toast.unlock{border-left-color:var(--gold)}
+  @keyframes tin{from{opacity:0;transform:translateY(-10px)}}@keyframes tout{to{opacity:0;transform:translateY(-10px)}}
+
   .overlay{position:fixed;inset:0;z-index:60;background:rgba(28,26,23,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px}
   .overlay.show{display:flex}
-  .modal{background:var(--paper);border-radius:18px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
-  .modal .mh{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;position:sticky;top:0;background:var(--paper);z-index:2}
+  .modal{background:var(--paper);border-radius:16px;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+  .modal .mh{padding:17px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;position:sticky;top:0;background:var(--paper);z-index:2}
   .modal .mh h3{font-family:var(--serif);margin:0;font-size:21px}
   .modal .mh .x{margin-left:auto;cursor:pointer;font-size:22px;color:var(--mute);border:0;background:0;line-height:1}
   .modal .mb{padding:18px 22px}
-
-  /* start screen */
   .scards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .scard{border:1.5px solid var(--line);border-radius:12px;padding:13px;cursor:pointer;transition:.15s;background:var(--card)}
-  .scard:hover{border-color:var(--emer);transform:translateY(-2px)}
-  .scard.on{border-color:var(--emer);box-shadow:0 0 0 3px var(--mint-2)}
-  .scard h4{margin:0 0 4px;font-size:15px}.scard p{margin:0;font-size:12px;color:var(--slate)}
-  .difchips{display:flex;gap:8px;margin:14px 0 4px}
-  .difchip{flex:1;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;font-weight:700;font-size:13.5px;background:var(--card)}
-  .difchip.on{background:var(--emer);color:#fff;border-color:var(--emer)}
-  .difchip span{display:block;font-size:11px;font-weight:500;color:var(--slate);margin-top:2px}
-  .difchip.on span{color:#cdebe0}
-
-  /* howto carousel */
+  .scard{border:1.5px solid var(--line);border-radius:11px;padding:12px;cursor:pointer;transition:.15s;background:var(--card)}
+  .scard:hover{border-color:var(--emer)}.scard.on{border-color:var(--emer);box-shadow:0 0 0 3px var(--mint-2)}
+  .scard h4{margin:0 0 4px;font-size:14.5px}.scard p{margin:0;font-size:11.5px;color:var(--slate)}
+  .field{margin:15px 0 0}.field label{font-size:12.5px;font-weight:800;color:var(--emer-l);letter-spacing:.05em;display:block;margin-bottom:6px}
+  .row{display:flex;align-items:center;gap:10px}
+  input[type=range]{flex:1;accent-color:var(--emer)}
+  select,input[type=number]{font-family:var(--sans);font-size:14px;font-weight:600;border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;background:var(--card)}
+  .difline{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;color:var(--slate)}
+  .stars{color:var(--gold);font-size:16px;letter-spacing:1px}
   .step{display:none}.step.on{display:block}
   .stepnav{display:flex;align-items:center;gap:10px;margin-top:16px}
   .dots{display:flex;gap:6px;margin-right:auto}.dot{width:8px;height:8px;border-radius:50%;background:var(--line-2)}.dot.on{background:var(--emer);width:20px;border-radius:5px}
-
-  /* end report + codex */
-  .endbig{font-family:var(--serif);font-size:28px;font-weight:800;margin:0 0 4px}
-  .endbig.win{color:var(--emer)}.endbig.lose{color:var(--red)}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-  .stats .s{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px;text-align:center}
-  .stats .s b{display:block;font-size:20px;font-family:var(--serif)}.stats .s span{font-size:11px;color:var(--slate)}
-  .recap{background:var(--mint);border-radius:12px;padding:13px;font-size:13.5px;color:var(--emer-d)}
-  .cx{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden;background:var(--card)}
-  .cx.lock{opacity:.5}
-  .cx summary{cursor:pointer;padding:12px 14px;font-weight:800;font-size:14px;list-style:none;display:flex;gap:9px;align-items:center}
-  .cx summary::-webkit-details-marker{display:none}.cx summary .em{font-size:17px}
+  .endbig{font-family:var(--serif);font-size:27px;font-weight:800;margin:0 0 4px}
+  .endbig.win{color:var(--emer)}.endbig.lose{color:var(--hos)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+  .stats .s{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px;text-align:center}
+  .stats .s b{display:block;font-size:19px;font-family:var(--serif)}.stats .s span{font-size:11px;color:var(--slate)}
+  .recap{background:var(--mint);border-radius:11px;padding:12px;font-size:13px;color:var(--emer-d)}
+  .cx{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden;background:var(--card)}.cx.lock{opacity:.5}
+  .cx summary{cursor:pointer;padding:11px 13px;font-weight:800;font-size:14px;list-style:none;display:flex;gap:9px;align-items:center}
+  .cx summary::-webkit-details-marker{display:none}.cx summary .em{font-size:16px}
   .cx summary .tag{margin-left:auto;font-size:10px;font-weight:700;color:var(--emer);background:var(--mint);padding:2px 8px;border-radius:6px}
   .cx.lock summary .tag{color:var(--mute);background:var(--warm)}
-  .cx .body{padding:11px 14px;font-size:13px;color:var(--body);border-top:1px solid var(--line)}
+  .cx .body{padding:10px 13px;font-size:12.5px;color:var(--body);border-top:1px solid var(--line)}
 
   #fx{position:fixed;inset:0;pointer-events:none;z-index:58}
   footer{margin-top:22px;padding:20px 0 40px;border-top:1px solid var(--line);color:var(--slate);font-size:12.5px;text-align:center}
-  footer a{margin:0 5px}.footdisc{max-width:72ch;margin:9px auto 0;font-size:11.5px;color:var(--mute)}
-
-  @media(max-width:820px){
-    .hud{grid-template-columns:repeat(3,1fr)}
-    .board{grid-template-columns:1fr}
-    .actions{grid-template-columns:1fr 1fr}
-    .scards{grid-template-columns:1fr}
-    .owners{grid-template-columns:repeat(6,minmax(0,1fr))}
-    header p{font-size:13px}
-  }
-  @media(max-width:420px){.actions{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}}
+  footer a{margin:0 5px}.footdisc{max-width:74ch;margin:9px auto 0;font-size:11.5px;color:var(--mute)}
+  @media(max-width:860px){.hud{grid-template-columns:repeat(3,1fr)}.board{grid-template-columns:1fr}.scards{grid-template-columns:1fr}.owners{grid-template-columns:repeat(6,minmax(0,1fr))}.actions{grid-template-columns:1fr}}
+  @media(max-width:430px){.hud{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -167,414 +165,395 @@
 <div id="toasts"></div>
 
 <nav class="top"><div class="wrap">
-  <span class="brand"><span class="gd"></span>都更整合闖關 <span style="font-size:11px;color:var(--gold);font-weight:700">v2</span></span>
-  <button class="nbtn" id="btnHow">❓ 如何玩</button>
-  <button class="nbtn" id="btnCodex">📖 概念圖鑑</button>
-  <button class="nbtn" id="btnSound">🔇 音效</button>
-  <button class="nbtn" id="btnNew">🗂️ 換劇本</button>
-  <a class="nbtn solid" href="index.html">🎯 儀表板</a>
+  <span class="brand"><span class="mk">都市更新整合策略沙盤</span><span class="v">v3</span></span>
+  <button class="nbtn" id="btnHow">如何玩</button>
+  <button class="nbtn" id="btnCodex">概念圖鑑</button>
+  <button class="nbtn" id="btnSound">🔇</button>
+  <button class="nbtn" id="btnNew">換劇本</button>
+  <a class="nbtn solid" href="index.html">儀表板</a>
 </div></nav>
 
 <header class="intro"><div class="wrap">
-  <div class="kick">Game v2 · 一場都更整合的賽局</div>
-  <h1>你是實施者，把案子整合過門檻</h1>
-  <p>選劇本與難度，用<b>籌碼</b>與<b>時間</b>，在阻撓事件下把同意率推過<b>門檻</b>並啟動權利變換。每個決策都對應真實法規與實務——玩到特定事件會<b>解鎖名詞</b>，理論在「📖 概念圖鑑」。</p>
+  <div class="kick">Strategic Simulation · 整合策略推演</div>
+  <h1>24 戶不是 24 個數字，是 24 個人</h1>
+  <p>每位地主有<b>人格、情緒、家族</b>，對不同策略反應不同；難度由<b>情境的人組成</b>決定。練習談判、整合與決策——都更最難的不是法規，是人。</p>
 </div></header>
 
 <main class="wrap">
   <div class="hud">
-    <div class="stat" id="st-consent"><div class="delta"></div><div class="v">9/24</div><div class="k">同意戶數</div></div>
-    <div class="stat" id="st-budget"><div class="delta"></div><div class="v">100</div><div class="k">籌碼</div></div>
-    <div class="stat" id="st-time"><div class="delta"></div><div class="v">24</div><div class="k">剩餘月份</div></div>
-    <div class="stat" id="st-trust"><div class="delta"></div><div class="v">30</div><div class="k">制度信用</div></div>
-    <div class="stat" id="st-share"><div class="delta"></div><div class="v">45%</div><div class="k">建方分配</div></div>
-    <div class="stat" id="st-stage"><div class="delta"></div><div class="v">S5</div><div class="k">階段/沉沒</div></div>
+    <div class="stat" id="st-consent"><div class="delta"></div><div class="v">—</div><div class="k">同意戶數</div></div>
+    <div class="stat" id="st-budget"><div class="delta"></div><div class="v">—</div><div class="k">籌碼</div></div>
+    <div class="stat" id="st-time"><div class="delta"></div><div class="v">—</div><div class="k">剩餘月份</div></div>
+    <div class="stat" id="st-inst"><div class="delta"></div><div class="v">—</div><div class="k">制度信用</div></div>
+    <div class="stat" id="st-dev"><div class="delta"></div><div class="v">—</div><div class="k">建商信用</div></div>
+    <div class="stat" id="st-stage"><div class="delta"></div><div class="v">—</div><div class="k">階段/沉沒</div></div>
   </div>
   <div class="progwrap">
-    <div class="pbar" id="pbar"><span id="pb" style="width:37%"></span><i class="thmark" id="thm" style="left:75%"></i></div>
-    <div class="plbl"><span id="pl-left">同意 37%</span><span class="goal" id="pl-goal">還差 9 戶達標</span><span id="pl-right">門檻 75%</span></div>
+    <div class="pbar" id="pbar"><span id="pb" style="width:0%"></span><i class="thm" id="thm" style="left:75%"></i></div>
+    <div class="plbl"><span id="pl-left">同意 0%</span><span class="goal" id="pl-goal">—</span><span id="pl-right">門檻 75%</span></div>
+    <div class="emo" id="emo"></div>
+    <div class="emolbl">
+      <span><i style="background:var(--sup)"></i>支持(同意)</span><span><i style="background:var(--watch)"></i>觀望</span>
+      <span><i style="background:var(--opp)"></i>反對</span><span><i style="background:var(--hos)"></i>敵對</span>
+    </div>
   </div>
 
   <div class="board">
     <div class="panel">
-      <p class="ph">案件盤面 <span id="ph-n" style="color:var(--slate);font-weight:600;text-transform:none;letter-spacing:0">· 24 位所有權人</span></p>
+      <p class="ph">案件盤面 <span class="sub" id="ph-n"></span></p>
       <div class="owners" id="owners"></div>
       <div class="legend">
-        <span><i class="sw" style="background:var(--mint);border:1.5px solid var(--emer-l)"></i>已同意</span>
-        <span><i class="sw" style="background:var(--amber-l);border:1.5px solid var(--amber)"></i>釘子戶（樞紐）</span>
-        <span><i class="sw" style="background:var(--warm);border:1.5px solid var(--line-2)"></i>未定</span>
+        <span><i class="sw" style="background:var(--sup-l);border:1.5px solid var(--sup)"></i>支持</span>
+        <span><i class="sw" style="background:var(--watch-l);border:1.5px solid var(--watch)"></i>觀望</span>
+        <span><i class="sw" style="background:var(--opp-l);border:1.5px solid var(--opp)"></i>反對</span>
+        <span><i class="sw" style="background:var(--hos-l);border:1.5px solid var(--hos)"></i>敵對</span>
+        <span style="color:var(--gold)">⌂ 家族</span>
       </div>
+      <div class="prof" id="prof">👆 點任一地主看他的<b>人格・情緒・家族</b>。</div>
       <div class="hint1" id="hint1"></div>
       <div class="actions" id="actions"></div>
       <div class="log" id="log"></div>
     </div>
     <div class="panel">
       <p class="ph">即時回饋</p>
-      <div class="ro">
-        <div class="lab"><span>🧱 釘子戶議價力</span><b id="lev-v">—</b></div>
-        <div class="meter"><span id="lev-bar" style="width:0%;background:var(--amber)"></span></div>
-        <div class="romsg" id="lev-msg"></div>
-      </div>
-      <div class="ro">
-        <div class="lab"><span>🤝 接受機率</span><b id="acc-v">—</b></div>
-        <div class="meter"><span id="acc-bar" style="width:0%;background:var(--emer-l)"></span></div>
-        <div class="romsg" id="acc-msg"></div>
-      </div>
-      <div class="ro">
-        <div class="lab"><span>🤝🆚 競合分餅</span><b id="pie-v"></b></div>
-        <div class="pie">
-          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#e0dcd2" stroke-width="4"/>
-            <circle id="pieArc" cx="18" cy="18" r="15.9" fill="none" stroke="#064e3b" stroke-width="4" stroke-dasharray="45 55" transform="rotate(-90 18 18)" style="transition:stroke-dasharray .5s"/></svg>
-          <div class="pl"><b id="pie-share">建方 45%</b> ／ <span id="pie-owner">地主分回 55%</span><div class="romsg" id="pie-msg" style="min-height:auto"></div></div>
-        </div>
-      </div>
+      <div class="ro"><div class="lab"><span>🧱 釘子戶議價力</span><b id="lev-v">—</b></div>
+        <div class="meter"><span id="lev-bar" style="width:0%;background:var(--watch)"></span></div><div class="romsg" id="lev-msg"></div></div>
+      <div class="ro"><div class="lab"><span>🤝 平均接受傾向</span><b id="acc-v">—</b></div>
+        <div class="meter"><span id="acc-bar" style="width:0%;background:var(--emer-l)"></span></div><div class="romsg" id="acc-msg"></div></div>
+      <div class="ro"><div class="lab"><span>🤝🆚 競合分餅</span><b id="pie-v"></b></div>
+        <div class="meter"><span id="pie-bar" style="width:45%;background:var(--emer)"></span></div>
+        <div class="romsg" id="pie-msg"></div></div>
       <a class="nbtn" href="evaluator.html" style="display:block;text-align:center;margin-top:6px">🧮 想算真實數字？開試算</a>
     </div>
   </div>
   <div id="endbox"></div>
 </main>
 
-<!-- 開場：劇本＋難度 -->
+<!-- 開場 -->
 <div class="overlay show" id="startOv"><div class="modal">
-  <div class="mh"><h3>🗂️ 選擇劇本與難度</h3></div>
+  <div class="mh"><h3>選擇劇本與設定</h3></div>
   <div class="mb">
-    <p style="margin:0 0 12px;color:var(--slate);font-size:13.5px">每個劇本對應一種真實整合情境（去識別化）。選一個開始。</p>
-    <div class="scards" id="scards"></div>
-    <div style="font-size:12.5px;font-weight:800;color:var(--emer-l);letter-spacing:.06em;margin:16px 0 0">難度</div>
-    <div class="difchips" id="difchips">
-      <div class="difchip" data-d="novice">🌱 新手<span>資源多、阻撓少</span></div>
-      <div class="difchip on" data-d="normal">⚖️ 一般<span>標準平衡</span></div>
-      <div class="difchip" data-d="hard">🔥 硬核<span>資源緊、阻撓多</span></div>
-    </div>
-    <button class="nbtn solid" id="startBtn" style="width:100%;margin-top:16px;padding:12px;font-size:15px">▶ 開始闖關</button>
+    <div class="field"><label>① 情境劇本（決定地主組成與難度）</label><div class="scards" id="scards"></div></div>
+    <div class="field"><label>② 地主數量（可手動調整）</label>
+      <div class="row"><input type="range" id="nrange" min="8" max="40" value="24" step="1"><b id="nval" style="width:48px;text-align:right;font-variant-numeric:tabular-nums">24 戶</b></div></div>
+    <div class="field"><label>③ 你的建商類型（建商信用）</label>
+      <div class="row"><select id="devsel">
+        <option value="20">上市建商（+20）</option><option value="10" selected>區域建商（+10）</option>
+        <option value="0">新創建商（0）</option><option value="-20">爭議建商（−20）</option></select></div></div>
+    <div class="difline">本局難度（依情境×人數×建商推算）：<span class="stars" id="difstars"></span><span id="diftxt"></span></div>
+    <button class="nbtn solid" id="startBtn" style="width:100%;margin-top:16px;padding:12px;font-size:15px">▶ 開始推演</button>
   </div>
 </div></div>
 
 <!-- 如何玩 -->
 <div class="overlay" id="howOv"><div class="modal">
-  <div class="mh"><h3>❓ 如何玩（30 秒）</h3><button class="x" id="howX">×</button></div>
+  <div class="mh"><h3>如何玩（30 秒）</h3><button class="x" id="howX">×</button></div>
   <div class="mb">
-    <div class="step on" data-s="0"><div style="font-size:34px">🎯</div><h4>目標</h4><p style="color:var(--body)">把<b>同意戶數</b>推過上方進度條的<b>紅線（門檻）</b>，然後按「⚖️ 啟動權利變換」收尾。在<b>時間</b>與<b>籌碼</b>用完前達標就贏。</p></div>
-    <div class="step" data-s="1"><div style="font-size:34px">🎴</div><h4>每回合做一個決策</h4><p style="color:var(--body)">下方有策略卡：加碼分回、打可信承諾、引入第三方、透明溝通、個別協商、等待、啟動權變。每張會花掉籌碼或時間，效果不同。</p></div>
-    <div class="step" data-s="2"><div style="font-size:34px">📊</div><h4>右邊看即時回饋</h4><p style="color:var(--body)"><b>制度信用</b>越高、<b>建方分配</b>越合理 → <b>接受機率</b>越高、越好推同意。逼近門檻時<b>釘子戶議價力</b>會飆，小心被末位戶綁架。</p></div>
-    <div class="step" data-s="3"><div style="font-size:34px">💡</div><h4>新手起手式</h4><p style="color:var(--body)">通常先 <b>打可信承諾</b>（拉信任）→ <b>透明溝通</b> → <b>個別協商</b>，把分配維持合理；別一直「等待」（議價力會養大）。玩到特定事件會<b>解鎖名詞</b>。</p></div>
+    <div class="step on" data-s="0"><div style="font-size:32px">🎯</div><h4>目標</h4><p style="color:var(--body)">把<b>支持（同意）</b>的地主推過進度條<b>紅線（門檻）</b>，再按「啟動權利變換」收尾。每位地主滿意度 ≥80 才算「同意」。</p></div>
+    <div class="step" data-s="1"><div style="font-size:32px">🧑‍🤝‍🧑</div><h4>24 個真人</h4><p style="color:var(--body)">每位地主有<b>人格</b>（保守/投資/情感/強勢/觀望），對策略反應不同——點地主看檔案。<b>族長</b>（⌂）會帶動整個家族。</p></div>
+    <div class="step" data-s="2"><div style="font-size:32px">🎴</div><h4>策略卡看「對象」</h4><p style="color:var(--body)">每張卡對不同人格效果不同（例：透明說明會→保守/情感大加分；加碼分回→投資派）。先看盤面誰是多數，再選對的牌。</p></div>
+    <div class="step" data-s="3"><div style="font-size:32px">💡</div><h4>起手式</h4><p style="color:var(--body)">通常先<b>可信承諾／引入第三方</b>把制度信用＋建商信用拉起來（保守派吃這套），再<b>透明說明會</b>＋<b>家族溝通</b>滾動多數；別硬上權變、別一直等待。</p></div>
     <div class="stepnav"><div class="dots" id="howDots"></div><button class="nbtn" id="howPrev">上一步</button><button class="nbtn solid" id="howNext">下一步</button></div>
   </div>
 </div></div>
 
-<!-- 概念圖鑑 -->
 <div class="overlay" id="codexOv"><div class="modal">
-  <div class="mh"><h3>📖 概念圖鑑 <span id="cxCount" style="font-size:13px;color:var(--slate);font-weight:600"></span></h3><button class="x" id="codexX">×</button></div>
+  <div class="mh"><h3>概念圖鑑 <span id="cxCount" style="font-size:13px;color:var(--slate);font-weight:600"></span></h3><button class="x" id="codexX">×</button></div>
   <div class="mb" id="codexBody"></div>
 </div></div>
-
-<!-- 結局 -->
 <div class="overlay" id="endOv"><div class="modal"><div class="mb" id="endModal"></div></div></div>
 
 <footer><div class="wrap">
-  <a href="index.html">🎯 儀表板</a>｜<a href="evaluator.html">🧮 開發試算</a>｜<a href="whitepaper.html">📈 整合總論</a>｜<a href="https://github.com/jeremy0819/Urban-Renewal" target="_blank" rel="noopener">📦 主庫</a>
-  <p class="footdisc">⚠️ 賽局教學示意，參數與機率可調、非真實案件預測，不含任何真實案名／金額／人名。同意門檻依現行《都市更新條例》§37、《危老條例》（查證 2026-06-19）。版本 2.0｜2026-06。</p>
+  <a href="index.html">儀表板</a>｜<a href="evaluator.html">開發試算</a>｜<a href="whitepaper.html">整合總論</a>｜<a href="https://github.com/jeremy0819/Urban-Renewal" target="_blank" rel="noopener">主庫</a>
+  <p class="footdisc">⚠️ 策略沙盤教學示意，地主／家族／參數皆為去識別化模型、非真實案件預測，不含任何真實案名、金額或人名。同意門檻依現行《都市更新條例》§37、《危老條例》（查證 2026-06-19）。版本 3.0｜2026-06。</p>
 </div></footer>
 
 <script>
-/* ============== 資料（去識別化） ============== */
-const SCEN=[
-  {k:'🏙️ 都更・基準',real:'一般都更案，條件中庸。',N:24,th:.75,consent:9,hold:3,budget:100,time:24,trust:30,share:.45,
-   intro:'24 戶、門檻 75%（需 18 戶）。把信任與分配顧好，穩穩推過門檻。'},
-  {k:'🏚️ 薄資本×釘子戶家族',real:'全案管理資本薄、信任赤字，末位戶家族質疑公司實質。',N:24,th:.75,consent:9,hold:5,budget:90,time:22,trust:14,share:.52,
-   intro:'信任極低、釘子戶多。先打「可信承諾」與「引入第三方」，否則加分配也沒用。'},
-  {k:'🪳 都更蟑螂進場',real:'投機客集中釘子戶部位、抬價。',N:24,th:.75,consent:8,hold:6,budget:80,time:22,trust:24,share:.55,
-   intro:'外部選項被墊高、分配又偏建方。早鎖同意、資訊透明壓縮套利、務實降分配。'},
-  {k:'🧱 危老・全體同意',real:'危老需 100% 同意，人人握否決權。',N:16,th:1.0,consent:7,hold:4,budget:100,time:20,trust:30,share:.45,
-   intro:'任一戶不簽全案卡死。分配讓利＋強擔保並行；難度天生高。'},
-];
-const DIFF={
-  novice:{bMul:1.2,tAdd:4,evMul:.7,cMul:1.2,trustAdd:10,label:'新手'},
-  normal:{bMul:1,tAdd:0,evMul:1,cMul:1,trustAdd:0,label:'一般'},
-  hard:{bMul:.85,tAdd:-3,evMul:1.3,cMul:.85,trustAdd:-8,label:'硬核'},
+/* ====================== 人格系統（Level 1） ====================== */
+const PERS={
+  cons:{k:'保守派',pi:'🛡️',d:'不信建商、重制度、不冒風險',resp:{說明:8,分回:3,承諾:14,第三方:12,家族:5,等待:0}},
+  inv :{k:'投資派',pi:'📈',d:'重利益、理性決策',resp:{說明:4,分回:15,承諾:6,第三方:6,家族:3,等待:0}},
+  emo :{k:'情感派',pi:'❤️',d:'重感情、重鄰里',resp:{說明:13,分回:4,承諾:7,第三方:4,家族:14,等待:1}},
+  dom :{k:'強勢派',pi:'♟️',d:'習慣主導、談判高手',resp:{說明:3,分回:7,承諾:5,第三方:4,家族:6,等待:0,協商:18}},
+  obs :{k:'觀望派',pi:'👀',d:'跟隨大眾、看同意率',resp:{說明:5,分回:5,承諾:5,第三方:4,家族:5,等待:0}},
 };
+const SURNAME=['王','李','陳','林','張','黃','吳','劉','蔡','許','鄭','郭','洪','周','曾','賴','邱'];
+/* 劇本：定義人格分布、家族計畫、起始滿意度、門檻、資源、難度權重 */
+const SCEN=[
+  {k:'🏙️ 一般都更',real:'條件中庸的常見都更案。',th:.75,baseSat:58,budget:100,time:24,inst:30,
+   dist:{cons:.3,inv:.3,emo:.2,dom:.1,obs:.1},fam:[{sz:3}],hard:1},
+  {k:'🏚️ 薄資本×釘子戶家族',real:'建商資本薄、信任赤字，末位戶家族抗拒。',th:.75,baseSat:46,budget:90,time:22,inst:14,
+   dist:{cons:.42,inv:.18,emo:.16,dom:.16,obs:.08},fam:[{sz:5,hostile:true}],hard:2.2},
+  {k:'🪳 都更蟑螂進場',real:'投機客集中部位、抬價、挑撥。',th:.75,baseSat:52,budget:82,time:22,inst:24,
+   dist:{cons:.22,inv:.4,emo:.12,dom:.22,obs:.04},fam:[{sz:3}],hard:1.8},
+  {k:'🧱 危老・全體同意',real:'危老需 100% 同意，人人握否決權。',th:1.0,baseSat:55,budget:100,time:20,inst:30,
+   dist:{cons:.34,inv:.24,emo:.22,dom:.12,obs:.08},fam:[{sz:2}],hard:2.6},
+];
 const EVENTS=[
-  {em:'💸',t:'釘子戶天價求償',eff:{consent:-2},m:'末位樞紐戶喊天價'},
-  {em:'↩️',t:'同意書撤回',eff:{consent:-2},m:'法定期內反悔',chain:1},
-  {em:'⚖️',t:'司法救濟拖延',eff:{time:-2},m:'行政訴訟拖時程'},
-  {em:'📐',t:'估價爭議',eff:{trust:-8},m:'更新前價值認知落差'},
-  {em:'🪳',t:'都更蟑螂抬價',eff:{budget:-18},m:'投機客集中部位'},
-  {em:'🎭',t:'假性反對哄抬',eff:{consent:-1,trust:-5},m:'以反對換更高分回',chain:1},
-  {em:'🔁',t:'一坪換一坪迷思',eff:{trust:-6},m:'期待錨點偏離'},
-  {em:'📋',t:'公聽會程序瑕疵',eff:{time:-1},m:'送達瑕疵被撤'},
-  {em:'🏦',t:'資金信託不到位',eff:{trust:-10},m:'撥付延宕、信心崩'},
-  {em:'⚖️',t:'分回不均反彈',eff:{consent:-1,trust:-4},m:'清冊不透明引串連'},
+  {em:'💸',t:'釘子戶天價求償',m:'末位樞紐戶喊天價',f:g=>hitPers(g,['dom','inv'],-10)},
+  {em:'↩️',t:'同意書撤回',m:'法定期內反悔',chain:1,f:g=>hitRandom(g,2,-14)},
+  {em:'⚖️',t:'都市設計審議卡關',m:'都審要求修正',f:g=>{g.time-=2;}},
+  {em:'📐',t:'權變估價爭議',m:'更新前價值認知落差',f:g=>{g.inst=cl(g.inst-8);hitPers(g,['cons','inv'],-6);}},
+  {em:'🪳',t:'都更蟑螂抬價',m:'投機客集中部位',f:g=>{g.budget-=18;}},
+  {em:'🎭',t:'假性反對哄抬',m:'以反對換更高分回',chain:1,f:g=>hitPers(g,['dom'],-8)},
+  {em:'🔁',t:'一坪換一坪迷思',m:'期待錨點偏離',f:g=>hitPers(g,['cons','emo'],-7)},
+  {em:'📋',t:'公聽會程序瑕疵',m:'送達瑕疵須重辦',f:g=>{g.time-=1;}},
+  {em:'🏦',t:'資金信託不到位',m:'撥付延宕、信心崩',f:g=>{g.inst=cl(g.inst-10);hitAll(g,-4);}},
+  {em:'📰',t:'媒體負面報導',m:'建商被點名',f:g=>{g.dev=cl(g.dev-10,-30,30);hitPers(g,['cons'],-6);}},
 ];
 const CONCEPTS=[
-  {id:'coop',em:'🤝🆚',t:'競合（Coopetition）',tag:'核心',b:'整合成功才有餅（正和），破局餅歸零。合作把餅做大、競爭分餅；建方分配拉太高→接受率崩。'},
-  {id:'commit',em:'🔒',t:'可信承諾（制度信用）',tag:'解方',b:'續建機制／增資／連帶擔保＝用制度信用取代公司信用，大幅拉高接受率。把卡死案子救回成交的關鍵牌。'},
-  {id:'holdup',em:'🧱',t:'釘子戶 hold-up',tag:'機制',b:'議價力＝沉沒成本×樞紐性：階段越後、餘戶越關鍵，末位戶越能勒索。逼近門檻、拖延都會養大它。'},
-  {id:'threshold',em:'🎯',t:'同意門檻',tag:'規則',b:'都更§37：自劃 3/4、政府劃定 1/2、面積>9/10 免計人數；危老需 100%。危老劇本人人是釘子戶。'},
-  {id:'indep',em:'⚖️',t:'球員兼裁判',tag:'信任',b:'同集團同時遴選/報價/監督，缺乏獨立性折損信任。引入第三方獨立監督可回補（解鎖自你引入第三方）。'},
-  {id:'cascade',em:'🌊',t:'偏好雪崩／資訊瀑布',tag:'Kuran',b:'高同意率可能是紙牌屋；先帶頭者一爆，壓抑疑慮連鎖引爆。透明溝通可打斷瀑布（解鎖自你遇到連鎖事件）。'},
-  {id:'attrition',em:'📈',t:'阻撓賽局／消耗戰',tag:'賽局',b:'兩戶皆阻撓→流產雙輸；都想當勒索方→僵局。等待與硬上權變會引發反彈，務實合作才穩定成交。'},
+  {id:'people',em:'🧑‍🤝‍🧑',t:'地主人格',tag:'核心',b:'保守/投資/情感/強勢/觀望，對策略反應不同。整合的第一步是「辨人」——同一張牌對保守派加分、對投資派沒用。'},
+  {id:'family',em:'⌂',t:'家族戶（族長效應）',tag:'機制',b:'一個家族多戶，但你只需說服<b>族長</b>——說服他帶動全家族同意，得罪他全家族倒戈。火力集中族長，效率最高。'},
+  {id:'emotion',em:'🌡️',t:'地主情緒',tag:'機制',b:'不是只有同意/不同意，而是支持→觀望→反對→敵對的連續滿意度。滿意度≥80 才算同意；敵對戶要先止血再回溫。'},
+  {id:'dev',em:'🏢',t:'制度信用 vs 建商信用',tag:'信任',b:'建商信用（公司本身：上市/區域/新創/爭議）＋制度信用（信託/續建/第三方）。爭議建商起步難，需用制度信用補。'},
+  {id:'coop',em:'🤝🆚',t:'競合分餅',tag:'賽局',b:'整合成功才有餅；建方分配拉太高→投資派以外都不買單→接受率崩。合作把餅做大、競爭分餅。'},
+  {id:'holdup',em:'🧱',t:'釘子戶 hold-up',tag:'機制',b:'議價力＝沉沒成本×樞紐性：階段越後、餘戶越關鍵，末位戶越能勒索。拖延與逼近門檻都養大它。'},
+  {id:'threshold',em:'🎯',t:'同意門檻',tag:'§37',b:'都更§37：自劃 3/4、政府劃定 1/2、面積>9/10 免計人數；危老 100%。危老劇本人人是釘子戶。'},
 ];
 
-/* ============== 工具 ============== */
+/* ====================== 工具 ====================== */
 const $=id=>document.getElementById(id);
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const cl=(x,a=0,b=100)=>Math.max(a,Math.min(b,x));
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const AGREE=80;
+function band(s){return s>=80?'sup':s>=50?'watch':s>=20?'opp':'hos';}
+function bandName(s){return s>=80?'支持':s>=50?'觀望':s>=20?'反對':'敵對';}
+function bandColor(s){return s>=80?'var(--sup)':s>=50?'var(--watch)':s>=20?'var(--opp)':'var(--hos)';}
 let SOUND=false;
-function beep(type){
-  if(!SOUND) return;
-  try{const a=new (window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator(),g=a.createGain();
-    o.connect(g);g.connect(a.destination);
-    const f={good:660,bad:200,evt:330,win:880,unlock:540}[type]||440;
-    o.frequency.value=f;o.type=type==='bad'?'sawtooth':'sine';
-    g.gain.setValueAtTime(.08,a.currentTime);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.25);
-    o.start();o.stop(a.currentTime+.26);}catch(e){}
-}
-function toast(msg,cls){const t=document.createElement('div');t.className='toast '+(cls||'');t.innerHTML=msg;$('toasts').appendChild(t);setTimeout(()=>t.remove(),2900);}
-function floatDelta(statId,n){
-  if(!n) return;
-  const st=$(statId);const d=st.querySelector('.delta');
-  d.textContent=(n>0?'+':'')+n;d.className='delta '+(n>0?'pos':'neg');void d.offsetWidth;d.classList.add('go');
-  st.classList.add(n>0?'up':'down');setTimeout(()=>st.classList.remove('up','down'),500);
-}
+function beep(t){if(!SOUND)return;try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value={good:660,bad:200,evt:330,win:880,unlock:540}[t]||440;o.type=t==='bad'?'sawtooth':'sine';g.gain.setValueAtTime(.07,a.currentTime);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.25);o.start();o.stop(a.currentTime+.26);}catch(e){}}
+function toast(m,c){const t=document.createElement('div');t.className='toast '+(c||'');t.innerHTML=m;$('toasts').appendChild(t);setTimeout(()=>t.remove(),2900);}
 function shake(){document.body.classList.add('shake');setTimeout(()=>document.body.classList.remove('shake'),420);}
-function confetti(){
-  const c=$('fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
-  const P=[];for(let i=0;i<140;i++)P.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,r:4+Math.random()*5,
-    vy:2+Math.random()*4,vx:-2+Math.random()*4,col:['#10b981','#064e3b','#b08a3e','#d97706','#2563eb'][rnd(0,4)],a:1});
-  let t=0;(function loop(){x.clearRect(0,0,c.width,c.height);t++;let alive=false;
-    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;if(p.y<c.height+20){alive=true;x.globalAlpha=Math.max(0,1-t/160);x.fillStyle=p.col;x.fillRect(p.x,p.y,p.r,p.r);}});
-    if(alive&&t<170)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height);})();
-}
+function floatDelta(id,n){if(!n)return;const st=$(id),d=st.querySelector('.delta');d.textContent=(n>0?'+':'')+n;d.className='delta '+(n>0?'pos':'neg');void d.offsetWidth;d.classList.add('go');st.classList.add(n>0?'up':'down');setTimeout(()=>st.classList.remove('up','down'),500);}
+function confetti(){const c=$('fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const P=[];for(let i=0;i<130;i++)P.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,r:4+Math.random()*5,vy:2+Math.random()*4,vx:-2+Math.random()*4,col:['#10b981','#064e3b','#b08a3e','#ca8a04','#2563eb'][rnd(0,4)]});let t=0;(function loop(){x.clearRect(0,0,c.width,c.height);t++;let al=false;P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;if(p.y<c.height+20){al=true;x.globalAlpha=Math.max(0,1-t/160);x.fillStyle=p.col;x.fillRect(p.x,p.y,p.r,p.r);}});if(al&&t<170)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height);})();}
 
-/* ============== 狀態 ============== */
-let G, scIdx=0, diff='normal', selScen=0, unlocked, prevConsent;
-function init(i,d){
-  scIdx=i; diff=d||diff; const s=SCEN[i], D=DIFF[diff];
-  G={N:s.N,th:s.th,needed:Math.ceil(s.N*s.th),consent:s.consent,hold:s.hold,
-     budget:Math.round(s.budget*D.bMul),time:s.time+D.tAdd,trust:clamp(s.trust+D.trustAdd,0,100),
-     share:s.share,stage:5,round:0,calm:0,commits:{續建:false,增資:false,擔保:false},indep:false,
-     over:false,lastEvent:false,baseTime:s.time+D.tAdd,
-     stats:{commitsUsed:0,transparency:0,raises:0}};
-  unlocked=new Set(['coop','threshold','attrition']);
-  prevConsent=G.consent;
-  $('endbox').innerHTML='';$('endOv').classList.remove('show');$('log').innerHTML='';
-  $('ph-n').textContent='· '+s.N+' 位所有權人 ·「'+s.k+'」·'+D.label;
-  log('sys','🏁 開局：'+s.k+'（'+D.label+'）　'+s.intro);
-  buildActions();render(true);
-  // 第一回合教學提示
-  const seen=localStorage.getItem('urGameTut');
-  $('hint1').classList.add('show');
-  $('hint1').innerHTML= G.trust<20
-    ? '👉 <b>起手式：</b>信任偏低，先點 <b>🔒 打出可信承諾</b> 或 <b>⚖️ 引入第三方</b> 拉制度信用，再談分配。'
-    : '👉 <b>起手式：</b>先 <b>🔒 可信承諾</b> 拉信任 → <b>📊 透明溝通</b> → <b>🤝 個別協商</b>，分配維持合理；別一直等待。';
-  if(!seen){ setTimeout(()=>$('howOv').classList.add('show'),400); localStorage.setItem('urGameTut','1'); }
-  saveProgress();
+/* 影響地主滿意度的小工具（事件用） */
+function hitPers(g,ps,d){g.owners.forEach(o=>{if(ps.includes(o.pers))o.sat=cl(o.sat+d);});}
+function hitAll(g,d){g.owners.forEach(o=>o.sat=cl(o.sat+d));}
+function hitRandom(g,n,d){for(let i=0;i<n;i++){const o=g.owners[rnd(0,g.owners.length-1)];o.sat=cl(o.sat+d);}}
+
+/* ====================== 狀態與生成 ====================== */
+let G,unlocked,selScen=0,selDev=10,selN=24,sel=-1,prevAgree=0;
+function pickPers(dist){const r=Math.random();let a=0;for(const k in dist){a+=dist[k];if(r<=a)return k;}return 'obs';}
+function difficulty(sc,N,dev){
+  // 情境權重 × 規模 × 建商信用 → 1~5
+  let d=sc.hard*2.0 + (sc.th>=1?1.2:0) + (N-24)/16 - dev/22 + (50-sc.baseSat)/22;
+  return cl(Math.round(d),1,5);
 }
-function log(cls,h){const e=document.createElement('div');e.className='e '+cls;e.innerHTML=h;$('log').insertBefore(e,$('log').firstChild);}
+function genOwners(sc,N,dev){
+  const arr=[];
+  for(let i=0;i<N;i++){
+    const pers=pickPers(sc.dist);
+    let sat=cl(sc.baseSat + rnd(-12,12) + dev*0.4 + (pers==='cons'?-4:pers==='inv'?2:0));
+    arr.push({id:i,name:SURNAME[i%SURNAME.length]+'宅',no:i+1,pers,sat,infl:rnd(1,3),fam:null,leader:false});
+  }
+  // 家族：把前幾戶編入家族，選最高 influence 當族長
+  let idx=0, fid=0;
+  (sc.fam||[]).forEach(fp=>{
+    const sz=Math.min(fp.sz,N-idx); if(sz<2)return;
+    const members=[]; for(let j=0;j<sz;j++){const o=arr[idx++];o.fam=fid;members.push(o);}
+    const leader=members.reduce((a,b)=>b.infl>a.infl?b:a,members[0]);leader.leader=true;leader.infl=3;
+    members.forEach(o=>{o.famName=SURNAME[fid+8]+'家';if(fp.hostile&&o.leader)o.sat=cl(o.sat-18);});
+    fid++;
+  });
+  return arr;
+}
+function agreeCount(g){return g.owners.filter(o=>o.sat>=AGREE).length;}
+function init(){
+  const sc=SCEN[selScen],N=selN,dev=selDev;
+  G={sc:selScen,th:sc.th,N,needed:Math.ceil(N*sc.th),budget:sc.budget,time:sc.time,baseTime:sc.time,
+     inst:sc.inst,dev,share:.45,stage:5,round:0,calm:0,commits:{續建:0,增資:0,擔保:0},indep:0,over:false,
+     owners:genOwners(sc,N,dev),lastEvent:false,dif:difficulty(sc,N,dev),
+     stats:{commit:0,trans:0,raise:0,fam:0}};
+  unlocked=new Set(['people','threshold','coop']);
+  sel=-1;prevAgree=agreeCount(G);
+  $('endbox').innerHTML='';$('endOv').classList.remove('show');$('log').innerHTML='';
+  $('ph-n').textContent='· '+N+' 戶 ·「'+sc.k+'」· 難度 '+'★'.repeat(G.dif);
+  log('sys','🏁 開局：'+sc.k+'（'+N+' 戶，難度 '+'★'.repeat(G.dif)+'）。先辨識地主人格，再對症下策略。');
+  buildActions();render(true);buildCodex();
+  $('prof').innerHTML='👆 點任一地主看他的<b>人格・情緒・家族</b>。';
+  $('hint1').classList.add('show');
+  $('hint1').innerHTML= G.inst<22||dev<0
+    ? '👉 <b>起手式：</b>信任偏低，先 <b>可信承諾／引入第三方</b> 把制度信用拉起來（保守派吃這套），再談分配。'
+    : '👉 <b>起手式：</b>先 <b>透明說明會</b>＋<b>家族溝通</b> 滾動多數，分配維持合理；別硬上權變、別一直等待。';
+  if(!localStorage.getItem('urV3Tut')){setTimeout(()=>{howGo(0);$('howOv').classList.add('show');},400);localStorage.setItem('urV3Tut','1');}
+  save();
+}
+function log(c,h){const e=document.createElement('div');e.className='e '+c;e.innerHTML=h;$('log').insertBefore(e,$('log').firstChild);}
 
 /* 衍生量 */
-function sunk(){return clamp(0.2+0.8*((G.stage-5)/4),0,1);}
-function acceptMult(){
-  const cb=(G.commits.續建?.25:0)+(G.commits.增資?.18:0)+(G.commits.擔保?.12:0)+(G.indep?.12:0);
-  const greed=(G.share-0.4)*1.4;
-  return clamp(0.45+G.trust/130+cb-greed,0.1,1.7)*DIFF[diff].cMul;
+function sunk(){return cl(.2+.8*((G.stage-5)/4),0,1);}
+function commitBonus(){return (G.commits.續建?.25:0)+(G.commits.增資?.18:0)+(G.commits.擔保?.12:0)+(G.indep?.12:0);}
+function acceptAvg(){ // 平均接受傾向：制度+建商信用、分配合理度
+  const trust=(G.inst/100)*.5+((G.dev+30)/60)*.3+commitBonus()*.5;
+  const greed=(G.share-.4)*1.2;
+  return cl(trust-greed+ .3,0,1);
 }
-function leverage(){const gap=G.needed-G.consent,avail=G.N-G.consent;if(gap<=0)return .1*sunk();
-  return clamp(sunk()*.7*(avail>0?gap/avail:1)+(G.round*.01),0,1);}
-function unlock(id){if(unlocked.has(id))return;unlocked.add(id);const c=CONCEPTS.find(x=>x.id===id);
-  toast('🔓 解鎖名詞：<b>'+c.t+'</b>','unlock');beep('unlock');buildCodex();}
+function leverage(){const gap=G.needed-agreeCount(G),avail=G.N-agreeCount(G);if(gap<=0)return .1*sunk();return cl(sunk()*.7*(avail>0?gap/avail:1)+G.round*.01,0,1);}
+function unlock(id){if(unlocked.has(id))return;unlocked.add(id);const c=CONCEPTS.find(x=>x.id===id);toast('🔓 解鎖：<b>'+c.t+'</b>','unlock');beep('unlock');buildCodex();}
 
-/* ============== 動作 ============== */
+/* 觀望派隨大眾漂移 */
+function bandwagon(){const rate=agreeCount(G)/G.N;G.owners.forEach(o=>{if(o.pers==='obs')o.sat=cl(o.sat+(rate*100-o.sat)*.18);});}
+
+/* ====================== 策略卡（Level 對象化 + 審議 tag） ====================== */
 const ACTS=[
-  {em:'💰',t:'加碼分回',cost:'籌-22 月-1',tag:'競合分餅',d:'降建方分配、誘因換同意',can:g=>g.budget>=22,run(g){
-    g.budget-=22;g.time-=1;g.share=clamp(g.share-0.04,0.3,0.7);g.stats.raises++;
-    let k=convert(rnd(2,4)),h=0;
-    if(g.share<=0.46&&g.trust>=45&&g.hold>0){g.hold--;h=1;g.consent++;unlock('holdup');}
-    log('good',`💰 加碼分回（建方降至 ${Math.round(g.share*100)}%）→ 同意 +${k+h}`);
-    if(Math.random()<.25){toast('🪳 加碼引來投機客盯上…','evt');} event(0.12);}},
-  {em:'🔒',t:'打出可信承諾',cost:'籌-15 月-1',tag:'信託・制度信用',d:'續建/增資/擔保→拉信任',can:g=>g.budget>=15&&!(g.commits.續建&&g.commits.增資&&g.commits.擔保),run(g){
-    g.budget-=15;g.time-=1;let nm,add;
-    if(!g.commits.續建){g.commits.續建=true;nm='續建機制（信託接管）';add=25;}
-    else if(!g.commits.增資){g.commits.增資=true;nm='增資到位';add=18;}
-    else{g.commits.擔保=true;nm='連帶擔保';add=12;}
-    g.trust=clamp(g.trust+add,0,100);g.stats.commitsUsed++;unlock('commit');
-    let k=convert(rnd(1,3));log('good',`🔒 ${nm} → 制度信用 +${add}、同意 +${k}`);event(-0.05);}},
-  {em:'⚖️',t:'引入第三方',cost:'籌-12 月-1',tag:'arm’s-length',d:'獨立監督/遴選，破球員兼裁判',can:g=>g.budget>=12&&!g.indep,run(g){
-    g.budget-=12;g.time-=1;g.indep=true;g.trust=clamp(g.trust+15,0,100);unlock('indep');
-    let k=convert(rnd(1,2));log('good',`⚖️ 引入獨立第三方監督 → 制度信用 +15、同意 +${k}`);event(-0.08);}},
-  {em:'📊',t:'透明溝通',cost:'籌-6 月-1',tag:'估價/單一數源',d:'拉信任、壓制阻撓',can:g=>g.budget>=6,run(g){
-    g.budget-=6;g.time-=1;g.trust=clamp(g.trust+8,0,100);g.calm+=2;g.stats.transparency++;unlock('cascade');
-    let k=convert(rnd(0,2));log('good',`📊 透明溝通 → 制度信用 +8、同意 +${k}，後續阻撓機率下降`);event(-0.12);}},
-  {em:'🤝',t:'個別協商',cost:'月-2',tag:'逐戶意願',d:'穩健轉化未定戶',can:g=>g.time>=2,run(g){
-    g.time-=2;let k=convert(rnd(1,3));log('good',`🤝 個別協商 → 同意 +${k}`);event(0);}},
-  {em:'⏳',t:'等待觀望',cost:'月-2',tag:'沉沒成本',d:'近乎免費，但議價力升',can:g=>g.time>=2,run(g){
-    g.time-=2;let k=Math.random()<.45?convert(1):0;unlock('attrition');
-    log(k?'good':'sys',`⏳ 等待觀望 → 同意 +${k}（沉沒成本與議價力上升）`);event(0.2);}},
-  {em:'🏁',t:'啟動權利變換',cost:'結算',tag:'都更§37/權變',d:'達門檻→闖關成功',win:true,can:g=>true,run(g){
-    if(g.consent>=g.needed){end(true,'同意跨過門檻！啟動權利變換、餘戶依法強制納入——整合成功 🎉');return;}
-    g.time-=1;g.trust=clamp(g.trust-10,0,100);
-    log('bad','🏁 未達門檻硬上 → 反彈、信任 −10、訴訟風險');shake();event(0.3);}},
+  {em:'📣',t:'公開透明說明會',cost:'籌-8 月-1',tag:'公聽會・公開展覽（§32-33）',target:'保守/情感',
+   d:'資訊透明，保守與情感派大加分',can:g=>g.budget>=8,run(g){g.budget-=8;g.time-=1;g.inst=cl(g.inst+6);g.calm+=2;g.stats.trans++;
+     applyResp(g,'說明');unlock('emotion');log('good','📣 公開透明說明會 → 保守/情感派滿意度上升、制度信用 +6');event(-.12);}},
+  {em:'💰',t:'加碼分回',cost:'籌-22 月-1',tag:'權利變換分配（權變辦法）',target:'投資',
+   d:'降建方分配，投資派最買單',can:g=>g.budget>=22,run(g){g.budget-=22;g.time-=1;g.share=cl(g.share-.04,.3,.7)/1;g.stats.raise++;
+     applyResp(g,'分回');unlock('coop');if(Math.random()<.25)toast('🪳 加碼引來投機客盯上…','evt');log('good','💰 加碼分回（建方降至 '+Math.round(g.share*100)+'%）→ 投資派滿意度上升');event(.12);}},
+  {em:'🔒',t:'打出可信承諾',cost:'籌-15 月-1',tag:'信託專戶・續建機制',target:'保守/全體',
+   d:'續建/增資/擔保→制度信用＋保守派',can:g=>g.budget>=15&&!(g.commits.續建&&g.commits.增資&&g.commits.擔保),run(g){g.budget-=15;g.time-=1;
+     let nm,a;if(!g.commits.續建){g.commits.續建=1;nm='續建機制';a=20;}else if(!g.commits.增資){g.commits.增資=1;nm='增資到位';a=15;}else{g.commits.擔保=1;nm='連帶擔保';a=10;}
+     g.inst=cl(g.inst+a);g.stats.commit++;applyResp(g,'承諾');unlock('dev');log('good','🔒 '+nm+' → 制度信用 +'+a+'、保守派回穩');event(-.05);}},
+  {em:'⚖️',t:'引入獨立第三方',cost:'籌-12 月-1',tag:'估價師三家（權變§6）',target:'保守/投資',
+   d:'獨立估價/監督，破球員兼裁判',can:g=>g.budget>=12&&!g.indep,run(g){g.budget-=12;g.time-=1;g.indep=1;g.inst=cl(g.inst+12);
+     applyResp(g,'第三方');unlock('dev');log('good','⚖️ 引入獨立第三方 → 制度信用 +12、保守/投資派回穩');event(-.08);}},
+  {em:'🤝',t:'個別協商（強勢戶）',cost:'月-2',tag:'逐戶協議',target:'強勢/敵對戶',
+   d:'針對最棘手的強勢/敵對戶深談',can:g=>g.time>=2,run(g){g.time-=2;
+     const t=g.owners.filter(o=>o.sat<AGREE).sort((a,b)=>(a.pers==='dom'?-1:0)-(b.pers==='dom'?-1:0)||a.sat-b.sat)[0];
+     if(t){t.sat=cl(t.sat+(t.pers==='dom'?20:14));log('good','🤝 個別協商「'+t.no+'號 '+t.name+'」（'+PERS[t.pers].k+'）→ 滿意度 +'+(t.pers==='dom'?20:14));}
+     event(0);}},
+  {em:'👪',t:'家族溝通（族長）',cost:'籌-6 月-2',tag:'同意比例整合',target:'族長→帶動全家族',
+   d:'說服族長，帶動整個家族',can:g=>g.time>=2&&g.budget>=6&&g.owners.some(o=>o.leader),run(g){g.budget-=6;g.time-=2;g.stats.fam++;
+     const ld=g.owners.filter(o=>o.leader&&o.sat<AGREE).sort((a,b)=>a.sat-b.sat)[0]||g.owners.find(o=>o.leader);
+     ld.sat=cl(ld.sat+16);g.owners.forEach(o=>{if(o.fam===ld.fam&&!o.leader)o.sat=cl(o.sat+11);});
+     unlock('family');log('good','👪 家族溝通：說服「'+ld.famName+'」族長 → 帶動全家族滿意度上升');event(-.05);}},
+  {em:'⏳',t:'等待觀望',cost:'月-2',tag:'時程風險',target:'—',
+   d:'近乎免費，但沉沒成本與議價力升',can:g=>g.time>=2,run(g){g.time-=2;unlock('holdup');log('sys','⏳ 等待觀望（沉沒成本與議價力上升）');event(.2);}},
+  {em:'🏁',t:'啟動權利變換',cost:'結算',tag:'事業計畫核定（§37）',target:'達門檻收尾',win:true,
+   d:'同意達門檻→闖關成功',can:g=>true,run(g){if(agreeCount(g)>=g.needed){end(true,'同意跨過門檻！啟動權利變換、餘戶依法強制納入——整合成功 🎉');return;}
+     g.time-=1;g.inst=cl(g.inst-10);hitAll(g,-3);log('bad','🏁 未達門檻硬上 → 反彈、制度信用 −10、全體滿意度下降');shake();event(.3);}},
 ];
-function convert(base){const real=Math.max(0,Math.round(base*acceptMult()));
-  const room=G.N-G.consent-G.hold;return (G.consent+=Math.min(real,Math.max(0,room)),Math.min(real,Math.max(0,room)));}
+function applyResp(g,key){ // 依人格反應曲線加滿意度，乘上接受傾向
+  const mult=.6+acceptAvg();
+  g.owners.forEach(o=>{const base=(PERS[o.pers].resp[key]||0);if(base)o.sat=cl(o.sat+base*mult*0.9);});
+}
 function event(extra){
-  let p=(0.28+(G.round*.03)+(extra||0)-G.calm*.12)*DIFF[diff].evMul;
+  let p=(.26+G.round*.03+(extra||0)-G.calm*.12)*(0.7+G.dif*0.12);
   if(G.calm>0)G.calm--;
-  if(Math.random()<p){
-    const ev=EVENTS[rnd(0,EVENTS.length-1)],e=ev.eff;
-    if(e.consent)G.consent=Math.max(0,G.consent+e.consent);
-    if(e.budget)G.budget+=e.budget;if(e.time)G.time+=e.time;
-    if(e.trust)G.trust=clamp(G.trust+e.trust,0,100);
-    if(ev.chain&&G.lastEvent&&G.lastEvent.chain){unlock('cascade');toast('🌊 偏好雪崩：阻撓連鎖！','evt');}
-    G.lastEvent=ev;
-    const d=Object.entries(e).map(([k,v])=>({consent:'同意',budget:'籌碼',time:'時程',trust:'信用'}[k]+' '+v)).join('、');
-    log('evt',`🧱 阻撓：<b>${ev.t}</b>（${ev.m}）→ ${d}`);
-    toast(`🧱 ${ev.em} ${ev.t} → ${d}`,'evt');shake();beep('bad');
+  if(Math.random()<p){const ev=EVENTS[rnd(0,EVENTS.length-1)];ev.f(G);
+    if(ev.chain&&G.lastEvent&&G.lastEvent.chain){unlock('emotion');toast('🌊 偏好雪崩：阻撓連鎖！','evt');}
+    G.lastEvent=ev;G.budget=Math.round(G.budget);
+    log('evt','🧱 '+ev.em+' <b>'+ev.t+'</b>（'+ev.m+'）');toast('🧱 '+ev.em+' '+ev.t,'evt');shake();beep('bad');
   } else G.lastEvent=false;
 }
-function buildActions(){
-  $('actions').innerHTML='';
-  ACTS.forEach(a=>{const b=document.createElement('button');b.className='act'+(a.win?' win':'');
-    b.innerHTML=`<span class="cost">${a.cost}</span><span class="em">${a.em}</span><b>${a.t}</b><span class="d">${a.d}</span><span class="tagx">⚖️ ${a.tag}</span>`;
-    b.onclick=()=>doAct(a);$('actions').appendChild(b);});
-}
+function buildActions(){$('actions').innerHTML='';ACTS.forEach(a=>{const b=document.createElement('button');b.className='act'+(a.win?' win':'');
+  b.innerHTML='<span class="cost">'+a.cost+'</span><span class="em">'+a.em+'</span><b>'+a.t+'</b><span class="d">'+a.d+'</span><span class="tagx">⚖️ '+a.tag+'</span><span class="target">🎯 '+a.target+'</span>';
+  b.onclick=()=>doAct(a);$('actions').appendChild(b);});}
 function doAct(a){
-  if(G.over)return;
-  $('hint1').classList.remove('show');
-  prevConsent=G.consent;const pB=G.budget,pT=G.time,pTr=G.trust;
-  a.run(G);G.round++;G.stage=Math.min(9,5+Math.floor((G.baseTime-G.time)/4));
-  if(leverage()>0.6)unlock('holdup');
-  if(!G.over)checkEnd();
+  if(G.over)return;$('hint1').classList.remove('show');
+  prevAgree=agreeCount(G);const pB=G.budget,pT=G.time,pI=G.inst;
+  a.run(G);bandwagon();G.round++;G.stage=Math.min(9,5+Math.floor((G.baseTime-G.time)/4));
+  if(leverage()>.6)unlock('holdup');
+  if(!G.over){if(G.time<=0)end(false,'時程耗盡，案件停擺、信心瓦解——整合破局。');else if(G.budget<0)end(false,'籌碼見底，無力再推——整合破局。');}
   render();
-  // 浮動數字
-  floatDelta('st-consent',G.consent-prevConsent);floatDelta('st-budget',G.budget-pB);
-  floatDelta('st-time',G.time-pT);floatDelta('st-trust',G.trust-pTr);
-  if(G.consent>prevConsent){$('pbar').classList.add('gain');setTimeout(()=>$('pbar').classList.remove('gain'),600);beep('good');}
-  saveProgress();
-}
-function checkEnd(){
-  if(G.time<=0){end(false,'時程耗盡，案件停擺、信心瓦解——整合破局。');return;}
-  if(G.budget<0){end(false,'籌碼見底，無力再推——整合破局。');return;}
+  floatDelta('st-consent',agreeCount(G)-prevAgree);floatDelta('st-budget',G.budget-pB);floatDelta('st-time',G.time-pT);floatDelta('st-inst',G.inst-pI);
+  if(agreeCount(G)>prevAgree){$('pbar').classList.add('gain');setTimeout(()=>$('pbar').classList.remove('gain'),600);beep('good');}
+  save();
 }
 function end(win,msg){
-  G.over=true;clearProgress();
-  log(win?'good':'bad',(win?'🏆 ':'💔 ')+msg);
+  G.over=true;clearSave();log(win?'good':'bad',(win?'🏆 ':'💔 ')+msg);
   if(win){confetti();beep('win');}else{shake();beep('bad');}
   const used=Object.entries(G.commits).filter(([k,v])=>v).map(([k])=>k);if(G.indep)used.push('獨立第三方');
-  const monthsUsed=G.baseTime-G.time, shareback=100-Math.round(G.share*100);
-  const key= win
-    ? `關鍵：${used.length?'<b>'+used.join('、')+'</b>（制度信用）':'務實分配'}＋建方分配 ${Math.round(G.share*100)}%。印證「制度信用 > 公司信用、競合把餅做大」。`
-    : `卡關常因信任不足或分配過貪。下次先<b>打可信承諾／引入第三方</b>拉信用，把建方分配壓回合理，再用透明溝通壓制阻撓——別讓時間養大議價力。`;
-  $('endModal').innerHTML=`<div class="endbig ${win?'win':'lose'}">${win?'🏆 整合成功':'💔 整合破局'}</div>
-    <p style="color:var(--slate);margin:0">${msg}</p>
-    <div class="stats">
-      <div class="s"><b>${monthsUsed}</b><span>用了幾個月</span></div>
-      <div class="s"><b>${G.round}</b><span>決策回合</span></div>
-      <div class="s"><b>${shareback}%</b><span>地主分回比</span></div>
-      <div class="s"><b>${G.consent}/${G.needed}</b><span>同意/門檻</span></div>
-      <div class="s"><b>${G.trust}</b><span>制度信用</span></div>
-      <div class="s"><b>${unlocked.size}/${CONCEPTS.length}</b><span>解鎖名詞</span></div>
-    </div>
-    <div class="recap">🎓 <b>復盤：</b>${key}</div>
-    <div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap">
-      <button class="nbtn solid" id="endAgain">🔄 再玩一次</button>
-      <button class="nbtn" id="endNew">🗂️ 換劇本</button>
-      <button class="nbtn" id="endCodex">📖 看名詞（${unlocked.size}）</button>
-    </div>`;
+  const months=G.baseTime-G.time,shareback=100-Math.round(G.share*100);
+  const hostile=G.owners.filter(o=>o.sat<20).length;
+  const quality= !win?'—':hostile===0?'完美整合（無敵對戶）':hostile<=2?'整合成功（少數敵對）':'勉強過關（仍有敵對戶）';
+  const key=win?('關鍵：'+(used.length?'<b>'+used.join('、')+'</b>＋':'')+'針對人格／家族出對牌，分配維持 '+Math.round(G.share*100)+'%。印證「都更最難的是人，不是法規」。')
+    :'卡關常因沒辨人格、信任不足或分配過貪。下次先用<b>可信承諾／第三方</b>顧保守派、<b>家族溝通</b>滾動多數，別硬上權變養大議價力。';
+  $('endModal').innerHTML='<div class="endbig '+(win?'win':'lose')+'">'+(win?'🏆 整合成功':'💔 整合破局')+'</div>'
+    +'<p style="color:var(--slate);margin:0">'+msg+(win?'　·　<b>'+quality+'</b>':'')+'</p>'
+    +'<div class="stats">'
+    +'<div class="s"><b>'+months+'</b><span>用了幾個月</span></div><div class="s"><b>'+G.round+'</b><span>決策回合</span></div>'
+    +'<div class="s"><b>'+shareback+'%</b><span>地主分回比</span></div><div class="s"><b>'+agreeCount(G)+'/'+G.needed+'</b><span>同意/門檻</span></div>'
+    +'<div class="s"><b>'+G.inst+'</b><span>制度信用</span></div><div class="s"><b>'+unlocked.size+'/'+CONCEPTS.length+'</b><span>解鎖名詞</span></div></div>'
+    +'<div class="recap">🎓 <b>復盤：</b>'+key+'</div>'
+    +'<div style="display:flex;gap:9px;margin-top:14px;flex-wrap:wrap"><button class="nbtn solid" id="eAgain">🔄 再玩一次</button><button class="nbtn" id="eNew">🗂️ 換劇本</button><button class="nbtn" id="eCx">📖 名詞('+unlocked.size+')</button></div>';
   $('endOv').classList.add('show');
-  $('endAgain').onclick=()=>{$('endOv').classList.remove('show');init(scIdx,diff);};
-  $('endNew').onclick=()=>{$('endOv').classList.remove('show');openStart();};
-  $('endCodex').onclick=()=>{$('endOv').classList.remove('show');openCodex();};
+  $('eAgain').onclick=()=>{$('endOv').classList.remove('show');init();};
+  $('eNew').onclick=()=>{$('endOv').classList.remove('show');openStart();};
+  $('eCx').onclick=()=>{$('endOv').classList.remove('show');openCodex();};
   render();
 }
 
-/* ============== 繪製 ============== */
+/* ====================== 繪製 ====================== */
 function render(silent){
-  $('st-consent').querySelector('.v').textContent=G.consent+'/'+G.N;
+  const ac=agreeCount(G),pct=Math.round(ac/G.N*100),thpct=Math.round(G.needed/G.N*100),gap=G.needed-ac;
+  $('st-consent').querySelector('.v').textContent=ac+'/'+G.N;
   $('st-budget').querySelector('.v').textContent=G.budget;
   $('st-time').querySelector('.v').textContent=G.time;
-  $('st-trust').querySelector('.v').textContent=G.trust;
-  $('st-share').querySelector('.v').textContent=Math.round(G.share*100)+'%';
+  $('st-inst').querySelector('.v').textContent=G.inst;
+  $('st-dev').querySelector('.v').textContent=(G.dev>=0?'+':'')+G.dev;
   $('st-stage').querySelector('.v').textContent='S'+G.stage;
   $('st-time').classList.toggle('alarm',G.time<=4);$('st-budget').classList.toggle('alarm',G.budget<22);
-  const pct=Math.round(G.consent/G.N*100),thpct=Math.round(G.needed/G.N*100),gap=G.needed-G.consent;
   $('pb').style.width=pct+'%';$('thm').style.left=thpct+'%';
   $('pl-left').textContent='同意 '+pct+'%';$('pl-right').textContent='門檻 '+Math.round(G.th*100)+'%';
-  $('pl-goal').textContent= gap>0?('還差 '+gap+' 戶達標'):'✓ 已達標，按「🏁 啟動權變」收尾';
+  $('pl-goal').textContent= gap>0?('還差 '+gap+' 戶達標'):'✓ 已達標，按「啟動權變」收尾';
   $('pl-goal').style.color= gap>0?'var(--emer-d)':'var(--emer)';
+  // 情緒分布
+  const cnt={sup:0,watch:0,opp:0,hos:0};G.owners.forEach(o=>cnt[band(o.sat)]++);
+  $('emo').innerHTML=['sup','watch','opp','hos'].map(b=>{const w=cnt[b]/G.N*100;const c={sup:'var(--sup)',watch:'var(--watch)',opp:'var(--opp)',hos:'var(--hos)'}[b];return '<span style="width:'+w+'%;background:'+c+'"></span>';}).join('');
   // 盤面
-  let html='';for(let i=0;i<G.N;i++){let cls,em;
-    if(i<G.consent){cls='yes';em='✓';}else if(i<G.consent+G.hold){cls='no piv';em='✊';}else{cls='und';em='·';}
-    const isNew=!silent&&i>=prevConsent&&i<G.consent;
-    html+=`<div class="ow ${cls}${isNew?' flip':''}">${em}</div>`;}
-  $('owners').innerHTML=html;
+  $('owners').innerHTML=G.owners.map((o,i)=>{const b=band(o.sat),isNew=!silent&&o.sat>=AGREE&&i>=0&&!o._wasAgree;
+    return '<div class="ow '+b+(i===sel?' sel':'')+(isNew?' bump':'')+'" data-i="'+i+'"><span class="pi">'+PERS[o.pers].pi+'</span>'+(o.leader?'<span class="fa">⌂</span>':'')+'</div>';}).join('');
+  G.owners.forEach(o=>o._wasAgree=o.sat>=AGREE);
+  document.querySelectorAll('.ow').forEach(el=>el.onclick=()=>{sel=+el.dataset.i;showProf();render(true);});
+  if(sel>=0)showProf();
   // 議價力
-  const lev=leverage(),lp=Math.round(lev*100);
-  const lc=lev<.25?'var(--emer-l)':lev<.5?'#d97706':lev<.7?'#ea580c':'var(--red)';
-  $('lev-v').textContent=lp;$('lev-bar').style.width=lp+'%';$('lev-bar').style.background=lc;$('lev-v').style.color=lc;
-  $('lev-msg').innerHTML= gap<=0?'已達門檻，餘戶可循權變強制納入，議價力崩落。'
-    :(gap/(G.N-G.consent)>.8?'幾乎人人關鍵＋沉沒成本上升 → 議價力高，慎防被末位戶綁架。':'餘戶仍多、可替代，單戶難綁架；把握此時鎖定同意。');
-  // 接受機率
-  const am=acceptMult(),ap=Math.round(clamp(am/1.7,0,1)*100);
-  $('acc-v').textContent=ap+'%';$('acc-bar').style.width=ap+'%';
-  const ac=ap<40?'var(--red)':ap<65?'#d97706':'var(--emer-l)';$('acc-bar').style.background=ac;$('acc-v').style.color=ac;
-  $('acc-msg').innerHTML= ap<40?'偏低：先打 <b>可信承諾／引入第三方</b>，或壓低建方分配。':ap<65?'尚可：補承諾或透明溝通可再拉高。':'高：穩定成交區，火力放未定戶推過門檻。';
-  // 競合餅
-  const sh=Math.round(G.share*100);$('pie-share').textContent='建方 '+sh+'%';$('pie-owner').textContent='地主分回 '+(100-sh)+'%';
-  $('pieArc').style.strokeDasharray=sh+' '+(100-sh);
-  $('pie-msg').innerHTML= G.share>0.55?'⚠️ 分太多：貪婪毀餅，接受率被壓垮。':'分配尚屬合理，餅能做大。';
-  // 動作
-  document.querySelectorAll('.act').forEach((b,i)=>{const a=ACTS[i];b.disabled=G.over||!a.can(G);
-    if(a.win)b.classList.toggle('win',G.consent>=G.needed&&!G.over);});
+  const lev=leverage(),lp=Math.round(lev*100),lc=lev<.25?'var(--sup)':lev<.5?'var(--watch)':lev<.7?'var(--opp)':'var(--hos)';
+  $('lev-v').textContent=lp;$('lev-bar').style.width=lp+'%';$('lev-bar').style.background=lc;
+  $('lev-msg').innerHTML=gap<=0?'已達門檻，餘戶可循權變強制納入，議價力崩落。':(gap/(G.N-ac)>.8?'幾乎人人關鍵＋沉沒成本升 → 議價力高，慎防末位戶綁架。':'餘戶仍多、可替代，把握此時鎖定。');
+  // 接受傾向
+  const am=Math.round(acceptAvg()*100),aC=am<40?'var(--hos)':am<65?'var(--watch)':'var(--sup)';
+  $('acc-v').textContent=am+'%';$('acc-bar').style.width=am+'%';$('acc-bar').style.background=aC;
+  $('acc-msg').innerHTML=am<40?'偏低：先補<b>制度／建商信用</b>或壓低分配，保守派才會動。':am<65?'尚可：補承諾或說明會可再拉高。':'高：策略容易見效，火力推多數過門檻。';
+  // 競合
+  const sh=Math.round(G.share*100);$('pie-v').textContent='建方 '+sh+'% / 地主 '+(100-sh)+'%';$('pie-bar').style.width=sh+'%';
+  $('pie-bar').style.background=G.share>.55?'var(--hos)':'var(--emer)';
+  $('pie-msg').innerHTML=G.share>.55?'⚠️ 分太多：貪婪毀餅，投資派以外都不買單。':'分配尚屬合理，餅能做大。';
+  document.querySelectorAll('.act').forEach((b,i)=>{const a=ACTS[i];b.disabled=G.over||!a.can(G);if(a.win)b.classList.toggle('win',ac>=G.needed&&!G.over);});
 }
-
-/* ============== 概念圖鑑 ============== */
-function buildCodex(){
-  $('cxCount').textContent='（已解鎖 '+unlocked.size+'/'+CONCEPTS.length+'）';
-  $('codexBody').innerHTML=CONCEPTS.map(c=>{const u=unlocked.has(c.id);
-    return `<details class="cx${u?'':' lock'}"${u?'':' '}><summary><span class="em">${u?c.em:'🔒'}</span>${u?c.t:'？？？（玩到對應情境解鎖）'}<span class="tag">${u?c.tag:'未解鎖'}</span></summary><div class="body">${u?c.b:'繼續闖關，玩到對應的情境就會解鎖這個名詞的解釋。'}</div></details>`;
-  }).join('');
+function showProf(){const o=G.owners[sel];if(!o)return;const p=PERS[o.pers];
+  $('prof').innerHTML='<div class="pn">'+p.pi+' '+o.no+'號 '+o.name+(o.fam!=null?' <span style="color:var(--gold);font-size:12px">⌂'+o.famName+(o.leader?'·族長':'')+'</span>':'')
+    +' <span class="band" style="background:'+bandColor(o.sat)+'">'+bandName(o.sat)+'</span></div>'
+    +'<div class="mini"><span style="width:'+o.sat+'%;background:'+bandColor(o.sat)+'"></span></div>'
+    +'<p><b>'+p.k+'</b>（'+p.d+'）·滿意度 '+Math.round(o.sat)+'/100 ·影響力 '+'●'.repeat(o.infl)+'</p>'
+    +'<p style="color:var(--emer-d)">💡 對策：'+persTip(o.pers)+'</p>';
 }
+function persTip(k){return{cons:'重制度——先打可信承諾／引入第三方',inv:'重利益——加碼分回最有效',emo:'重感情——透明說明會＋家族溝通',dom:'談判高手——個別協商深談',obs:'看大眾——把整體同意率拉高他自然跟'}[k];}
 
-/* ============== 進度暫存 ============== */
-function saveProgress(){try{if(!G.over)localStorage.setItem('urGameSave',JSON.stringify({G,scIdx,diff,unlocked:[...unlocked]}));}catch(e){}}
-function clearProgress(){try{localStorage.removeItem('urGameSave');}catch(e){}}
-function loadProgress(){try{const s=JSON.parse(localStorage.getItem('urGameSave'));if(s&&s.G&&!s.G.over){return s;}}catch(e){}return null;}
-
-/* ============== 控制 ============== */
+/* ====================== 概念圖鑑／存檔／控制 ====================== */
+function buildCodex(){$('cxCount').textContent='（已解鎖 '+unlocked.size+'/'+CONCEPTS.length+'）';
+  $('codexBody').innerHTML=CONCEPTS.map(c=>{const u=unlocked.has(c.id);return '<details class="cx'+(u?'':' lock')+'"><summary><span class="em">'+(u?c.em:'🔒')+'</span>'+(u?c.t:'？？？（玩到對應情境解鎖）')+'<span class="tag">'+(u?c.tag:'未解鎖')+'</span></summary><div class="body">'+(u?c.b:'繼續推演，玩到對應情境就會解鎖。')+'</div></details>';}).join('');}
+function save(){try{if(!G.over)localStorage.setItem('urV3Save',JSON.stringify({G,selScen,selDev,selN,unlocked:[...unlocked]}));}catch(e){}}
+function clearSave(){try{localStorage.removeItem('urV3Save');}catch(e){}}
+function refreshDif(){const d=difficulty(SCEN[selScen],selN,selDev);$('difstars').textContent='★'.repeat(d)+'☆'.repeat(5-d);$('diftxt').textContent='　'+['','很易','偏易','適中','偏難','極難'][d];}
 function openStart(){
-  $('scards').innerHTML=SCEN.map((s,i)=>`<div class="scard${i===selScen?' on':''}" data-i="${i}"><h4>${s.k}</h4><p>${s.real}　門檻 ${Math.round(s.th*100)}%</p></div>`).join('');
-  document.querySelectorAll('#scards .scard').forEach(c=>c.onclick=()=>{selScen=+c.dataset.i;document.querySelectorAll('#scards .scard').forEach(x=>x.classList.toggle('on',x===c));});
-  $('startOv').classList.add('show');
+  $('scards').innerHTML=SCEN.map((s,i)=>'<div class="scard'+(i===selScen?' on':'')+'" data-i="'+i+'"><h4>'+s.k+'</h4><p>'+s.real+'　門檻 '+Math.round(s.th*100)+'%</p></div>').join('');
+  document.querySelectorAll('#scards .scard').forEach(c=>c.onclick=()=>{selScen=+c.dataset.i;document.querySelectorAll('#scards .scard').forEach(x=>x.classList.toggle('on',x===c));refreshDif();});
+  refreshDif();$('startOv').classList.add('show');
 }
-$('startBtn').onclick=()=>{$('startOv').classList.remove('show');init(selScen,diff);};
-document.querySelectorAll('#difchips .difchip').forEach(c=>c.onclick=()=>{diff=c.dataset.d;document.querySelectorAll('#difchips .difchip').forEach(x=>x.classList.toggle('on',x===c));});
+$('nrange').oninput=e=>{selN=+e.target.value;$('nval').textContent=selN+' 戶';refreshDif();};
+$('devsel').onchange=e=>{selDev=+e.target.value;refreshDif();};
+$('startBtn').onclick=()=>{$('startOv').classList.remove('show');init();};
 $('btnNew').onclick=openStart;
-$('btnHow').onclick=()=>{howGo(0);$('howOv').classList.add('show');};
-$('howX').onclick=()=>$('howOv').classList.remove('show');
+$('btnHow').onclick=()=>{howGo(0);$('howOv').classList.add('show');};$('howX').onclick=()=>$('howOv').classList.remove('show');
 let howI=0;const STEPS=4;
-function howGo(n){howI=clamp(n,0,STEPS-1);document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('on',i===howI));
-  $('howDots').innerHTML=Array.from({length:STEPS},(_,i)=>`<span class="dot${i===howI?' on':''}"></span>`).join('');
+function howGo(n){howI=cl(n,0,STEPS-1);document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('on',i===howI));
+  $('howDots').innerHTML=Array.from({length:STEPS},(_,i)=>'<span class="dot'+(i===howI?' on':'')+'"></span>').join('');
   $('howPrev').style.visibility=howI===0?'hidden':'visible';$('howNext').textContent=howI===STEPS-1?'開始玩':'下一步';}
-$('howPrev').onclick=()=>howGo(howI-1);
-$('howNext').onclick=()=>{if(howI===STEPS-1)$('howOv').classList.remove('show');else howGo(howI+1);};
-$('btnCodex').onclick=openCodex;function openCodex(){buildCodex();$('codexOv').classList.add('show');}
-$('codexX').onclick=()=>$('codexOv').classList.remove('show');
-$('btnSound').onclick=()=>{SOUND=!SOUND;$('btnSound').textContent=SOUND?'🔊 音效':'🔇 音效';$('btnSound').classList.toggle('on',SOUND);if(SOUND)beep('good');};
+$('howPrev').onclick=()=>howGo(howI-1);$('howNext').onclick=()=>{if(howI===STEPS-1)$('howOv').classList.remove('show');else howGo(howI+1);};
+$('btnCodex').onclick=openCodex;function openCodex(){buildCodex();$('codexOv').classList.add('show');}$('codexX').onclick=()=>$('codexOv').classList.remove('show');
+$('btnSound').onclick=()=>{SOUND=!SOUND;$('btnSound').textContent=SOUND?'🔊':'🔇';$('btnSound').classList.toggle('on',SOUND);if(SOUND)beep('good');};
 [$('howOv'),$('codexOv'),$('endOv')].forEach(o=>o.onclick=e=>{if(e.target===o)o.classList.remove('show');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')[$('howOv'),$('codexOv'),$('endOv')].forEach(o=>o.classList.remove('show'));});
 addEventListener('resize',()=>{const c=$('fx');c.width=innerWidth;c.height=innerHeight;});
 
-/* 起始：有存檔則續玩，否則開場 */
 (function(){
-  const save=loadProgress();
-  if(save){ G=save.G;scIdx=save.scIdx;diff=save.diff;unlocked=new Set(save.unlocked);prevConsent=G.consent;
-    buildActions();render(true);buildCodex();
-    $('ph-n').textContent='· '+G.N+' 位所有權人 ·續玩中';
-    log('sys','📂 偵測到上次進度，已續玩。要重來請按「🗂️ 換劇本」。');
-    $('startOv').classList.remove('show');
-  } else { selScen=0;openStart(); }
-  buildCodex();
+  let s=null;try{s=JSON.parse(localStorage.getItem('urV3Save'));}catch(e){}
+  if(s&&s.G&&!s.G.over){G=s.G;selScen=s.selScen;selDev=s.selDev;selN=s.selN;unlocked=new Set(s.unlocked);sel=-1;prevAgree=agreeCount(G);
+    buildActions();render(true);buildCodex();$('ph-n').textContent='· '+G.N+' 戶 ·續玩中';log('sys','📂 偵測到上次進度，已續玩。要重來按「換劇本」。');$('startOv').classList.remove('show');
+  }else{openStart();buildCodex();}
 })();
 </script>
 </body>
