@@ -111,11 +111,11 @@
   .log .e{padding:3px 0;border-bottom:1px dashed var(--line-2)}.log .e:last-child{border-bottom:0}
   .log .e.good{color:var(--emer-d)}.log .e.bad{color:var(--hos)}.log .e.evt{color:var(--opp)}.log .e.sys{color:var(--slate)}
 
-  .ro{margin-bottom:11px}.ro:last-child{margin-bottom:0}
-  .ro .lab{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--slate);margin-bottom:4px}
+  .ro{margin-bottom:9px}.ro:last-child{margin-bottom:0}
+  .ro .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--slate);margin-bottom:3px}
   .ro .lab b{font-variant-numeric:tabular-nums}
-  .meter{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.meter>span{display:block;height:100%;transition:width .45s,background .3s}
-  .romsg{font-size:11.5px;color:var(--mute);margin-top:4px;min-height:26px}
+  .meter{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.meter>span{display:block;height:100%;transition:width .45s,background .3s}
+  .romsg{font-size:11px;color:var(--mute);margin-top:3px;min-height:0}
 
   #toasts{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:55;display:flex;flex-direction:column;gap:7px;align-items:center;pointer-events:none;width:92%;max-width:440px}
   .toast{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--emer-l);border-radius:10px;padding:10px 15px;font-size:13px;font-weight:600;box-shadow:0 14px 36px -16px rgba(0,0,0,.4);animation:tin .3s,tout .3s 2.5s forwards}
@@ -208,11 +208,7 @@
   <div class="progwrap">
     <div class="pbar" id="pbar"><span id="pb" style="width:0%"></span><i class="thm" id="thm" style="left:75%"></i></div>
     <div class="plbl"><span id="pl-left">同意 0%</span><span class="goal" id="pl-goal">—</span><span id="pl-right">門檻 75%</span></div>
-    <div class="emo" id="emo"></div>
-    <div class="emolbl">
-      <span><i style="background:var(--sup)"></i>支持(同意)</span><span><i style="background:var(--watch)"></i>觀望</span>
-      <span><i style="background:var(--opp)"></i>反對</span><span><i style="background:var(--hos)"></i>敵對</span>
-    </div>
+    <div class="emo" id="emo" title="全體地主情緒分布：綠 支持｜黃 觀望｜橘 反對｜紅 敵對"></div>
   </div>
 
   <div class="board">
@@ -225,7 +221,9 @@
         <span><i class="sw" style="background:var(--watch-l);border:1.5px solid var(--watch)"></i>觀望</span>
         <span><i class="sw" style="background:var(--opp-l);border:1.5px solid var(--opp)"></i>反對</span>
         <span><i class="sw" style="background:var(--hos-l);border:1.5px solid var(--hos)"></i>敵對</span>
-        <span style="color:var(--gold)">⌂ 家族</span>
+        <span style="color:var(--gold)">⌂ 族長</span>
+        <span style="color:var(--hos)">🧱 樞紐戶</span>
+        <span style="color:var(--hos)">🪨 高抗性</span>
       </div>
       <div class="prof" id="prof">👆 點任一地主看他的<b>人格・情緒・家族</b>。</div>
       <div class="hint1" id="hint1"></div>
@@ -237,6 +235,7 @@
       <div class="ro" id="whybox" style="background:var(--mint);border:1px solid var(--mint-2);border-radius:10px;padding:9px 11px;margin-bottom:13px">
         <div class="lab"><span>🎓 即時解析（為什麼會這樣）</span><b id="why-cx" style="font-size:10.5px;color:var(--emer-l);font-weight:700"></b></div>
         <div class="romsg" id="why-msg" style="color:var(--emer-d);min-height:34px">每做一個決策，這裡會解釋背後的<b>原因與概念</b>——遊戲不只是闖關，是看懂整合為什麼難。</div></div>
+      <div class="lab2" style="margin-top:0">📊 談判指標</div>
       <div class="ro"><div class="lab"><span>🧱 釘子戶議價力</span><b id="lev-v">—</b></div>
         <div class="meter"><span id="lev-bar" style="width:0%;background:var(--watch)"></span></div><div class="romsg" id="lev-msg"></div></div>
       <div class="ro"><div class="lab"><span>🤝 平均接受傾向</span><b id="acc-v">—</b></div>
@@ -292,7 +291,7 @@
 
 <footer><div class="wrap">
   <a href="index.html">儀表板</a>｜<a href="evaluator.html">開發試算</a>｜<a href="whitepaper.html">整合總論</a>｜<a href="https://github.com/jeremy0819/Urban-Renewal" target="_blank" rel="noopener">主庫</a>
-  <p class="footdisc">⚠️ 策略沙盤教學示意，地主／家族／參數皆為去識別化模型、非真實案件預測，不含任何真實案名、金額或人名。同意門檻依現行《都市更新條例》§37、《危老條例》（查證 2026-06-19）。版本 4.0 封版｜2026-06：難整合戶（樞紐／高抗性）・同招遞減・競爭建商時間賽局・整合花費計入 ROI・即時解析教學。</p>
+  <p class="footdisc">⚠️ 策略沙盤教學示意，地主／家族／參數皆為去識別化模型、非真實案件預測，不含任何真實案名、金額或人名。同意門檻依現行《都市更新條例》§37、《危老條例》（查證 2026-06-19）。版本 4.0 封版｜2026-06：難整合戶（樞紐／高抗性）・同招遞減・競爭建商時間賽局・整合花費計入 ROI・即時解析教學・UI 整理（單一圖例／精簡訊息流／指標分組）。</p>
 </div></footer>
 
 <script>
@@ -426,7 +425,8 @@ function advanceComp(g,opts){if(g.over)return;if(!g.comp)g.comp={prog:8};opts=op
   g.comp.prog=Math.min(100,Math.max(g.comp.prog,g.comp.prog+tick));
   // 對手領先時，挖走一位動搖中（觀望）的地主
   if(g.comp.prog>you+12){const t=g.owners.filter(o=>o.sat>=50&&o.sat<AGREE&&o.kind!=='樞紐').sort((a,b)=>b.sat-a.sat)[0];
-    if(t){t.sat=cl(t.sat-7);log('bad','🎣 對手挖角「'+t.no+'號 '+t.name+'」（觀望中）→ 滿意度 −7。<br><span style="color:var(--slate)">原因：你落後時，動搖的地主最容易被對手更好的條件帶走。（競合賽局）</span>');unlock('compete');}}
+    if(t){t.sat=cl(t.sat-7);log('bad','🎣 對手挖角「'+t.no+'號 '+t.name+'」→ 滿意度 −7');
+      showWhy('對手挖角','你落後時，動搖中（觀望）的地主最容易被對手更好的條件帶走。','競合賽局');unlock('compete');}}
   if(g.comp.prog>=you+10)unlock('compete');
   if(g.comp.prog>=100)end(false,'競爭建商搶先衝到門檻、先一步送件——你被搶先整合，破局。輸給對手，不是因為你不努力，是因為你太慢。');
 }
@@ -477,8 +477,8 @@ function showWhy(t,why,cx){if(!why)return;const m=$('why-msg');if(m)m.innerHTML=
 /* 觀望派隨大眾漂移 */
 function bandwagon(){const rate=agreeCount(G)/G.N;let moved=0;
   G.owners.forEach(o=>{if(o.pers==='obs'){const b=o.sat;o.sat=cl(o.sat+(rate*100-o.sat)*.18);if(o.sat-b>2)moved++;else if(b-o.sat>2)moved--;}});
-  if(moved>0)log('good','📊 觀望派跟風加入（'+moved+' 戶上升）。<br><span style="color:var(--slate)">原因：同意率越高，觀望派越怕「沒上車」而跟進。（Bandwagon 從眾／資訊瀑布）</span>');
-  else if(moved<0)log('bad','📊 觀望派開始動搖（'+(-moved)+' 戶下降）。<br><span style="color:var(--slate)">原因：同意率偏低時，觀望派也跟著退縮。（Bandwagon 反向）</span>');
+  if(moved>0)log('good','📊 觀望派跟風加入（'+moved+' 戶上升）— Bandwagon 從眾');
+  else if(moved<0)log('bad','📊 觀望派動搖（'+(-moved)+' 戶下降）— Bandwagon 反向');
 }
 
 /* ====================== 策略卡（Level 對象化 + 審議 tag） ====================== */
@@ -534,7 +534,7 @@ function event(extra){
   if(Math.random()<p){const ev=EVENTS[rnd(0,EVENTS.length-1)];ev.f(G);
     if(ev.chain&&G.lastEvent&&G.lastEvent.chain){unlock('emotion');toast('🌊 偏好雪崩：阻撓連鎖！','evt');}
     G.lastEvent=ev;G.budget=Math.round(G.budget);
-    log('evt','🧱 '+ev.em+' <b>'+ev.t+'</b>（'+ev.m+'）'+(ev.why?'<br><span style="color:var(--slate)">原因：'+ev.why+'</span>':''));
+    log('evt','🧱 '+ev.em+' <b>'+ev.t+'</b>（'+ev.m+'）');
     showWhy('阻撓事件：'+ev.t,ev.why,ev.cx);
     toast('🧱 '+ev.em+' '+ev.t,'evt');shake();beep('bad');
   } else G.lastEvent=false;

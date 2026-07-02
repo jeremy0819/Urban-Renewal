@@ -284,6 +284,7 @@
         <div class="ssot">📎 契約 <span id="ssotVer">schemas/project_schema.json</span>　·　數值＝Core 權威輸出，本頁不重算　·　🔒 你匯入的資料只留在本機瀏覽器，不上傳、不入庫。</div>
       </div>
       <table class="out" id="coreOut"></table>
+      <div id="ownersBox"></div>
       <div class="impbar" id="prefillBar" style="display:none">
         <button class="pbtn" id="prefillBtn">↧ 帶入下方教學試算欄位比對</button>
         <span class="flab">教學近似，權威值以 Core 為準</span>
@@ -298,7 +299,7 @@
 
 <footer><div class="wrap">
   <span class="tag">FRAME · 內部自洽 ≠ 真實 · 信心上限 LOW</span>
-  <p><b style="color:#fff">免責：</b>本試算為都更投報帳務模型之教學示意，<b style="color:#fff">非估價、非財務或法律意見、非真實案件預測</b>。公式骨架與係數源自本庫 <a href="docs/投報分析架構-正確版.md" target="_blank" rel="noopener">投報分析架構（[FRAME]）</a>；<a href="https://law.moj.gov.tw/LawClass/LawSingleRela.aspx?PCODE=D0070115&FLNO=162&ty=L" target="_blank" rel="noopener">建築技術規則§162</a>、估價、共同負擔科目以《都市更新權利變換實施辦法》等現行條文與估價師核定為準（查證日 2026-06-19）。所有數字由使用者輸入，不含任何真實案件金額與案名。<b style="color:#fff">Phase 1</b>：可匯入 RE-DCF Core 之案件 JSON（只讀 result、不重算），匯入資料僅存於本機瀏覽器、不上傳。版本 1.1｜2026-06。</p>
+  <p><b style="color:#fff">免責：</b>本試算為都更投報帳務模型之教學示意，<b style="color:#fff">非估價、非財務或法律意見、非真實案件預測</b>。公式骨架與係數源自本庫 <a href="docs/投報分析架構-正確版.md" target="_blank" rel="noopener">投報分析架構（[FRAME]）</a>；<a href="https://law.moj.gov.tw/LawClass/LawSingleRela.aspx?PCODE=D0070115&FLNO=162&ty=L" target="_blank" rel="noopener">建築技術規則§162</a>、估價、共同負擔科目以《都市更新權利變換實施辦法》等現行條文與估價師核定為準（查證日 2026-06-19）。所有數字由使用者輸入，不含任何真實案件金額與案名。<b style="color:#fff">Phase 1</b>：可匯入 RE-DCF Core 之案件 JSON（只讀 result、不重算），支援 schema 1.1（Core 權威 warnings／版本戳／owners 逐戶分回表＋同意率），1.0 舊檔相容；匯入資料僅存於本機瀏覽器、不上傳。版本 1.2｜2026-07。</p>
   <p style="margin-top:14px"><a href="index.html">🎯 開發儀表板</a> ｜ <a href="simulator.html">🎮 整合闖關</a> ｜ <a href="whitepaper.html">📈 整合總論</a> ｜ <a href="https://github.com/jeremy0819/RE-DCF-Tool" target="_blank" rel="noopener">🧮 RE-DCF-Tool（正式計算）</a> ｜ <a href="docs/投報分析架構-正確版.md" target="_blank" rel="noopener">📄 投報架構</a></p>
 </div></footer>
 
@@ -473,29 +474,51 @@ function loadCore(j){ const eb=$('impErr'), errs=validateCore(j);
   if(errs.length){eb.style.display='block';eb.textContent='⚠️ 不符合 RE-DCF Core 合約：\n・'+errs.join('\n・');$('coreOut').innerHTML='';$('prefillBar').style.display='none';return;}
   eb.style.display='none';CORE=j;const r=j.result;
   const tName={urban_renewal:'都更',danger_building:'危老'}[j.project.renewal_type]||j.project.renewal_type;
-  $('ssotVer').textContent='schema '+j.schema_version+'｜'+j.project.name+'（'+tName+'）';
+  $('ssotVer').textContent='schema '+j.schema_version+'｜'+j.project.name+'（'+tName+'）'
+    +(r.core_version?'｜Core v'+r.core_version:'')+(r.computed_at?'｜算於 '+String(r.computed_at).slice(0,10):'');
   let html='<tr class="sum"><td>案件（Core 權威輸出）</td><td>'+j.project.name+'</td></tr>';
   CORE_META.forEach(([grp,rows])=>{ const present=rows.filter(([k])=>typeof r[k]==='number'); if(!present.length)return;
     html+='<tr><td colspan="2" style="padding-top:10px;color:var(--emer-l);font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase">'+grp+'</td></tr>';
     present.forEach(([k,lab,u])=>{ const hl=(k==='saleable_area'||k==='shared_cost_ratio'||k==='owner_return_ratio'); html+='<tr class="'+(hl?'hl':'')+'"><td>'+lab+' <span class="flab">'+k+'</span></td><td>'+fmtCore(r[k],u)+'</td></tr>'; }); });
   $('coreOut').innerHTML=html;
   $('prefillBar').style.display=(j.land&&j.finance)?'flex':'none';
-  renderCoreChecks(j); }
+  renderCoreChecks(j); renderOwners(j); }
 function renderCoreChecks(j){ const r=j.result,o=j.owners||[],b=j.building||{},c=[];
-  if(r.efficiency_ratio>=1.58&&r.efficiency_ratio<=1.68)c.push(['ok','銷坪比落正常區間',r.efficiency_ratio.toFixed(3)+'（1.58–1.68）']);
-  else c.push(['warn','銷坪比偏離',r.efficiency_ratio.toFixed(3)+'：Core 自述正常帶 1.58–1.68，確認公設比／§162 免計']);
-  if(r.remaining_floor_area<0)c.push(['bad','容積超出允建',r.remaining_floor_area.toFixed(1)+' ㎡：計入容積 > 允建，須刪減量體']);
-  else c.push(['ok','容積餘量為正','+'+r.remaining_floor_area.toFixed(1)+' ㎡']);
-  if(typeof r.shared_cost_ratio==='number'){ const p=r.shared_cost_ratio*100;
-    if(p>65)c.push(['bad','共負比過高 → 分回<35%',p.toFixed(1)+'%']);
-    else if(p>55)c.push(['warn','共負比偏高',p.toFixed(1)+'%'+(p<70?'（<70% 仍具 100% 融資潛力）':'')]);
-    else c.push(['ok','共負比合理',p.toFixed(1)+'%（<70% 具 100% 融資潛力）']); }
-  if(typeof b.balcony_exempt_pct==='number'||typeof b.stair_hall_exempt_pct==='number'){ const bal=b.balcony_exempt_pct||0,st=b.stair_hall_exempt_pct||0;
-    const flag=(bal>15||st>10); // §162 逐層免計已由 Core 計入 used_floor_area；此處僅顯示採用基準，明顯偏高才提醒（不越權重判）
-    c.push([flag?'warn':'ok','§162 免計基準：陽台 '+bal+'%・梯廳 '+st+'%',flag?'基準偏高，請以 Core／建照核定為準':'§162 逐層免計已由 Core 計入「計入容積」，此為採用基準']); }
-  if(!o.length)c.push(['warn','owners[] 為空','逐戶分回／同意率需權利人清冊（Phase 1 預留欄位）；現僅顯示總量']);
-  else c.push(['ok','owners['+o.length+']','已含權利人清冊，可算逐戶分回']);
+  const W=Array.isArray(r.warnings)?r.warnings:null;
+  if(W){ // schema 1.1+：Core 隨附權威警告——消費端不再自行重判門檻
+    if(!W.length)c.push(['ok','Core 權威健檢：全數通過','此案無警告（判斷邏輯在 Core 端，依 renewal_type／投報模式對照門檻）']);
+    W.forEach(w=>{ const lv=w.level==='error'?'bad':w.level==='warn'?'warn':'ok';
+      c.push([lv,w.code||'WARNING',(w.message||'')+(w.field?'　·　'+w.field:'')]); });
+  } else { // schema 1.0 舊檔相容：退回消費端提醒（僅供參考）
+    if(r.efficiency_ratio>=1.58&&r.efficiency_ratio<=1.68)c.push(['ok','銷坪比落正常區間',r.efficiency_ratio.toFixed(3)+'（1.58–1.68）']);
+    else c.push(['warn','銷坪比偏離',r.efficiency_ratio.toFixed(3)+'：Core 自述正常帶 1.58–1.68，確認公設比／§162 免計']);
+    if(r.remaining_floor_area<0)c.push(['bad','容積超出允建',r.remaining_floor_area.toFixed(1)+' ㎡：計入容積 > 允建，須刪減量體']);
+    else c.push(['ok','容積餘量為正','+'+r.remaining_floor_area.toFixed(1)+' ㎡']);
+    if(typeof r.shared_cost_ratio==='number'){ const p=r.shared_cost_ratio*100;
+      if(p>65)c.push(['bad','共負比過高 → 分回<35%',p.toFixed(1)+'%']);
+      else if(p>55)c.push(['warn','共負比偏高',p.toFixed(1)+'%'+(p<70?'（<70% 仍具 100% 融資潛力）':'')]);
+      else c.push(['ok','共負比合理',p.toFixed(1)+'%（<70% 具 100% 融資潛力）']); }
+    if(typeof b.balcony_exempt_pct==='number'||typeof b.stair_hall_exempt_pct==='number'){ const bal=b.balcony_exempt_pct||0,st=b.stair_hall_exempt_pct||0;
+      const flag=(bal>15||st>10);
+      c.push([flag?'warn':'ok','§162 免計基準：陽台 '+bal+'%・梯廳 '+st+'%',flag?'基準偏高，請以 Core／建照核定為準':'§162 逐層免計已由 Core 計入「計入容積」，此為採用基準']); }
+  }
+  if(!o.length)c.push(['warn','owners[] 為空','逐戶分回／同意率需權利人清冊；現僅顯示總量（總量可信、逐戶不可算）']);
+  else c.push(['ok','owners['+o.length+']','已含權利人清冊，下方顯示逐戶分回與同意率']);
   $('coreChecks').innerHTML=c.map(x=>`<div class="chk ${x[0]}"><span class="dot"></span><div><b>${x[1]}</b><span class="s">${x[2]}</span></div></div>`).join(''); }
+function renderOwners(j){ const o=j.owners||[],box=$('ownersBox'); if(!o.length){box.innerHTML='';return;}
+  const r=j.result, sumPre=o.reduce((a,b)=>a+(b.pre_value||0),0)||1;
+  const th=j.project.renewal_type==='danger_building'?100:75;
+  const agreed=o.filter(x=>x.consent==='agreed').length, pct=agreed/o.length*100;
+  const IC={agreed:['✅','var(--emer-d)','同意'],pending:['⏳','var(--amber)','觀望'],opposed:['✖','var(--red)','反對']};
+  const rows=o.map(x=>{ const ic=IC[x.consent]||['—','var(--mute)',x.consent||'?'];
+    const rv=(x.return_value!=null)?x.return_value:((typeof r.owner_return_value==='number')?r.owner_return_value*(x.pre_value||0)/sumPre:null);
+    return '<tr><td>'+x.owner_id+'</td><td>'+((x.land_share||0)*100).toFixed(1)+'%</td><td>'+fmt(x.pre_value||0)+'</td>'
+      +'<td style="color:'+ic[1]+';font-weight:700;font-family:var(--sans)">'+ic[0]+' '+ic[2]+'</td><td>'+(rv!=null?fmt(rv):'—')+'</td></tr>'; }).join('');
+  box.innerHTML='<div style="font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--emer-l);margin:16px 0 6px">權利人清冊（'+o.length+' 戶）</div>'
+    +'<div class="barlbl"><span>同意率（人數比）</span><span>'+agreed+'/'+o.length+'（'+pct.toFixed(1)+'%）｜門檻 '+th+'%'+(pct>=th?' ✓ 達標':'')+'</span></div>'
+    +'<div class="barwrap"><span style="background:'+(pct>=th?'var(--emer)':'var(--amber)')+';width:'+Math.min(100,pct)+'%"></span></div>'
+    +'<table class="out" style="margin-top:10px"><tr><td><b>代號</b></td><td><b>持分</b></td><td><b>更新前值(萬)</b></td><td><b>同意</b></td><td><b>分回估(萬)</b></td></tr>'+rows+'</table>'
+    +'<p style="font-size:11.5px;color:var(--mute);margin:8px 0 0">分回估＝依更新前價值比例攤分 owner_return_value（<b>示意</b>，Core 之 return_value 到位後以其為準）；同意率為<b>人數比</b>，實務尚有土地／樓地板面積雙門檻（§37），以法定程序為準。</p>'; }
 function prefillFromCore(){ if(!CORE)return; const L=CORE.land||{},B=CORE.building||{},F=CORE.finance||{},r=CORE.result;
   const set=(id,v)=>{ if(v!=null&&!isNaN(v))$(id).value=v; };
   set('siteA',L.site_area_sqm); set('far',L.far!=null?L.far*100:null); set('bonus',L.bonus_ratio!=null?L.bonus_ratio*100:null);
@@ -507,17 +530,26 @@ function prefillFromCore(){ if(!CORE)return; const L=CORE.land||{},B=CORE.buildi
   if(F.shop_price&&F.residential_price)set('shopMul',+(F.shop_price/F.residential_price).toFixed(2));
   if(F.shop_area&&r.saleable_area)set('shopPct',+(F.shop_area/r.saleable_area*100).toFixed(1));
   $('pathNote').textContent=''; render(); document.getElementById('l1').scrollIntoView({behavior:'smooth'}); }
-const SAMPLE_CORE={schema_version:"1.0",project:{name:"（合成範例）示範段",renewal_type:"urban_renewal"},
+const SAMPLE_CORE={schema_version:"1.1",project:{name:"（合成範例）示範段",renewal_type:"urban_renewal"},
   land:{site_area_sqm:1200,plaza_area_sqm:0,far:2.25,bonus_ratio:0.35,bonus_breakdown:{時程:0.1,規模:0.1,基本:0.15},tdr_transfer_sqm:300},
-  building:{public_ratio:0.33,stair_hall_exempt_pct:8,balcony_exempt_pct:10,unit_count:40},owners:[],
+  building:{public_ratio:0.33,stair_hall_exempt_pct:8,balcony_exempt_pct:10,unit_count:40},
+  owners:[
+    {owner_id:"W01",land_share:0.18,pre_building_area_sqm:210.5,pre_value:4716,consent:"agreed",min_unit_eligible:true},
+    {owner_id:"W02",land_share:0.22,pre_building_area_sqm:185.0,pre_value:5764,consent:"agreed",min_unit_eligible:true},
+    {owner_id:"W03",land_share:0.15,pre_building_area_sqm:0,pre_value:3930,consent:"agreed",min_unit_eligible:true},
+    {owner_id:"W04",land_share:0.20,pre_building_area_sqm:240.0,pre_value:5240,consent:"agreed",min_unit_eligible:true},
+    {owner_id:"W05",land_share:0.13,pre_building_area_sqm:96.5,pre_value:3406,consent:"pending",min_unit_eligible:true},
+    {owner_id:"W06",land_share:0.12,pre_building_area_sqm:33.0,pre_value:3144,consent:"opposed",min_unit_eligible:false}],
   finance:{residential_price:60,shop_area:80,shop_price:84,parking_count:50,parking_price:200,construction_price:19},
-  result:{baseline_far:2700,allow_floor_area:3945,used_floor_area:3820,remaining_floor_area:125,stair_exempt_cap:591.75,balcony_exempt_area:410,saleable_area:1985,efficiency_ratio:1.66,total_sales:139500,shared_cost:80910,shared_cost_ratio:0.58,owner_return_value:58590,owner_return_ratio:0.42,return_rate:0.724,pre_renewal_value:26200,value_multiple:2.24}};
+  result:{baseline_far:2700,allow_floor_area:3945,used_floor_area:3820,remaining_floor_area:125,stair_exempt_cap:591.75,balcony_exempt_area:410,saleable_area:1985,efficiency_ratio:1.66,total_sales:139500,shared_cost:80910,shared_cost_ratio:0.58,owner_return_value:58590,owner_return_ratio:0.42,return_rate:0.724,pre_renewal_value:26200,value_multiple:2.24,
+    computed_at:"2026-07-01T00:00:00+00:00",core_version:"0.2.0",
+    warnings:[{code:"SHARED_COST_HIGH",level:"warn",message:"共負比 58.0% 高於全案管理合理帶 30–50%（未達警示線 65%）",field:"shared_cost_ratio"}]}};
 $('jsonFile').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f)return; const rd=new FileReader();
   rd.onload=()=>{ try{loadCore(JSON.parse(rd.result));}catch(err){$('impErr').style.display='block';$('impErr').textContent='⚠️ JSON 解析失敗：'+err.message;} }; rd.readAsText(f); });
 $('pasteToggle').addEventListener('click',()=>{ const t=$('jsonPaste'),show=t.style.display!=='block'; t.style.display=show?'block':'none'; $('pasteRun').style.display=show?'flex':'none'; });
 $('parsePaste').addEventListener('click',()=>{ try{loadCore(JSON.parse($('jsonPaste').value));}catch(err){$('impErr').style.display='block';$('impErr').textContent='⚠️ JSON 解析失敗：'+err.message;} });
 $('sampleBtn').addEventListener('click',()=>loadCore(JSON.parse(JSON.stringify(SAMPLE_CORE))));
-$('clearImp').addEventListener('click',()=>{ CORE=null;$('coreOut').innerHTML='';$('impErr').style.display='none';$('jsonPaste').value='';$('jsonFile').value='';$('prefillBar').style.display='none';
+$('clearImp').addEventListener('click',()=>{ CORE=null;$('coreOut').innerHTML='';$('ownersBox').innerHTML='';$('impErr').style.display='none';$('jsonPaste').value='';$('jsonFile').value='';$('prefillBar').style.display='none';
   $('coreChecks').innerHTML='<div class="chk"><span class="dot" style="background:var(--mute)"></span><div><b>尚未匯入</b><span class="s">載入 Core JSON 後顯示健檢。</span></div></div>'; });
 $('prefillBtn').addEventListener('click',prefillFromCore);
 
